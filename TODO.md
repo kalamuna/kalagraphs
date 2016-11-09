@@ -10,6 +10,9 @@ Convert this list to GitHub issues.
 -   Other style enhancements?
 
 ## Code
+-   MAJOR: Delete "field_component_type" and replace it with a custom form
+    element to actuate the conditional visibility states, as you can't change
+    the "allowed values" list of a "list" field once it has data.
 -   Pass form values into _kalacomponents_set_allowed_values() from
     kalaponents_fields_form_submit() to fix PHP notice.
 -   When I move the theme implementation to an external file and
