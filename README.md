@@ -6,7 +6,8 @@ implementation ([Drupals](https://www.drupal.org/) via
 [Paragraphs](https://www.drupal.org/project/paragraphs)).
 
 ## Terminology
-These words are used in code comments and variable names and deserve some explanation.
+These terms are used in code comments and as variable names and deserve some
+explanation.
 
 |               |                                                                                           |
 |:--------------|:------------------------------------------------------------------------------------------|
