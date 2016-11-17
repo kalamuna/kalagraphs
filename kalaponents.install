@@ -7,53 +7,36 @@
 
 /**
  * Implements hook_install().
- *
- * Creates the "Component Type" field for use in "Component" Paragraphs.
  */
 function kalaponents_install() {
 
-  // Make sure the field doesn't already exist.
-  if (field_info_field(KALAPONENTS_FIELD_NAME)) {
-    return;
+  // Create the "Kalaponent" bundle if it doesn't already exist. Note that we
+  // don't use `hook_paragraphs_info()` to declare the bundle as this approach
+  // makes it harder to featurize later.
+  $info = entity_get_info('paragraphs_item');
+  if (!isset($info['bundles']['kalaponent'])) {
+    $bundle         = new stdClass();
+    $bundle->bundle = 'kalaponent';
+    $bundle->name   = 'Kalaponent';
+    $bundle->locked = 1;
+    paragraphs_bundle_save($bundle);
   }
 
-  // Define the field info. This array is from a standard Features export.
-  $field_base = array(
-    'active' => 1,
-    'cardinality' => 1,
-    'deleted' => 0,
-    'entity_types' => array(),
-    'field_name' => KALAPONENTS_FIELD_NAME,
-    'indexes' => array(
-      'value' => array(
-        0 => 'value',
-      ),
-    ),
-    'locked' => 0,
-    'module' => 'list',
-    'settings' => array(
-      'allowed_values' => array(
-        '' => 'Please <a href="/devel/variable/edit/kalaponents_map">configure some Kalamuna Components</a> and then <a href="/admin/reports/status/run-cron">run cron!</a>',
-      ),
-      'allowed_values_function' => '',
-    ),
-    'translatable' => 0,
-    'type' => 'list_text',
-  );
-
-  // Save the field.
-  field_create_field($field_base);
+  // Add standard fields to the "Kalaponent" Paragraphs type.
+  module_load_include('inc', 'kalaponents');
+  _kalaponents_revert_fields();
 }
 
 /**
- * Implements hook_install().
+ * Implements hook_uninstall().
+ *
+ * Manually deletes composite variables, as they are not declared through the
+ * Variable API module and therefore not automatically deleted.
+ *
+ * To prevent unintended data loss, uninstallation does not delete the
+ * "Kalaponent" paragraphs bundle or its fields, which were created at install.
  */
 function kalaponents_uninstall() {
-
-  // Delete the "Component Type" field base.
-  field_delete_field(KALAPONENTS_FIELD_NAME);
-
-  // Mannually delete composite variables as they are not declared through the
-  // Variable module and thus not automatically deleted.
+  module_load_include('inc', 'kalaponents');
   array_walk(_kalaponents_get_composite_variables(), 'variable_del');
 }

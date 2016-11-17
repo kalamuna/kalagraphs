@@ -23,7 +23,7 @@ function kalaponents_variable_info($options = array()) {
 
   // This multi-variable* holds paths to the icon/image for each component type.
   $variable['kalaponents_icon_[type]'] = array(
-    'kalaponents composite' => 'kalaponents_composite_icons',
+    'kalaponents composite' => 'kalaponents_icons',
     'type' => 'multiple',
     'multiple callback' => 'kalaponents_get_types',
     'title' => t('Kalamuna Component Icons', array(), $options),
@@ -37,12 +37,12 @@ function kalaponents_variable_info($options = array()) {
   );
 
   // This multi-variable* holds the list of fields on each component type.
-  $variable['kalaponents_fields_[type]'] = array(
-    'kalaponents composite' => 'kalaponents_composite_fields',
+  $variable['kalaponents_fieldlist_[type]'] = array(
+    'kalaponents composite' => 'kalaponents_fieldlists',
     'type' => 'multiple',
     'multiple callback' => 'kalaponents_get_types',
     'title' => t('Kalamuna Component Fields', array(), $options),
-    'description' => t('Fields used in each component type (corresponding template variable names in parentheses).', array(), $options),
+    'description' => t('Fields used in each component type, and their corresponding template variable names.', array(), $options),
     'access' => 'administer themes',
     'repeat' => array(
       'type' => 'options',
@@ -52,4 +52,50 @@ function kalaponents_variable_info($options = array()) {
   );
 
   return $variable;
+}
+
+/**
+ * Returns the list of component types keyed by machine name.
+ */
+function kalaponents_get_types() {
+  static $types;
+  if (!isset($types)) {
+    $types = array();
+    $rows  = explode("\n", variable_get('kalaponents_types', ''));
+    foreach ($rows as $row) {
+      $columns = explode('|', $row);
+      $types[reset($columns)] = next($columns);
+    }
+  }
+  return $types;
+}
+
+/**
+ * Returns the list of available component fields, keyed by machine name.
+ */
+function kalaponents_get_available_fields() {
+  static $fields;
+  if (!isset($fields)) {
+    $fields  = array();
+    $weights = array();
+    foreach (field_info_instances('paragraphs_item', 'kalaponent') as $field => $info) {
+
+      // Skip meta / non-content fields.
+      if ($field === 'field_kalaponents_type'||
+          $field === 'field_kalaponents_label') {
+        continue;
+      }
+
+      // Get the edit form weight for this field.
+      $weight = &$info['display']['default']['weight'];
+      $weights[$field] = empty($weight) ? 0 : $weight;
+
+      // Include the machine name in display.
+      $template_variable_name = substr($field, 18);
+      $fields[$field] = "{$info['label']} ($template_variable_name)";
+    }
+    // Sort fields by position on the edit form.
+    array_multisort($weights, SORT_ASC, $fields);
+  }
+  return $fields;
 }

@@ -5,11 +5,6 @@
  * Code for the Kalamuna Components feature.
  */
 
-include_once 'kalaponents.features.inc';
-
-// Define the "Component Type" field name.
-const KALAPONENTS_FIELD_NAME = 'field_component_type';
-
 /**
  * Implements hook_menu().
  */
@@ -26,11 +21,11 @@ function kalaponents_menu() {
     'description' => 'Define kalaponent types.',
     'type' => MENU_DEFAULT_LOCAL_TASK,
   );
-  $items['admin/config/development/kalaponents/fields'] = array(
-    'title' => 'Field configuration',
+  $items['admin/config/development/kalaponents/configure'] = array(
+    'title' => 'Configuration',
     'description' => 'Define fields and icons for each kalaponent type.',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('kalaponents_fields_form'),
+    'page arguments' => array('kalaponents_configuration_form'),
     'access arguments' => array('administer themes'),
     'type' => MENU_LOCAL_TASK,
   );
@@ -60,41 +55,19 @@ function kalaponents_theme($existing, $type, $theme, $path) {
 function theme_paragraphs_item__component__full(&$vars) {
   $entity_type    = 'paragraphs_item';
   $paragraph      = entity_metadata_wrapper($entity_type, $vars[$entity_type]);
-  $component_type = $paragraph->{KALAPONENTS_FIELD_NAME}->value();
-  return twigshim_render_entity($entity_type, $paragraph, "$component_type.twig");
-}
-
-/**
- * Returns the list of component types keyed by machine name.
- */
-function kalaponents_get_types() {
-  static $types;
-  if (!isset($types)) {
-    $types = array();
-    $rows  = explode("\n", variable_get('kalaponents_types', ''));
-    foreach ($rows as $row) {
-      $columns = explode('|', $row);
-      $types[reset($columns)] = next($columns);
-    }
-  }
-  return $types;
+  $component_type = $paragraph->field_kalaponents_type->value();
+  return twigshim_render_entity($entity_type, $paragraph, "$component_type.twig", 'field_kalaponents_');
 }
 
 /**
  * Implements hook_cron().
+ *
+ * Syncs composite values back into their individual child variables. When the
+ * composite variable gets updated via Features or other methods, we need a way
+ * to keep its child variables in sync.
  */
 function kalaponents_cron() {
-  _kalaponents_backport_composite_variables();
-  _kalaponents_set_allowed_values();
-}
-
-/**
- * Syncs composite values back into their individual child variables.
- *
- * When the composite variable gets updated via Features or other methods, we
- * need a way to keep its child variables in sync.
- */
-function _kalaponents_backport_composite_variables() {
+  module_load_include('inc', 'kalaponents');
   foreach (_kalaponents_get_composite_variables() as $parent => $composite_name) {
     $composite = variable_get($composite_name, array());
     foreach ($composite as $type => $values) {
@@ -110,105 +83,33 @@ function _kalaponents_backport_composite_variables() {
 }
 
 /**
- * Returns the list of kalaponents composite variables.
- */
-function _kalaponents_get_composite_variables() {
-  static $composites;
-  if (!isset($composites)) {
-    $composites = array();
-    module_load_include('inc', 'variable');
-    foreach (variable_list_module('kalaponents') as $variable => $info) {
-      if (isset($info['kalaponents composite'])) {
-        $composites[$variable] = $info['kalaponents composite'];
-      }
-    }
-  }
-  return $composites;
-}
-
-/**
- * Updates the "Component Type" field's "allowed options" list with the latest.
- */
-function _kalaponents_set_allowed_values() {
-
-  // Get the list of component icons, keyed by component type.
-  $icons = variable_get('kalaponents_composite_icons', array());
-
-  // Get the field info.
-  $info = field_info_field(KALAPONENTS_FIELD_NAME);
-
-  // Get a reference to the allowed options, and truncate it.
-  $options = &$info['settings']['allowed_values'];
-  $options = array();
-
-  // Iterate over each component type.
-  foreach (kalaponents_get_types() as $type => $name) {
-
-    // Look up the icon for this component type.
-    $icon = $icons[$type];
-
-    // Add this component type to the options list.
-    $options[$type] = "<img width='20px' height='20px' style='vertical-align:bottom' src=/$icon> $name";
-  }
-
-  // Save the new field options.
-  field_update_field($info);
-}
-
-/**
- * Returns the list of available component fields, keyed by machine name.
- */
-function kalaponents_get_available_fields() {
-  static $fields;
-  if (!isset($fields)) {
-    $fields  = array();
-    $weights = array();
-    foreach (field_info_instances('paragraphs_item', 'component') as $field => $info) {
-
-      // Skip meta / non-content fields.
-      if ($field === 'field_component_type'||
-          $field === 'field_component_label') {
-        continue;
-      }
-
-      // Get the edit form weight for this field.
-      $weight = &$info['display']['default']['weight'];
-      $weights[$field] = empty($weight) ? 0 : $weight;
-
-      // Include the machine name in display.
-      $template_variable_name = substr($field, 16);
-      $fields[$field] = "{$info['label']} ($template_variable_name)";
-    }
-    // Sort fields by position on the edit form.
-    array_multisort($weights, SORT_ASC, $fields);
-  }
-  return $fields;
-}
-
-/**
  * Implements hook_form_alter().
  */
 function kalaponents_form_page_node_form_alter(&$form, &$form_state, $form_id) {
 
-  // Get the field states for each component type.
+  // Build the field states for each component type.
+  module_load_include('variable.inc', 'kalaponents');
   foreach (array_keys(kalaponents_get_available_fields()) as $field) {
     $field_states[$field][] = array('value' => -1);
-    foreach (variable_get('kalaponents_composite_fields', array()) as $type => $fields) {
-      if (in_array($field, array_values(array_filter($fields)))) {
+    foreach (variable_get('kalaponents_fieldlists', array()) as $type => $fieldlist) {
+      if (in_array($field, array_values(array_filter($fieldlist)))) {
         $field_states[$field][] = array('value' => $type);
       }
     }
   }
 
-  // Make shortcut variables to facilitate cleaner code below.
-  $und     = LANGUAGE_NONE;
-  $chooser = KALAPONENTS_FIELD_NAME;
+  // Make a shortcut variable to facilitate cleaner code below.
+  $und = LANGUAGE_NONE;
 
   // Update conditional states for each Paragraphs Item entity on this node.
-  foreach ($form['field_paragraphs'][LANGUAGE_NONE] as $index => &$paragraph) {
+  $paragraphs = &$form['field_paragraphs'][LANGUAGE_NONE];
+  for ($delta = 0; $delta <= $paragraphs['#max_delta']; $delta++) {
 
-    // Skip metadata in the form element and only act on "Component" paragraphs.
-    if (!is_numeric($index) || 'component' !== $paragraph['#bundle']) {
+    // Get a reference to this Paragraphs Item form element.
+    $paragraph = &$paragraphs[$delta];
+
+    // Only for "Component" paragraph items.
+    if ('kalaponent' !== $paragraph['#bundle']) {
       continue;
     }
 
@@ -217,10 +118,30 @@ function kalaponents_form_page_node_form_alter(&$form, &$form_state, $form_id) {
 
     // Set field states for each field in the Paragraphs Item.
     foreach ($field_states as $field => $states) {
-      $selector = ":input[name='field_paragraphs[$und][$index][$chooser][$und]']";
+      $selector = ":input[name='field_paragraphs[$und][$delta][field_kalaponents_type][$und]']";
       $paragraph[$field]['#states']['visible'][$selector] = $states;
     }
   }
+}
+
+/**
+ * Returns the options for the "Component Type" radios.
+ */
+function kalaponents_get_type_options() {
+
+  // Get the list of component icons, keyed by component type, for use below.
+  $icons = variable_get('kalaponents_icons', array());
+
+  // Build the options list.
+  $options = array();
+  module_load_include('variable.inc', 'kalaponents');
+  foreach (kalaponents_get_types() as $type => $name) {
+    $options[$type] = isset($icons[$type])
+      ? "<img width='20px' height='20px' style='vertical-align:bottom' src=/{$icons[$type]}> $name"
+      : $name;
+  }
+
+  return $options;
 }
 
 /**
@@ -232,14 +153,13 @@ function kalaponents_types_form($form, &$form_state) {
   $form['kalaponents_help'] = array(
     '#type' => 'markup',
     '#weight' => -1,
-    '#markup' => t('After making changes to this list component types, head over to the <a href="@path">Field Configuration</a> page to specify additional settings →', array('@path' => '/admin/config/development/kalaponents/fields')),
+    '#markup' => t('After making changes to this list of component types, head over to the <a href="@path">Configuration</a> page to specify additional settings →', array('@path' => '/admin/config/development/kalaponents/configure')),
   );
 
   // Add the Variable module's edit form.
   $form += variable_edit_form($form, $form_state, 'kalaponents_types');
 
   // Add a submit handler.
-  $form['#submit'][] = 'kalaponents_fields_form_submit';
   $form['#submit'][] = 'kalaponents_types_form_submit';
 
   // Return the form array.
@@ -247,15 +167,41 @@ function kalaponents_types_form($form, &$form_state) {
 }
 
 /**
- * Form callback for the kalaponents "Field Configuration" settings form.
+ * Form submit callback for the Component Types settings form.
+ *
+ * Redirects user to the "Field Configuration" form after submit.
  */
-function kalaponents_fields_form($form, &$form_state) {
+function kalaponents_types_form_submit($form, &$form_state) {
+  $form_state['redirect'] = '/admin/config/development/kalaponents/configure';
+}
+
+/**
+ * Form callback for the kalaponents "Configuration" settings form.
+ */
+function kalaponents_configuration_form($form, &$form_state) {
 
   // Add a help message.
   $form['kalaponents_help'] = array(
     '#type' => 'markup',
     '#weight' => -1,
     '#markup' => t('← To add or remove component types, head over to the <a href="@path">Component Types</a> page.', array('@path' => '/admin/config/development/kalaponents/types')),
+  );
+
+  // Create a button to reset the "Component" paragraph's field configuration.
+  $form['kalaponents_reset_fields'] = array(
+    '#type' => 'fieldset',
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+    '#title' => t('Reset bundle fields'),
+    'markup' => array(
+      '#type' => 'markup',
+      '#markup' => t("<p>Reset the <em>Component</em> Paragraph type's <a href='@path'>field configuration</a> to its default settings. This is useful when you accidentally made changes or want to pull in updates from the Kalaponents codebase. If any irreversible modifications were made to the field configurations, such as changing a list field's <em>allowed values</em>, then this process will fail. To fix it, delete the field in question and try this reset again.</p>", array('@path' => '/admin/structure/paragraphs/component/fields')),
+    ),
+    'submit' => array(
+      '#type' => 'submit',
+      '#value' => t('Reset'),
+      '#submit' => array('kalaponents_reset_fields_form_submit'),
+    ),
   );
 
   // Get the list of kalaponents variables.
@@ -268,29 +214,16 @@ function kalaponents_fields_form($form, &$form_state) {
   // Add the Variable module's edit form.
   $form += variable_edit_form($form, $form_state, array_keys($variables));
 
-  // Add a custom submit handler.
-  $form['#submit'][] = 'kalaponents_fields_form_submit';
-
   // Return the form array.
   return $form;
 }
 
 /**
- * Generic form submit callback for Kalaponents admin settings forms.
+ * Form submit callback to reset the "Component" paragraph's field config.
  */
-function kalaponents_fields_form_submit($form, &$form_state) {
-
-  // Update the "Component Types" field's list of allowed values.
-  _kalaponents_set_allowed_values();
-}
-
-/**
- * Form submit callback for the Component Types settings form.
- */
-function kalaponents_types_form_submit($form, &$form_state) {
-
-  // Redirect to the "Field Configuration" form.
-  $form_state['redirect'] = '/admin/config/development/kalaponents/fields';
+function kalaponents_reset_fields_form_submit($form, &$form_state) {
+  module_load_include('inc', 'kalaponents');
+  _kalaponents_revert_fields();
 }
 
 /**
@@ -310,12 +243,4 @@ function kalaponents_variable_update($name, $value, $old_value, $options) {
       variable_set($composite_name, $composite);
     }
   }
-}
-
-/**
- * Implements hook_variable_delete().
- *
- * @TODO When variables are deleted, remove them from the composite variables.
- */
-function kalaponents_variable_delete($variable, $options) {
 }
