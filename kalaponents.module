@@ -130,7 +130,7 @@ function kalaponents_form_page_node_form_alter(&$form, &$form_state, $form_id) {
 function kalaponents_get_type_options() {
 
   // Get the list of component icons, keyed by component type, for use below.
-  $icons = variable_get('kalaponents_icons', array());
+  $icons = array_filter(variable_get('kalaponents_icons', array()));
 
   // Build the options list.
   $options = array();
