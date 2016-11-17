@@ -3,7 +3,6 @@ description = Integrate front-end components with Paragraphs.
 core = 7.x
 package = Kalamuna
 version = 7.x-1.0-alpha1
-dependencies[] = features
 dependencies[] = image
 dependencies[] = link
 dependencies[] = list
