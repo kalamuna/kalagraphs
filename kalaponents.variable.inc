@@ -31,7 +31,6 @@ function kalaponents_variable_info($options = array()) {
     'access' => 'administer themes',
     'repeat' => array(
       'type' => 'drupal_path',
-      'default' => 'sites/all/themes/...',
     ),
     'localize' => FALSE,
   );
