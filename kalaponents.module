@@ -39,20 +39,20 @@ function kalaponents_menu() {
  */
 function kalaponents_theme($existing, $type, $theme, $path) {
   return array(
-    'paragraphs_item__component__full' => array(
+    'paragraphs_item__kalaponent__full' => array(
       'base hook' => 'paragraphs_item',
     ),
   );
 }
 
 /**
- * Theme implementation for "Components" Paragraphs items' "full" viewmode.
+ * Theme implementation for "Kalaponent" Paragraphs items' "full" viewmode.
  *
  * @TODO Fix moving this function to .theme.inc. When I specify the "file" key
  * in the hook_theme() implementation above, the file only gets included on
  * initial page load after cache clear and not on subsequent page loads.
  */
-function theme_paragraphs_item__component__full(&$vars) {
+function theme_paragraphs_item__kalaponent__full(&$vars) {
   $entity_type    = 'paragraphs_item';
   $paragraph      = entity_metadata_wrapper($entity_type, $vars[$entity_type]);
   $component_type = $paragraph->field_kalaponents_type->value();
@@ -108,7 +108,7 @@ function kalaponents_form_page_node_form_alter(&$form, &$form_state, $form_id) {
     // Get a reference to this Paragraphs Item form element.
     $paragraph = &$paragraphs[$delta];
 
-    // Only for "Component" paragraph items.
+    // Only for "Kalaponent" paragraph items.
     if ('kalaponent' !== $paragraph['#bundle']) {
       continue;
     }
@@ -187,7 +187,7 @@ function kalaponents_configuration_form($form, &$form_state) {
     '#markup' => t('← To add or remove component types, head over to the <a href="@path">Component Types</a> page.', array('@path' => '/admin/config/development/kalaponents/types')),
   );
 
-  // Create a button to reset the "Component" paragraph's field configuration.
+  // Create a button to reset the "Kalaponent" paragraph's field configuration.
   $form['kalaponents_reset_fields'] = array(
     '#type' => 'fieldset',
     '#collapsible' => TRUE,
@@ -195,7 +195,7 @@ function kalaponents_configuration_form($form, &$form_state) {
     '#title' => t('Reset bundle fields'),
     'markup' => array(
       '#type' => 'markup',
-      '#markup' => t("<p>Reset the <em>Component</em> Paragraph type's <a href='@path'>field configuration</a> to its default settings. This is useful when you accidentally made changes or want to pull in updates from the Kalaponents codebase. If any irreversible modifications were made to the field configurations, such as changing a list field's <em>allowed values</em>, then this process will fail. To fix it, delete the field in question and try this reset again.</p>", array('@path' => '/admin/structure/paragraphs/component/fields')),
+      '#markup' => t("<p>Reset the <em>Kalaponent</em> Paragraph type's <a href='@path'>field configuration</a> to its default settings. This is useful when you accidentally made changes or want to pull in updates from the Kalaponents codebase. If any irreversible modifications were made to the field configurations, such as changing a list field's <em>allowed values</em>, then this process will fail. To fix it, delete the field in question and try this reset again.</p>", array('@path' => '/admin/structure/paragraphs/kalaponent/fields')),
     ),
     'submit' => array(
       '#type' => 'submit',
@@ -219,7 +219,7 @@ function kalaponents_configuration_form($form, &$form_state) {
 }
 
 /**
- * Form submit callback to reset the "Component" paragraph's field config.
+ * Form submit callback to reset the "Kalaponent" paragraph's field config.
  */
 function kalaponents_reset_fields_form_submit($form, &$form_state) {
   module_load_include('inc', 'kalaponents');
