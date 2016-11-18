@@ -161,7 +161,13 @@ function kalaponents_types_form($form, &$form_state) {
   );
 
   // Add the Variable module's edit form.
-  $form += variable_edit_form($form, $form_state, 'kalaponents_types');
+  $variable = 'kalaponents_types';
+  $form    += variable_edit_form($form, $form_state, $variable);
+
+  // Trim whitespace, provide one blank line, and add height to the textarea.
+  $element = &$form[$variable];
+  $element['#default_value'] = trim($element['#default_value']) . PHP_EOL;
+  $element['#rows'] = substr_count($element['#default_value'], PHP_EOL) + 5;
 
   // Add a submit handler.
   $form['#submit'][] = 'kalaponents_types_form_submit';
