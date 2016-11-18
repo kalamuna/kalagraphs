@@ -55,15 +55,18 @@ function kalaponents_variable_info($options = array()) {
 
 /**
  * Returns the list of component types keyed by machine name.
+ *
+ * Removes empty rows and trims whitespace from the beginnings and ends of both
+ * machine names and display names.
  */
 function kalaponents_get_types() {
   static $types;
   if (!isset($types)) {
     $types = array();
-    $rows  = explode("\n", variable_get('kalaponents_types', ''));
-    foreach ($rows as $row) {
+    $rows  = explode(PHP_EOL, variable_get('kalaponents_types', ''));
+    foreach (array_filter($rows) as $row) {
       $columns = explode('|', $row);
-      $types[reset($columns)] = next($columns);
+      $types[trim(reset($columns))] = trim(next($columns));
     }
   }
   return $types;
