@@ -16,7 +16,7 @@ function kalaponents_variable_info($options = array()) {
 
   // This variable holds the component type machine names and titles.
   $variable['kalaponents_types'] = array(
-    'title' => t('Kalamuna Component Types', array(), $options),
+    'title' => t('Component Types', array(), $options),
     'description' => t('Enter one component per line in the format "machine_name|Display name"', array(), $options),
     'type' => 'text',
   );
@@ -26,7 +26,7 @@ function kalaponents_variable_info($options = array()) {
     'kalaponents composite' => 'kalaponents_icons',
     'type' => 'multiple',
     'multiple callback' => 'kalaponents_get_types',
-    'title' => t('Kalamuna Component Icons', array(), $options),
+    'title' => t('Icons', array(), $options),
     'description' => t('Icons for each component type.', array(), $options),
     'access' => 'administer themes',
     'repeat' => array(
@@ -40,7 +40,7 @@ function kalaponents_variable_info($options = array()) {
     'kalaponents composite' => 'kalaponents_fieldlists',
     'type' => 'multiple',
     'multiple callback' => 'kalaponents_get_types',
-    'title' => t('Kalamuna Component Fields', array(), $options),
+    'title' => t('Fields', array(), $options),
     'description' => t('Fields used in each component type, and their corresponding template variable names.', array(), $options),
     'access' => 'administer themes',
     'repeat' => array(
