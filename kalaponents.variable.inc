@@ -56,7 +56,10 @@ function kalaponents_variable_info($options = array()) {
     'type' => 'multiple',
     'multiple callback' => 'kalaponents_get_types',
     'title' => t('Template Paths', array(), $options),
-    'description' => t('Template paths for each component type.', array(), $options),
+    'description' => t('Template paths for each component type.
+                        <p>Please enter the full template path including the file name without the <em>.html.twig</em> extension.<br/>
+                        <em>Example:</em> For the <em>components/tout/tout.html.twig</em> template file you should enter <em>components/tout/tout</em></p>',
+                        array(), $options),
     'access' => 'administer themes',
     'repeat' => array(
       'type' => 'string',
