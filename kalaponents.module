@@ -53,10 +53,46 @@ function kalaponents_theme($existing, $type, $theme, $path) {
  * initial page load after cache clear and not on subsequent page loads.
  */
 function theme_paragraphs_item__kalaponent__full(&$vars) {
+
+  // Extract field data from the Paragraphs Item and stuff them into an array of
+  // variables for the template to use.
   $entity_type    = 'paragraphs_item';
   $paragraph      = entity_metadata_wrapper($entity_type, $vars[$entity_type]);
   $component_type = $paragraph->field_kalaponents_type->value();
-  return twigshim_render_entity($entity_type, $paragraph, "$component_type.html.twig", array(), 'field_kalaponents_');
+  foreach (array_filter(variable_get("kalaponents_fieldlist_$component_type", array())) as $field) {
+    switch ($field) {
+
+      // Title field.
+      case 'field_kalaponents_title':
+        $variable = 'title';
+        $value    = $paragraph->$field->value();
+        break;
+
+      // Sanitized HTML markup from WYSIWYG.
+      case 'field_kalaponents_text':
+        $variable = 'body';
+        $value    = $paragraph->$field->value->value();
+        break;
+
+      // Full url to image.
+      case 'field_kalaponents_image':
+        $variable = 'image';
+        $value    = file_create_url($paragraph->$field->file->value()->uri);
+        break;
+
+      // Link text and url as separate variables.
+      case 'field_kalaponents_link':
+        $variables['link_text'] = $paragraph->$field->url->value();
+        $variables['link_href'] = $paragraph->$field->title->value();
+        break;
+    }
+    if ($variable) {
+      $variables[$variable] = $value;
+      unset($variable);
+    }
+  }
+
+  return twigshim_render("$component_type.html.twig", $variables);
 }
 
 /**
