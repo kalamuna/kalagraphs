@@ -50,6 +50,20 @@ function kalaponents_variable_info($options = array()) {
     'localize' => FALSE,
   );
 
+  // This multi-variable* holds the template paths for each component type.
+  $variable['kalaponents_templatepath_[type]'] = array(
+    'kalaponents composite' => 'kalaponents_templatepaths',
+    'type' => 'multiple',
+    'multiple callback' => 'kalaponents_get_types',
+    'title' => t('Template Paths', array(), $options),
+    'description' => t('Template paths for each component type.', array(), $options),
+    'access' => 'administer themes',
+    'repeat' => array(
+      'type' => 'string',
+    ),
+    'localize' => FALSE,
+  );
+
   return $variable;
 }
 
