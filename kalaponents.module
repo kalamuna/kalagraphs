@@ -92,7 +92,10 @@ function theme_paragraphs_item__kalaponent__full(&$vars) {
     }
   }
 
-  return twigshim_render("$component_type.html.twig", $variables);
+  return
+    '<section class="container">' .
+      twigshim_render("$component_type.html.twig", $variables) .
+    '<section>';
 }
 
 /**
