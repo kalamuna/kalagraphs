@@ -82,19 +82,19 @@ function theme_paragraphs_item__kalaponent__full(&$vars) {
 
       // Link text and url as separate variables.
       case 'field_kalaponents_link':
-        $variables['link_text'] = $paragraph->$field->url->value();
-        $variables['link_href'] = $paragraph->$field->title->value();
+        $vars['link_text'] = $paragraph->$field->url->value();
+        $vars['link_href'] = $paragraph->$field->title->value();
         break;
     }
     if ($variable) {
-      $variables[$variable] = $value;
+      $vars[$variable] = $value;
       unset($variable);
     }
   }
 
   return
     '<section class="container">' .
-      twigshim_render("$component_type.html.twig", $variables) .
+      twigshim_render("$component_type.html.twig", $vars) .
     '<section>';
 }
 
