@@ -17,7 +17,7 @@ function kalaponents_variable_info($options = array()) {
   // This variable holds the component type machine names and titles.
   $variable['kalaponents_types'] = array(
     'title' => t('Kalamuna Component Types', array(), $options),
-    'description' => t('Enter one component per line in the format "machine name|Display name"', array(), $options),
+    'description' => t('Enter one component per line in the format "machine_name|Display name"', array(), $options),
     'type' => 'text',
   );
 
