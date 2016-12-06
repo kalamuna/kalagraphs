@@ -59,6 +59,8 @@ function theme_paragraphs_item__kalaponent__full(&$vars) {
   $entity_type    = 'paragraphs_item';
   $paragraph      = entity_metadata_wrapper($entity_type, $vars[$entity_type]);
   $component_type = $paragraph->field_kalaponents_type->value();
+  $template_path  = variable_get("kalaponents_templatepath_$component_type", $component_type);
+
   foreach (array_filter(variable_get("kalaponents_fieldlist_$component_type", array())) as $field) {
     switch ($field) {
 
@@ -94,7 +96,7 @@ function theme_paragraphs_item__kalaponent__full(&$vars) {
 
   return
     '<section class="container">' .
-      twigshim_render("$component_type.html.twig", $vars) .
+      twigshim_render("$template_path.html.twig", $vars) .
     '<section>';
 }
 
