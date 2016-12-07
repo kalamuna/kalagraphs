@@ -142,6 +142,13 @@ function kalaponents_field_widget_paragraphs_embed_form_alter(&$element, &$form_
         }
       }
     }
+    // Display the field only when there are styles defined for a component.
+    $field_states['field_kalaponents_style'][] = array('value' => -1);
+    foreach (variable_get('kalaponents_styles', array()) as $type => $styles) {
+      if (!empty($styles)) {
+        $field_states['field_kalaponents_style'][] = array('value' => $type);
+      }
+    }
   }
 
   // Make shortcut variables to facilitate cleaner code below.
