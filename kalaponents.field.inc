@@ -83,6 +83,27 @@ function _kalaponents_field_bases() {
     'type' => 'link_field',
   );
 
+  // Exported field_base: 'field_kalaponents_style'.
+  $field_bases['field_kalaponents_style'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_kalaponents_style',
+    'indexes' => array(
+      'format' => array(
+        0 => 'format',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'text',
+    'settings' => array(
+      'max_length' => 255,
+    ),
+    'translatable' => 0,
+    'type' => 'text',
+  );
+
   // Exported field_base: 'field_kalaponents_text'.
   $field_bases['field_kalaponents_text'] = array(
     'active' => 1,
@@ -201,7 +222,7 @@ function _kalaponents_field_instances() {
         'progress_indicator' => 'throbber',
       ),
       'type' => 'image_image',
-      'weight' => 3,
+      'weight' => 4,
     ),
   );
 
@@ -300,7 +321,47 @@ function _kalaponents_field_instances() {
       'module' => 'link',
       'settings' => array(),
       'type' => 'link_field',
-      'weight' => 4,
+      'weight' => 5,
+    ),
+  );
+
+  // Exported field_instance:
+  // 'paragraphs_item-kalaponent-field_kalaponents_style'.
+  $field_instances['paragraphs_item-kalaponent-field_kalaponents_style'] = array(
+    'bundle' => 'kalaponent',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 6,
+      ),
+      'paragraphs_editor_preview' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'paragraphs_item',
+    'field_name' => 'field_kalaponents_style',
+    'label' => 'Style Variation',
+    'required' => 0,
+    'settings' => array(
+      'text_processing' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'size' => 60,
+      ),
+      'type' => 'text_textfield',
+      'weight' => 2,
     ),
   );
 
@@ -341,7 +402,7 @@ function _kalaponents_field_instances() {
         'rows' => 5,
       ),
       'type' => 'text_textarea',
-      'weight' => 5,
+      'weight' => 6,
     ),
   );
 
@@ -382,7 +443,7 @@ function _kalaponents_field_instances() {
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 2,
+      'weight' => 3,
     ),
   );
 
@@ -429,6 +490,7 @@ function _kalaponents_field_instances() {
   t('Component Type');
   t('Image');
   t('Link');
+  t('Style Variation');
   t('Text');
   t('Title');
 
