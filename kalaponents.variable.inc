@@ -67,13 +67,15 @@ function kalaponents_variable_info($options = array()) {
     'localize' => FALSE,
   );
 
-  // This multi-variable* holds the list of fields on each component type.
+  // This multi-variable* holds the list of styles for each component type.
   $variable['kalaponents_style_[type]'] = array(
     'kalaponents composite' => 'kalaponents_styles',
     'type' => 'multiple',
     'multiple callback' => 'kalaponents_get_types',
-    'title' => t('Kalamuna Style Variations', array(), $options),
-    'description' => t('Style variations used in each component type.', array(), $options),
+    'title' => t('Kalaponents - Style Variations', array(), $options),
+    'description' => t('Style variations used in each component type.
+                        <p>Please enter one css class per line using the <em>css-class|Display name</em> format</p>',
+                        array(), $options),
     'access' => 'administer themes',
     'repeat' => array(
       'type' => 'text',
