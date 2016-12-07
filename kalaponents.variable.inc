@@ -116,8 +116,12 @@ function kalaponents_get_available_fields() {
     foreach (field_info_instances('paragraphs_item', 'kalaponent') as $field => $info) {
 
       // Skip meta / non-content fields.
-      if ($field === 'field_kalaponents_type'||
-          $field === 'field_kalaponents_label') {
+      $meta_fields = array(
+        'field_kalaponents_type',
+        'field_kalaponents_label',
+        'field_kalaponents_style',
+      );
+      if (in_array($field, $meta_fields)) {
         continue;
       }
 
