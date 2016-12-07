@@ -59,7 +59,7 @@ function theme_paragraphs_item__kalaponent__full(&$vars) {
   $entity_type    = 'paragraphs_item';
   $paragraph      = entity_metadata_wrapper($entity_type, $vars[$entity_type]);
   $component_type = $paragraph->field_kalaponents_type->value();
-  $template_path  = variable_get("kalaponents_templatepath_$component_type", $component_type);
+  $template_path  = variable_get("kalaponents_template_$component_type", $component_type);
   $variables      = array();
 
   foreach (array_filter(variable_get("kalaponents_fieldlist_$component_type", array())) as $field) {
