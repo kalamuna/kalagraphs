@@ -46,8 +46,16 @@ function _kalaponents_revert_fields() {
 
 /**
  * Returns the list of kalaponents composite variables.
+ *
+ * @param string $parent
+ *   The name of a parent variable for which to return the corresponding
+ *   composite variable name.
+ *
+ * @return array | string
+ *   The list of composite variables, or an individual composite variable (if
+ *   $parent was supplied).
  */
-function _kalaponents_get_composite_variables() {
+function _kalaponents_get_composite_variable($parent = NULL) {
   static $composites;
   if (!isset($composites)) {
     $composites = array();
@@ -57,6 +65,9 @@ function _kalaponents_get_composite_variables() {
         $composites[$variable] = $info['kalaponents composite'];
       }
     }
+  }
+  if (isset($parent)) {
+    return isset($composites[$parent]) ? $composites[$parent] : NULL;
   }
   return $composites;
 }

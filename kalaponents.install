@@ -38,5 +38,5 @@ function kalaponents_install() {
  */
 function kalaponents_uninstall() {
   module_load_include('inc', 'kalaponents');
-  array_walk(_kalaponents_get_composite_variables(), 'variable_del');
+  array_walk(_kalaponents_get_composite_variable(), 'variable_del');
 }
