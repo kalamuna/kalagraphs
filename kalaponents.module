@@ -125,6 +125,34 @@ function kalaponents_cron() {
 }
 
 /**
+ * Implements hook_field_widget_info().
+ */
+function kalaponents_field_widget_info() {
+  return array(
+    'kalaponents_style' => array(
+      'label' => t('Kalaponents Style'),
+      'field types' => array('text'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_widget_form().
+ */
+function kalaponents_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+  $element += array(
+    '#type' => 'select',
+    '#default_value' => isset($items[$delta]['value']) ? $items[$delta]['value'] : NULL,
+    '#options' => array(),
+  );
+  $element['#attached']['js'][] = array(
+    'data' => kalaponents_get_styles(),
+    'type' => 'setting',
+  );
+  return $element;
+}
+
+/**
  * Implements hook_field_widget_WIDGET_TYPE_form_alter() for paragraphs_embed().
  */
 function kalaponents_field_widget_paragraphs_embed_form_alter(&$element, &$form_state, $context) {
