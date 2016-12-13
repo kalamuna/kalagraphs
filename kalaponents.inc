@@ -45,7 +45,7 @@ function _kalaponents_revert_fields() {
 }
 
 /**
- * Returns the list of kalaponents composite variables.
+ * Returns the list of kalaponents composite variables, keyed by "multiple" var.
  */
 function _kalaponents_get_composite_variables() {
   static $composites;
