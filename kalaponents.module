@@ -335,9 +335,11 @@ function kalaponents_reset_fields_form_submit($form, &$form_state) {
  * Updates our composite variables with the changes to child variables.
  */
 function kalaponents_variable_update($name, $value, $old_value, $options) {
+
+  // When "component types" are deleted from the list, we must also remove them
+  // from our composite variables now, or things get whack.
   if ('kalaponents_types' === $name) {
     module_load_include('inc', 'kalaponents');
-    $types = kalaponents_get_types();
     foreach (_kalaponents_get_composite_variables() as $composite_name) {
 
       // Get the current value of the composite variable.
@@ -351,6 +353,8 @@ function kalaponents_variable_update($name, $value, $old_value, $options) {
     }
     return;
   }
+  // See if this variable is a child and, if so, update its corresponding
+  // composite variable.
   $child = _variable_variable($name);
   if (isset($child['parent'])) {
     $parent = _variable_variable($child['parent']);
