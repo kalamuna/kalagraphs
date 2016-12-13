@@ -130,7 +130,7 @@ function _kalaponents_sync_composites() {
 
   // Iterate over each "composite" variable.
   module_load_include('inc', 'kalaponents');
-  foreach (_kalaponents_get_composite_variable() as $parent => $composite) {
+  foreach (_kalaponents_get_composite_variables() as $parent => $composite) {
 
     // Get the array of inidivual component "child" values for this composite.
     $composite_values = variable_get($composite, array());
@@ -336,7 +336,7 @@ function kalaponents_variable_update($name, $value, $old_value, $options) {
   if ('kalaponents_types' === $name) {
     module_load_include('inc', 'kalaponents');
     $types = kalaponents_get_types();
-    foreach (_kalaponents_get_composite_variable() as $composite_name) {
+    foreach (_kalaponents_get_composite_variables() as $composite_name) {
 
       // Get the current value of the composite variable.
       $composite = variable_get($composite_name, array());
