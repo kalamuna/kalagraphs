@@ -198,6 +198,26 @@ function kalaponents_get_type_options() {
 }
 
 /**
+ * Returns the list of styles in a formatted array.
+ */
+function kalaponents_get_styles() {
+  static $styles;
+  if (!isset($styles)) {
+    $styles = array();
+    $config = array_filter(variable_get('kalaponents_styles', array()));
+    foreach ($config as $component => $data) {
+      $data = explode(PHP_EOL, $data);
+      foreach ($data as $style) {
+        list($class, $label) = explode('|', $style);
+        $class = drupal_html_class(trim($class));
+        $styles[$component][$class] = trim($label);
+      }
+    }
+  }
+  return $styles;
+}
+
+/**
  * Form callback for the kalaponents "Comopnent Types" settings form.
  */
 function kalaponents_types_form($form, &$form_state) {
