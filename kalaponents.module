@@ -103,25 +103,27 @@ function theme_paragraphs_item__kalaponent__full(&$vars) {
 
 /**
  * Implements hook_cron().
- *
- * Backports the composite variables into their component variables.
  */
 function kalaponents_cron() {
+
+  // On each cron run, make sure our "composite" variables stay in sync with
+  // their component children.
   _kalaponents_sync_composites();
 }
 
 /**
  * Implements hook_flush_caches().
- *
- * Backports the composite variables into their component variables.
  */
 function kalaponents_flush_caches() {
+
+  // On each cache clear, make sure our "composite" variables stay in sync with
+  // their component children.
   drupal_register_shutdown_function('_kalaponents_sync_composites');
   return array();
 }
 
 /**
- * Syncs composite values back into their individual child variables.
+ * Syncs "composite" values back into their individual child variables.
  *
  * When the composite variable gets updated via Features or other methods, we
  * need a way to keep its child variables in sync.
@@ -133,27 +135,25 @@ function _kalaponents_sync_composites() {
   foreach (_kalaponents_get_composite_variables() as $parent => $composite) {
 
     // Get the array of inidivual component "child" values for this composite.
-    $composite_values = variable_get($composite, array());
+    $values = variable_get($composite, array());
 
     // Get the "LIKE" search string to find all the child variables of this
     // composite currently in the database.
     $search = preg_replace('/\[\w+\]/', '%', $parent);
 
+    // Escape underscores in the MySQL query.
+    $search = str_replace('_', '\_', $search);
+
     // Iterate over each child of this composite currently in the database.
-    $children = db_select('variable', 'v')
+    $query = db_select('variable', 'v')
       ->fields('v', array('name'))
       ->condition('name', $search, 'LIKE')
-      ->execute()
-      ->fetchCol();
-    foreach ($children as $child) {
-
-      // Determine the component type.
-      $child_info     = variable_build($child);
-      $component_type = $child_info['index'];
+      ->execute();
+    while ($child = $query->fetchColumn()) {
 
       // Update the child value.
-      if (isset($composite_values[$child])) {
-        variable_set($child, $composite_values[$child]);
+      if (isset($values[$child])) {
+        variable_set($child, $values[$child]);
       }
 
       // Delete the child variable if it no longer exists.
@@ -163,12 +163,14 @@ function _kalaponents_sync_composites() {
 
       // Remove this child from our local copy of the composite values so we
       // know it has been processed.
-      unset($composite_values[$child]);
+      unset($values[$child]);
     }
 
-    // Add any remaining variables.
-    foreach ($composite_values as $child => $value) {
-      variable_set($child, $value);
+    // Add any remaining child variables, i.e., those not already existing in
+    // the database and therefore not processed above.
+    foreach ($values as $component_type => $value) {
+      $variable = variable_get_child($parent, $component_type);
+      variable_set($variable['name'], $value);
     }
   }
 }
@@ -342,7 +344,7 @@ function kalaponents_variable_update($name, $value, $old_value, $options) {
       $composite = variable_get($composite_name, array());
 
       // Remove entries that are no longer valid.
-      $composite = array_intersect_key($composite, $types);
+      $composite = array_intersect_key($composite, kalaponents_get_types());
 
       // Update the composite variable.
       variable_set($composite_name, $composite);
