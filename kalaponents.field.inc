@@ -356,11 +356,11 @@ function _kalaponents_field_instances() {
     ),
     'widget' => array(
       'active' => 1,
-      'module' => 'text',
+      'module' => 'kalaponents',
       'settings' => array(
         'size' => 60,
       ),
-      'type' => 'text_textfield',
+      'type' => 'kalaponents_style',
       'weight' => 2,
     ),
   );
