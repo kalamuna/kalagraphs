@@ -146,9 +146,12 @@ function kalaponents_field_widget_form(&$form, &$form_state, $field, $instance, 
     '#options' => array(),
   );
   $element['#attached']['js'][] = array(
-    'data' => kalaponents_get_styles(),
+    'data' => array(
+      'kalaponents_styles' => kalaponents_get_styles(),
+    ),
     'type' => 'setting',
   );
+  $element['#attached']['js'][] = drupal_get_path('module', 'kalaponents') . "/js/style-options.js";;
   return $element;
 }
 
