@@ -140,19 +140,62 @@ function kalaponents_field_widget_info() {
  * Implements hook_field_widget_form().
  */
 function kalaponents_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+  xdebug_break();
+  // Work out what type of Kalaponent is selected so we can work out which
+  // styles to load in as options.
+  $entity_type = $element['#entity_type'];
+  $ids = entity_extract_ids($entity_type, $element['#entity']);
+  $id = $ids[0];
+  $entity_wrapper = entity_metadata_wrapper($entity_type, $id);
+  $type = $entity_wrapper->field_kalaponents_type->value();
+
   $element += array(
     '#type' => 'select',
     '#default_value' => isset($items[$delta]['value']) ? $items[$delta]['value'] : NULL,
-    '#options' => array(),
+    '#options' => _kalaponents_style_options($type),
   );
-  $element['#attached']['js'][] = array(
-    'data' => array(
-      'kalaponents_styles' => kalaponents_get_styles(),
-    ),
-    'type' => 'setting',
-  );
-  $element['#attached']['js'][] = drupal_get_path('module', 'kalaponents') . "/js/style-options.js";;
+
   return $element;
+}
+
+/**
+ * Ajax callback for 'field_kalaponents_type' field.
+ */
+function kalaponents_adjust_style_select($form, &$form_state){
+  xdebug_break();
+  $chosen_type = $form_state['triggering_element']['#return_value'];
+  $options = _kalaponents_style_options($chosen_type);
+
+  // Work out which
+  $parents = $form_state['triggering_element']['#parents'];
+  $field_to_change = $form[$parents[0]][$parents[1]][$parents[2]][$parents[3]];
+}
+
+/**
+ * Given a type, return the style options for that type with a 'default' added
+ * to the top.
+ */
+function _kalaponents_style_options($type){
+  $styles = kalaponents_get_styles();
+  return array_merge(array('' => '- Default -'), $styles[$type]);
+}
+
+function kalaponents_field_widget_form_alter(&$element, &$form_state, $context) {
+  if ($context['field']['field_name'] == 'field_kalaponents_type') {
+    $entity_type = $element['#entity_type'];
+    $ids = entity_extract_ids($entity_type, $element['#entity']);
+    $id = $ids[0];
+    $wrapper_id = 'kalaponent-style-wrapper-' . $id;
+
+    $element['#prefix'] = '<div id="$wrapper_id">';
+    $element['#suffix'] = '</div>';
+    $element['#ajax'] = array(
+      'callback' => 'kalaponents_adjust_style_select',
+      'wrapper' => $wrapper_id,
+      'method' => 'replace',
+      'effect' => 'fade',
+    );
+  }
 }
 
 /**
@@ -173,6 +216,7 @@ function kalaponents_field_widget_paragraphs_embed_form_alter(&$element, &$form_
         }
       }
     }
+
     // Display the field only when there are styles defined for a component.
     $field_states['field_kalaponents_style'][] = array('value' => -1);
     foreach (variable_get('kalaponents_styles', array()) as $type => $styles) {
