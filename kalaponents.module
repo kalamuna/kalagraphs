@@ -140,20 +140,89 @@ function kalaponents_field_widget_info() {
  * Implements hook_field_widget_form().
  */
 function kalaponents_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+  // Work out what type of Kalaponent is selected so we can work out which
+  // styles to load in as options.
+  $entity_type = $element['#entity_type'];
+  $ids = entity_extract_ids($entity_type, $element['#entity']);
+  $id = $ids[0];
+
+  // The option values we want to load are dependant on the value of the
+  // 'field_kalaponents_type' field.
+  $entity_wrapper = entity_metadata_wrapper($entity_type, $id);
+  $type = $entity_wrapper->field_kalaponents_type->value();
+
+  // If we're ajaxing and the triggering element was the 'field_kalaponents_type'
+  // field then we need to rebuild the options with the new value.
+  if (isset($form_state['triggering_element'])) {
+    $parents = $form_state['triggering_element']['#parents'];
+    if ($parents[3] == 'field_kalaponents_type') {
+      $field_name = $parents[0];
+      $lang = $parents[1];
+      $delta = $parents[2];
+      $sub_lang = $parents[4];
+      $type = $form_state['values'][$field_name][$lang][$delta]['field_kalaponents_type'][$element['#language']][0]['value'];
+    }
+  }
+
   $element += array(
     '#type' => 'select',
     '#default_value' => isset($items[$delta]['value']) ? $items[$delta]['value'] : NULL,
-    '#options' => array(),
+    '#options' => _kalaponents_style_options($type),
+    '#prefix' => '<div id="' . _kalaponents_style_wrapper_id($id) . '">',
+    '#suffix' => "</div>",
   );
-  $element['#attached']['js'][] = array(
-    'data' => array(
-      'kalaponents_styles' => kalaponents_get_styles(),
-    ),
-    'type' => 'setting',
-  );
-  $element['#attached']['js'][] = drupal_get_path('module', 'kalaponents') . "/js/style-options.js";;
+
   return $element;
 }
+
+/**
+ * Ajax callback for 'field_kalaponents_type' field.
+ */
+function kalaponents_adjust_style_select($form, &$form_state){
+  // Find the field that we need to change. It will be a sibling of the
+  // triggering element i.e. the same parent $delta.
+  $parents = $form_state['triggering_element']['#parents'];
+  $field_name = $parents[0];
+  $lang = $parents[1];
+  $delta = $parents[2];
+
+  // Return just the part we want to replace.
+  return $form[$field_name][$lang][$delta]['field_kalaponents_style'];
+}
+
+function kalaponents_field_widget_form_alter(&$element, &$form_state, $context) {
+  if ($context['field']['field_name'] == 'field_kalaponents_type') {
+    $entity_type = $element['#entity_type'];
+    $ids = entity_extract_ids($entity_type, $element['#entity']);
+    $id = $ids[0];
+
+    $element['#ajax'] = array(
+      'callback' => 'kalaponents_adjust_style_select',
+      'wrapper' => _kalaponents_style_wrapper_id($id),
+      'method' => 'replace',
+      'effect' => 'fade',
+    );
+  }
+}
+
+/**
+ * Given a type, return the style options for that type with a 'default' added
+ * to the top.
+ */
+function _kalaponents_style_options($type){
+  $styles = kalaponents_get_styles();
+  return array_merge(array('' => '- Default -'), $styles[$type]);
+}
+
+/**
+ * Given a type, return the style options for that type with a 'default' added
+ * to the top.
+ */
+function _kalaponents_style_wrapper_id($id){
+  return "kalaponent-style-wrapper-$id";
+}
+
+
 
 /**
  * Implements hook_field_widget_WIDGET_TYPE_form_alter() for paragraphs_embed().
@@ -173,6 +242,7 @@ function kalaponents_field_widget_paragraphs_embed_form_alter(&$element, &$form_
         }
       }
     }
+
     // Display the field only when there are styles defined for a component.
     $field_states['field_kalaponents_style'][] = array('value' => -1);
     foreach (variable_get('kalaponents_styles', array()) as $type => $styles) {
