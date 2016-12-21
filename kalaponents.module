@@ -95,10 +95,14 @@ function theme_paragraphs_item__kalaponent__full(&$vars) {
     }
   }
 
-  return
-    '<section class="container">' .
-      twigshim_render("$template_path.html.twig", $variables) .
-    '<section>';
+  // Render the twig template with the variables we've created.
+  $markup = twigshim_render("$template_path.html.twig", $variables);
+
+  // Allow other modules to modify the markup (e.g., to add wrappers) but do not
+  // let the component type get changed.
+  $component_type_copy = $component_type;
+  drupal_alter('kalaponents_markup', $markup, $component_type_copy);
+  return $markup;
 }
 
 /**
