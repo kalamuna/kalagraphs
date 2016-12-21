@@ -1,6 +1,6 @@
 {
     "name": "derekderaps/kalaponents",
-    "description": "Shoehorns Twig template compiling into Drupal 7.",
+    "description": "Facilitates rapid development of components from kalastatic (styleguide/prototype) to CMS (Drupal) implementation.",
     "type": "project",
     "require": {
         "derekderaps/twigshim": "*"
