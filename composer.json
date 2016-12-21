@@ -1,7 +1,7 @@
 {
     "name": "derekderaps/kalaponents",
     "description": "Facilitates rapid development of components from kalastatic (styleguide/prototype) to CMS (Drupal) implementation.",
-    "type": "project",
+    "type": "drupal-module",
     "require": {
         "derekderaps/twigshim": "*"
     },
