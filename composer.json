@@ -1,0 +1,15 @@
+{
+    "name": "derekderaps/kalaponents",
+    "description": "Shoehorns Twig template compiling into Drupal 7.",
+    "type": "project",
+    "require": {
+        "derekderaps/twigshim": "*"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Derek DeRaps",
+            "email": "derek@kalamuna.com"
+        }
+    ]
+}
