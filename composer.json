@@ -4,6 +4,7 @@
     "type": "drupal-module",
     "require": {
         "derekderaps/twigshim": "*",
+        "drupal/entityreference": "*",
         "drupal/fences": "*",
         "drupal/image": "*",
         "drupal/link": "*",
