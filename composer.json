@@ -11,7 +11,6 @@
         "drupal/options": "*",
         "drupal/paragraphs": "*",
         "drupal/text": "*",
-        "drupal/twigshim": "*",
         "drupal/variable": "*",
         "drupal/viewfield": "*"
     },
