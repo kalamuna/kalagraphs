@@ -97,7 +97,7 @@ function kalaponents_get_available_fields() {
   if (!isset($fields)) {
     $fields  = array();
     $weights = array();
-    foreach (field_info_instances('paragraphs_item', 'kalaponent') as $field => $info) {
+    foreach (field_info_instances('paragraphs_item', 'kalaponents_component') as $field => $info) {
 
       // Skip meta / non-content fields.
       if ($field === 'field_kalaponents_type'||
