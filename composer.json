@@ -12,7 +12,8 @@
         "drupal/paragraphs": "*",
         "drupal/text": "*",
         "drupal/twigshim": "*",
-        "drupal/variable": "*"
+        "drupal/variable": "*",
+        "drupal/viewfield": "*"
     },
     "license": "MIT",
     "authors": [

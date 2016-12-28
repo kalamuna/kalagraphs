@@ -12,3 +12,4 @@ dependencies[] = paragraphs
 dependencies[] = text
 dependencies[] = twigshim
 dependencies[] = variable
+dependencies[] = viewfield
