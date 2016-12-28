@@ -54,54 +54,58 @@ function kalaponents_theme($existing, $type, $theme, $path) {
  */
 function theme_paragraphs_item__kalaponent__full(&$vars) {
 
+  // Get a wrapper for the paragraph entity.
+  $paragraph = entity_metadata_wrapper('paragraphs_item', $vars['paragraphs_item']);
+
+  // Determine the component type.
+  $type = $paragraph->field_kalaponents_type->value();
+
+  // Get the list of fields used in this component.
+  $fields = variable_get("kalaponents_fieldlist_$type", array());
+
+  // Initialize the array of template data.
+  $data = array();
+
   // Extract field data from the Paragraphs Item and stuff them into an array of
   // variables for the template to use.
-  $entity_type    = 'paragraphs_item';
-  $paragraph      = entity_metadata_wrapper($entity_type, $vars[$entity_type]);
-  $component_type = $paragraph->field_kalaponents_type->value();
-  $template_path  = variable_get("kalaponents_template_$component_type", $component_type);
-  $variables      = array();
-
-  foreach (array_filter(variable_get("kalaponents_fieldlist_$component_type", array())) as $field) {
+  foreach (array_filter($fields) as $field) {
     switch ($field) {
 
       // Title field.
       case 'field_kalaponents_title':
-        $variable = 'title';
-        $value    = $paragraph->$field->value();
+        $name = 'title';
         break;
 
-      // Sanitized HTML markup from WYSIWYG.
+      // WYSIWYG field.
       case 'field_kalaponents_text':
-        $variable = 'body';
-        $value    = $paragraph->$field->value->value();
+        $name = 'body';
         break;
 
       // Full url to image.
       case 'field_kalaponents_image':
-        $variable = 'image';
-        $value    = file_create_url($paragraph->$field->file->value()->uri);
+        $data['image'] = file_create_url($paragraph->$field->file->value()->uri);
         break;
 
       // Link text and url as separate variables.
       case 'field_kalaponents_link':
-        $variables['link_text'] = $paragraph->$field->url->value();
-        $variables['link_href'] = $paragraph->$field->title->value();
+        $data['link_text'] = check_plain($paragraph->$field->url->value());
+        $data['link_href'] = url($paragraph->$field->url->value());
         break;
     }
-    if ($variable) {
-      $variables[$variable] = $value;
-      unset($variable);
+    if (isset($name)) {
+      $data[$name] = render($vars['content'][$field]);
+      unset($name);
     }
   }
 
-  // Render the twig template with the variables we've created.
-  $markup = twigshim_render("$template_path.html.twig", $variables);
+  // Render the twig template with the template data we've curated.
+  $template_path = variable_get("kalaponents_template_$type", $type);
+  $markup = twigshim_render("$template_path.html.twig", $data);
 
   // Allow other modules to modify the markup (e.g., to add wrappers) but do not
   // let the component type get changed.
-  $component_type_copy = $component_type;
-  drupal_alter('kalaponents_markup', $markup, $component_type_copy);
+  $type_copy = $type;
+  drupal_alter('kalaponents_markup', $markup, $type_copy);
   return $markup;
 }
 
@@ -170,10 +174,10 @@ function _kalaponents_sync_composites() {
       unset($values[$child]);
     }
 
-    // Add any remaining child variables, i.e., those not already existing in
-    // the database and therefore not processed above.
-    foreach ($values as $component_type => $value) {
-      $variable = variable_get_child($parent, $component_type);
+    // Add any remaining child variables for each component type, i.e., those
+    // not already existing in the database and therefore not processed above.
+    foreach ($values as $type => $value) {
+      $variable = variable_get_child($parent, $type);
       variable_set($variable['name'], $value);
     }
   }
