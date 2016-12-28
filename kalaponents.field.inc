@@ -111,6 +111,41 @@ function _kalaponents_field_bases() {
     'type' => 'link_field',
   );
 
+  // Exported field_base: 'field_kalaponents_teasers'.
+  $field_bases['field_kalaponents_teasers'] = array(
+    'active' => 1,
+    'cardinality' => -1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_kalaponents_teasers',
+    'indexes' => array(
+      'target_id' => array(
+        0 => 'target_id',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'entityreference',
+    'settings' => array(
+      'handler' => 'base',
+      'handler_settings' => array(
+        'behaviors' => array(
+          'views-select-list' => array(
+            'status' => 0,
+          ),
+        ),
+        'sort' => array(
+          'type' => 'none',
+        ),
+        'target_bundles' => array(
+          'page' => 'page',
+        ),
+      ),
+      'target_type' => 'node',
+    ),
+    'translatable' => 0,
+    'type' => 'entityreference',
+  );
+
   // Exported field_base: 'field_kalaponents_text'.
   $field_bases['field_kalaponents_text'] = array(
     'active' => 1,
@@ -173,41 +208,6 @@ function _kalaponents_field_bases() {
     'type' => 'list_text',
   );
 
-  // Exported field_base: 'field_kalaponents_teasers'.
-  $field_bases['field_kalaponents_teasers'] = array(
-    'active' => 1,
-    'cardinality' => -1,
-    'deleted' => 0,
-    'entity_types' => array(),
-    'field_name' => 'field_kalaponents_teasers',
-    'indexes' => array(
-      'target_id' => array(
-        0 => 'target_id',
-      ),
-    ),
-    'locked' => 0,
-    'module' => 'entityreference',
-    'settings' => array(
-      'handler' => 'base',
-      'handler_settings' => array(
-        'behaviors' => array(
-          'views-select-list' => array(
-            'status' => 0,
-          ),
-        ),
-        'sort' => array(
-          'type' => 'none',
-        ),
-        'target_bundles' => array(
-          'page' => 'page',
-        ),
-      ),
-      'target_type' => 'node',
-    ),
-    'translatable' => 0,
-    'type' => 'entityreference',
-  );
-
   // Exported field_base: 'field_kalaponents_viewfield'.
   $field_bases['field_kalaponents_viewfield'] = array(
     'active' => 1,
@@ -233,53 +233,8 @@ function _kalaponents_field_instances() {
   $field_instances = array();
 
   // Exported field_instance:
-  // 'paragraphs_item-kalaponents_list-field_kalaponents_viewfield'.
-  $field_instances['paragraphs_item-kalaponents_list-field_kalaponents_viewfield'] = array(
-    'bundle' => 'kalaponents_list',
-    'default_value' => NULL,
-    'deleted' => 0,
-    'description' => '',
-    'display' => array(
-      'default' => array(
-        'label' => 'hidden',
-        'module' => 'viewfield',
-        'settings' => array(),
-        'type' => 'viewfield_default',
-        'weight' => 0,
-      ),
-      'paragraphs_editor_preview' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
-    ),
-    'entity_type' => 'paragraphs_item',
-    'fences_wrapper' => 'no_wrapper',
-    'field_name' => 'field_kalaponents_viewfield',
-    'label' => 'List',
-    'required' => 1,
-    'settings' => array(
-      'allowed_views' => array(
-        'entityreference_view_widget_sample' => 0,
-        'feeds_log' => 0,
-        'locations' => 'locations',
-      ),
-      'force_default' => 0,
-      'user_register_form' => FALSE,
-    ),
-    'widget' => array(
-      'active' => 0,
-      'module' => 'viewfield',
-      'settings' => array(),
-      'type' => 'viewfield_select',
-      'weight' => 1,
-    ),
-  );
-
-  // Exported field_instance:
-  // 'paragraphs_item-kalaponent-field_kalaponents_image'.
-  $field_instances['paragraphs_item-kalaponent-field_kalaponents_image'] = array(
+  // 'paragraphs_item-kalaponents_component-field_kalaponents_image'.
+  $field_instances['paragraphs_item-kalaponents_component-field_kalaponents_image'] = array(
     'bundle' => 'kalaponents_component',
     'deleted' => 0,
     'description' => '',
@@ -330,8 +285,8 @@ function _kalaponents_field_instances() {
   );
 
   // Exported field_instance:
-  // 'paragraphs_item-kalaponent-field_kalaponents_label'.
-  $field_instances['paragraphs_item-kalaponent-field_kalaponents_label'] = array(
+  // 'paragraphs_item-kalaponents_component-field_kalaponents_label'.
+  $field_instances['paragraphs_item-kalaponents_component-field_kalaponents_label'] = array(
     'bundle' => 'kalaponents_component',
     'default_value' => NULL,
     'deleted' => 0,
@@ -372,8 +327,8 @@ function _kalaponents_field_instances() {
   );
 
   // Exported field_instance:
-  // 'paragraphs_item-kalaponent-field_kalaponents_link'.
-  $field_instances['paragraphs_item-kalaponent-field_kalaponents_link'] = array(
+  // 'paragraphs_item-kalaponents_component-field_kalaponents_link'.
+  $field_instances['paragraphs_item-kalaponents_component-field_kalaponents_link'] = array(
     'bundle' => 'kalaponents_component',
     'default_value' => NULL,
     'deleted' => 0,
@@ -431,8 +386,8 @@ function _kalaponents_field_instances() {
   );
 
   // Exported field_instance:
-  // 'paragraphs_item-kalaponent-field_kalaponents_text'.
-  $field_instances['paragraphs_item-kalaponent-field_kalaponents_text'] = array(
+  // 'paragraphs_item-kalaponents_component-field_kalaponents_text'.
+  $field_instances['paragraphs_item-kalaponents_component-field_kalaponents_text'] = array(
     'bundle' => 'kalaponents_component',
     'default_value' => NULL,
     'deleted' => 0,
@@ -473,8 +428,8 @@ function _kalaponents_field_instances() {
   );
 
   // Exported field_instance:
-  // 'paragraphs_item-kalaponent-field_kalaponents_title'.
-  $field_instances['paragraphs_item-kalaponent-field_kalaponents_title'] = array(
+  // 'paragraphs_item-kalaponents_component-field_kalaponents_title'.
+  $field_instances['paragraphs_item-kalaponents_component-field_kalaponents_title'] = array(
     'bundle' => 'kalaponents_component',
     'default_value' => NULL,
     'deleted' => 0,
@@ -515,8 +470,8 @@ function _kalaponents_field_instances() {
   );
 
   // Exported field_instance:
-  // 'paragraphs_item-kalaponent-field_kalaponents_type'.
-  $field_instances['paragraphs_item-kalaponent-field_kalaponents_type'] = array(
+  // 'paragraphs_item-kalaponents_component-field_kalaponents_type'.
+  $field_instances['paragraphs_item-kalaponents_component-field_kalaponents_type'] = array(
     'bundle' => 'kalaponents_component',
     'default_value' => NULL,
     'deleted' => 0,
@@ -553,6 +508,51 @@ function _kalaponents_field_instances() {
   );
 
   // Exported field_instance:
+  // 'paragraphs_item-kalaponents_list-field_kalaponents_viewfield'.
+  $field_instances['paragraphs_item-kalaponents_list-field_kalaponents_viewfield'] = array(
+    'bundle' => 'kalaponents_list',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'hidden',
+        'module' => 'viewfield',
+        'settings' => array(),
+        'type' => 'viewfield_default',
+        'weight' => 0,
+      ),
+      'paragraphs_editor_preview' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'paragraphs_item',
+    'fences_wrapper' => 'no_wrapper',
+    'field_name' => 'field_kalaponents_viewfield',
+    'label' => 'List',
+    'required' => 1,
+    'settings' => array(
+      'allowed_views' => array(
+        'entityreference_view_widget_sample' => 0,
+        'feeds_log' => 0,
+        'locations' => 'locations',
+      ),
+      'force_default' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 0,
+      'module' => 'viewfield',
+      'settings' => array(),
+      'type' => 'viewfield_select',
+      'weight' => 1,
+    ),
+  );
+
+  // Exported field_instance:
   // 'paragraphs_item-kalaponents_teasers-field_kalaponents_columns'.
   $field_instances['paragraphs_item-kalaponents_teasers-field_kalaponents_columns'] = array(
     'bundle' => 'kalaponents_teasers',
@@ -578,6 +578,7 @@ function _kalaponents_field_instances() {
       ),
     ),
     'entity_type' => 'paragraphs_item',
+    'fences_wrapper' => 'no_wrapper',
     'field_name' => 'field_kalaponents_columns',
     'label' => 'Columns',
     'required' => 1,
@@ -616,6 +617,7 @@ function _kalaponents_field_instances() {
       ),
     ),
     'entity_type' => 'paragraphs_item',
+    'fences_wrapper' => 'no_wrapper',
     'field_name' => 'field_kalaponents_label',
     'label' => 'Administrative label',
     'required' => 1,
@@ -631,6 +633,56 @@ function _kalaponents_field_instances() {
       ),
       'type' => 'text_textfield',
       'weight' => 0,
+    ),
+  );
+
+  // Exported field_instance:
+  // 'paragraphs_item-kalaponents_teasers-field_kalaponents_teasers'.
+  $field_instances['paragraphs_item-kalaponents_teasers-field_kalaponents_teasers'] = array(
+    'bundle' => 'kalaponents_teasers',
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'hidden',
+        'module' => 'entityreference',
+        'settings' => array(
+          'links' => 0,
+          'use_content_language' => 1,
+          'view_mode' => 'teaser',
+        ),
+        'type' => 'entityreference_entity_view',
+        'weight' => 1,
+      ),
+      'paragraphs_editor_preview' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 3,
+      ),
+    ),
+    'entity_type' => 'paragraphs_item',
+    'fences_wrapper' => 'no_wrapper',
+    'field_name' => 'field_kalaponents_teasers',
+    'label' => 'Search for existing content',
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'entityreference_view_widget',
+      'settings' => array(
+        'allow_duplicates' => 0,
+        'close_modal' => 1,
+        'pass_argument' => 0,
+        'pass_arguments' => '',
+        'rendered_entity' => 0,
+        'view' => 'entityreference_view_widget_sample|entityreference_view_widget_1',
+        'view_mode' => 'full',
+      ),
+      'type' => 'entityreference_view_widget',
+      'weight' => 3,
     ),
   );
 
@@ -673,55 +725,6 @@ function _kalaponents_field_instances() {
       ),
       'type' => 'text_textfield',
       'weight' => 1,
-    ),
-  );
-
-  // Exported field_instance:
-  // 'paragraphs_item-kalaponents_teasers-field_kalaponents_teasers'.
-  $field_instances['paragraphs_item-kalaponents_teasers-field_kalaponents_teasers'] = array(
-    'bundle' => 'kalaponents_teasers',
-    'deleted' => 0,
-    'description' => '',
-    'display' => array(
-      'default' => array(
-        'label' => 'hidden',
-        'module' => 'entityreference',
-        'settings' => array(
-          'links' => 0,
-          'use_content_language' => 1,
-          'view_mode' => 'teaser',
-        ),
-        'type' => 'entityreference_entity_view',
-        'weight' => 1,
-      ),
-      'paragraphs_editor_preview' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 3,
-      ),
-    ),
-    'entity_type' => 'paragraphs_item',
-    'field_name' => 'field_kalaponents_teasers',
-    'label' => 'Search for existing content',
-    'required' => 0,
-    'settings' => array(
-      'user_register_form' => FALSE,
-    ),
-    'widget' => array(
-      'active' => 1,
-      'module' => 'entityreference_view_widget',
-      'settings' => array(
-        'allow_duplicates' => 0,
-        'close_modal' => 1,
-        'pass_argument' => 0,
-        'pass_arguments' => '',
-        'rendered_entity' => 0,
-        'view' => 'entityreference_view_widget_sample|entityreference_view_widget_1',
-        'view_mode' => 'full',
-      ),
-      'type' => 'entityreference_view_widget',
-      'weight' => 3,
     ),
   );
 
