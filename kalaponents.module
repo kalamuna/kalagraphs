@@ -39,7 +39,7 @@ function kalaponents_menu() {
  */
 function kalaponents_theme($existing, $type, $theme, $path) {
   return array(
-    'paragraphs_item__kalaponent__full' => array(
+    'paragraphs_item__kalaponents_component__full' => array(
       'base hook' => 'paragraphs_item',
     ),
   );
@@ -52,7 +52,7 @@ function kalaponents_theme($existing, $type, $theme, $path) {
  * in the hook_theme() implementation above, the file only gets included on
  * initial page load after cache clear and not on subsequent page loads.
  */
-function theme_paragraphs_item__kalaponent__full(&$vars) {
+function theme_paragraphs_item__kalaponents_component__full(&$vars) {
 
   // Get a wrapper for the paragraph entity.
   $paragraph = entity_metadata_wrapper('paragraphs_item', $vars['paragraphs_item']);
