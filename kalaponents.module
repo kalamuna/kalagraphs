@@ -306,7 +306,7 @@ function kalaponents_configuration_form($form, &$form_state) {
     '#title' => t('Reset bundle fields'),
     'markup' => array(
       '#type' => 'markup',
-      '#markup' => t("<p>Reset the <em>Kalaponent</em> Paragraph type's <a href='@path'>field configuration</a> to its default settings. This is useful when you accidentally made changes or want to pull in updates from the Kalaponents codebase. If any irreversible modifications were made to the field configurations, such as changing a list field's <em>allowed values</em>, then this process will fail. To fix it, delete the field in question and try this reset again.</p>", array('@path' => '/admin/structure/paragraphs/kalaponent/fields')),
+      '#markup' => t("<p>Reset the Kalaponents paragraph types' <a href='@path'>field configurations</a> to their default settings. This is useful when you accidentally made changes or want to pull in updates from the Kalaponents codebase. If any irreversible modifications were made to the field configurations, such as changing a list field's <em>allowed values</em>, then this process will fail. To fix it, delete the field in question and try this reset again.</p>", array('@path' => '/admin/structure/paragraphs')),
     ),
     'submit' => array(
       '#type' => 'submit',
