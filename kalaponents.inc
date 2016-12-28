@@ -35,7 +35,7 @@ function _kalaponents_revert_fields() {
 
     // See if the field instance already exists.
     $name      = $instance['field_name'];
-    $operation = field_info_instance('paragraphs_item', $name, 'kalaponent')
+    $operation = field_info_instance('paragraphs_item', $name, $instance['bundle'])
       ? 'field_update_instance'
       : 'field_create_instance';
 

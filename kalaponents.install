@@ -10,16 +10,19 @@
  */
 function kalaponents_install() {
 
-  // Create the "Kalaponent" bundle if it doesn't already exist. Note that we
-  // don't use `hook_paragraphs_info()` to declare the bundle as this approach
+  // Create each Paragraphs bundle, if it doesn't already exist. Note that we
+  // don't use `hook_paragraphs_info()` to declare bundles as this approach
   // makes it harder to featurize later.
   $info = entity_get_info('paragraphs_item');
-  if (!isset($info['bundles']['kalaponent'])) {
-    $bundle         = new stdClass();
-    $bundle->bundle = 'kalaponent';
-    $bundle->name   = 'Kalaponent';
-    $bundle->locked = 1;
-    paragraphs_bundle_save($bundle);
+  foreach (array('Kalaponent', 'List', 'Teasers') as $name) {
+    $machine_name = strtolower($name);
+    if (!isset($info['bundles'][$machine_name])) {
+      $bundle         = new stdClass();
+      $bundle->bundle = $machine_name;
+      $bundle->name   = $name;
+      $bundle->locked = 1;
+      paragraphs_bundle_save($bundle);
+    }
   }
 
   // Add standard fields to the "Kalaponent" Paragraphs type.
