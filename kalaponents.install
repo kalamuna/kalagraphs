@@ -14,8 +14,8 @@ function kalaponents_install() {
   // don't use `hook_paragraphs_info()` to declare bundles as this approach
   // makes it harder to featurize later.
   $info = entity_get_info('paragraphs_item');
-  foreach (array('Kalaponent', 'List', 'Teasers') as $name) {
-    $machine_name = strtolower($name);
+  foreach (array('Component', 'List', 'Teasers') as $name) {
+    $machine_name = 'kalaponents_' . strtolower($name);
     if (!isset($info['bundles'][$machine_name])) {
       $bundle         = new stdClass();
       $bundle->bundle = $machine_name;
