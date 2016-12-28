@@ -233,9 +233,9 @@ function _kalaponents_field_instances() {
   $field_instances = array();
 
   // Exported field_instance:
-  // 'paragraphs_item-hsa_list-field_kalaponents_viewfield'.
-  $field_instances['paragraphs_item-hsa_list-field_kalaponents_viewfield'] = array(
-    'bundle' => 'hsa_list',
+  // 'paragraphs_item-kalaponents_list-field_kalaponents_viewfield'.
+  $field_instances['paragraphs_item-kalaponents_list-field_kalaponents_viewfield'] = array(
+    'bundle' => 'kalaponents_list',
     'default_value' => NULL,
     'deleted' => 0,
     'description' => '',
@@ -280,7 +280,7 @@ function _kalaponents_field_instances() {
   // Exported field_instance:
   // 'paragraphs_item-kalaponent-field_kalaponents_image'.
   $field_instances['paragraphs_item-kalaponent-field_kalaponents_image'] = array(
-    'bundle' => 'kalaponent',
+    'bundle' => 'kalaponents_component',
     'deleted' => 0,
     'description' => '',
     'display' => array(
@@ -332,7 +332,7 @@ function _kalaponents_field_instances() {
   // Exported field_instance:
   // 'paragraphs_item-kalaponent-field_kalaponents_label'.
   $field_instances['paragraphs_item-kalaponent-field_kalaponents_label'] = array(
-    'bundle' => 'kalaponent',
+    'bundle' => 'kalaponents_component',
     'default_value' => NULL,
     'deleted' => 0,
     'description' => '',
@@ -374,7 +374,7 @@ function _kalaponents_field_instances() {
   // Exported field_instance:
   // 'paragraphs_item-kalaponent-field_kalaponents_link'.
   $field_instances['paragraphs_item-kalaponent-field_kalaponents_link'] = array(
-    'bundle' => 'kalaponent',
+    'bundle' => 'kalaponents_component',
     'default_value' => NULL,
     'deleted' => 0,
     'description' => '',
@@ -433,7 +433,7 @@ function _kalaponents_field_instances() {
   // Exported field_instance:
   // 'paragraphs_item-kalaponent-field_kalaponents_text'.
   $field_instances['paragraphs_item-kalaponent-field_kalaponents_text'] = array(
-    'bundle' => 'kalaponent',
+    'bundle' => 'kalaponents_component',
     'default_value' => NULL,
     'deleted' => 0,
     'description' => '',
@@ -475,7 +475,7 @@ function _kalaponents_field_instances() {
   // Exported field_instance:
   // 'paragraphs_item-kalaponent-field_kalaponents_title'.
   $field_instances['paragraphs_item-kalaponent-field_kalaponents_title'] = array(
-    'bundle' => 'kalaponent',
+    'bundle' => 'kalaponents_component',
     'default_value' => NULL,
     'deleted' => 0,
     'description' => '',
@@ -517,7 +517,7 @@ function _kalaponents_field_instances() {
   // Exported field_instance:
   // 'paragraphs_item-kalaponent-field_kalaponents_type'.
   $field_instances['paragraphs_item-kalaponent-field_kalaponents_type'] = array(
-    'bundle' => 'kalaponent',
+    'bundle' => 'kalaponents_component',
     'default_value' => NULL,
     'deleted' => 0,
     'description' => '',
