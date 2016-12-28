@@ -30,5 +30,10 @@ function hook_kalaponents_markup_alter(&$markup, $component_type) {
       $prefix = '<section class="container">';
       $suffix = '</section>';
   }
-  $markup = $prefix . $markup . $suffix;
+  $markup = render(array(
+    '#prefix' => $prefix,
+    '#markup' => $markup,
+    '#suffix' => $suffix,
+  ));
+
 }
