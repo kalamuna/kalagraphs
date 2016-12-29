@@ -88,8 +88,8 @@ function theme_paragraphs_item__kalaponents_component__full(&$vars) {
 
       // Link text and url as separate variables.
       case 'field_kalaponents_link':
-        $data['link_text'] = check_plain($paragraph->$field->url->value());
-        $data['link_href'] = url($paragraph->$field->url->value());
+        $data['cta'] = check_plain($paragraph->$field->title->value());
+        $data['href'] = url($paragraph->$field->url->value());
         break;
     }
     if (isset($name)) {
