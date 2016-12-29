@@ -98,11 +98,12 @@ function theme_paragraphs_item__kalaponents_component__full(&$vars) {
     }
   }
 
-  // Render the twig template with the template data we've curated.
+  // Render the twig template with the template data we've curated. If the
+  // template path is empty, make an educated guess.
   $template_path = variable_get("kalaponents_template_$type", FALSE)
     ? variable_get("kalaponents_template_$type")
-    : "molecules/$type/$type";
-  $markup = twigshim_render("$template_path.html.twig", $data);
+    : "molecules/$type/$type.twig";
+  $markup = twigshim_render($template_path, $data);
 
   // Allow other modules to modify the markup (e.g., to add wrappers) but do not
   // let the component type get changed.
