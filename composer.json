@@ -12,10 +12,10 @@
         "drupal/variable": "*",
         "drupal/viewfield": "*"
     },
-    "repositories": { 
+    "repositories": {
         "drupal": {
             "type": "composer",
-            "url": "https://packages.drupal.org/7" 
+            "url": "https://packages.drupal.org/7"
         }
     },
     "license": "MIT",
