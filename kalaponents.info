@@ -4,6 +4,7 @@ core = 7.x
 package = Kalamuna
 version = 7.x-1.0-alpha2
 dependencies[] = entityreference
+dependencies[] = entityreference_view_widget
 dependencies[] = fences
 dependencies[] = image
 dependencies[] = link

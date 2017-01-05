@@ -5,6 +5,7 @@
     "require": {
         "derekderaps/twigshim": "*@alpha",
         "drupal/entityreference": "*",
+        "drupal/entityreference_view_widget": "*",
         "drupal/fences": "*",
         "drupal/link": "*",
         "drupal/paragraphs": "*@rc",
