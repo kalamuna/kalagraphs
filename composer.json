@@ -3,7 +3,7 @@
     "description": "Facilitates rapid development of components from kalastatic (styleguide/prototype) to CMS (Drupal) implementation.",
     "type": "drupal-module",
     "require": {
-        "derekderaps/twigshim": "*@alpha",
+        "derekderaps/twigshim": "*",
         "drupal/entityreference": "*",
         "drupal/entityreference_view_widget": "*",
         "drupal/fences": "*",
