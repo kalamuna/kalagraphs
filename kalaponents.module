@@ -78,18 +78,18 @@ function theme_paragraphs_item__kalaponents_component__full(&$vars) {
 
       // WYSIWYG field.
       case 'field_kalaponents_text':
-        $name = 'body';
+        $name = 'text';
         break;
 
       // Full url to image.
       case 'field_kalaponents_image':
-        $data['image'] = file_create_url($paragraph->$field->file->value()->uri);
+        $data['image']['src'] = file_create_url($paragraph->$field->file->value()->uri);
         break;
 
       // Link text and url as separate variables.
       case 'field_kalaponents_link':
-        $data['cta'] = check_plain($paragraph->$field->title->value());
-        $data['href'] = url($paragraph->$field->url->value());
+        $data['link']['text'] = check_plain($paragraph->$field->title->value());
+        $data['link']['url'] = url($paragraph->$field->url->value());
         break;
     }
     if (isset($name)) {
