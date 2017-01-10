@@ -6,6 +6,24 @@
  */
 
 /**
+ * Modify components' template data before rendering.
+ *
+ * @param array $data
+ *   The array of template variables to be passed into `twigshim_render()`.
+ * @param string $component_type
+ *   The Kalaponent component type.
+ */
+function hook_kalaponents_data_alter(array &$data, $component_type) {
+  switch ($component_type) {
+
+    // Rename the link text to "scrolltext" for use in the hero template.
+    case 'hero__homepage':
+      $data['scrolltext'] = $data['link']['text'];
+      break;
+  }
+}
+
+/**
  * Modify components' markup before output.
  *
  * @param string $markup
@@ -14,7 +32,7 @@
  *   The Kalaponent component type.
  */
 function hook_kalaponents_markup_alter(&$markup, $component_type) {
-  //  Add the appropriate wrapper for the component type.
+  // Add the appropriate wrapper for the component type.
   $prefix = $suffix = '';
   switch ($component_type) {
 
