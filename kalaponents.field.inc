@@ -105,7 +105,7 @@ function _kalaponents_field_bases() {
       'title' => 'optional',
       'title_maxlength' => 128,
       'title_value' => '',
-      'url' => 0,
+      'url' => 'optional',
     ),
     'translatable' => 0,
     'type' => 'link_field',
@@ -136,9 +136,7 @@ function _kalaponents_field_bases() {
         'sort' => array(
           'type' => 'none',
         ),
-        'target_bundles' => array(
-          'page' => 'page',
-        ),
+        'target_bundles' => array(),
       ),
       'target_type' => 'node',
     ),
@@ -372,7 +370,7 @@ function _kalaponents_field_instances() {
       'title_label_use_field_label' => 0,
       'title_maxlength' => 128,
       'title_value' => '',
-      'url' => 0,
+      'url' => 'optional',
       'user_register_form' => FALSE,
       'validate_url' => 1,
     ),
@@ -504,6 +502,48 @@ function _kalaponents_field_instances() {
       'settings' => array(),
       'type' => 'options_buttons',
       'weight' => 1,
+    ),
+  );
+
+  // Exported field_instance:
+  // 'paragraphs_item-kalaponents_list-field_kalaponents_label'.
+  $field_instances['paragraphs_item-kalaponents_list-field_kalaponents_label'] = array(
+    'bundle' => 'kalaponents_list',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 1,
+      ),
+      'paragraphs_editor_preview' => array(
+        'label' => 'hidden',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'paragraphs_item',
+    'fences_wrapper' => 'no_wrapper',
+    'field_name' => 'field_kalaponents_label',
+    'label' => 'Administrative label',
+    'required' => 1,
+    'settings' => array(
+      'text_processing' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'size' => 60,
+      ),
+      'type' => 'text_textfield',
+      'weight' => 0,
     ),
   );
 
@@ -640,6 +680,7 @@ function _kalaponents_field_instances() {
   // 'paragraphs_item-kalaponents_teasers-field_kalaponents_teasers'.
   $field_instances['paragraphs_item-kalaponents_teasers-field_kalaponents_teasers'] = array(
     'bundle' => 'kalaponents_teasers',
+    'default_value' => NULL,
     'deleted' => 0,
     'description' => '',
     'display' => array(

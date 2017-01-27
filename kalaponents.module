@@ -82,14 +82,21 @@ function theme_paragraphs_item__kalaponents_component__full(&$vars) {
         break;
 
       // Full url to image.
+      // @TODO Replace image field with file and use "file path" display.
       case 'field_kalaponents_image':
-        $data['image']['src'] = file_create_url($paragraph->$field->file->value()->uri);
+        if ($paragraph->$field->value()) {
+          $data['image']['src'] = file_create_url($paragraph->$field->file->value()->uri);
+        }
         break;
 
       // Link text and url as separate variables.
+      // @TODO Replace with rendered versions, using custom display settings.
       case 'field_kalaponents_link':
-        $data['link']['text'] = check_plain($paragraph->$field->title->value());
-        $data['link']['url'] = url($paragraph->$field->url->value());
+        $data['link'] = array();
+        if ($paragraph->$field->value()) {
+          $data['link']['text'] = check_plain($paragraph->$field->title->value());
+          $data['link']['url']  = url($paragraph->$field->url->value());
+        }
         break;
     }
     if (isset($name)) {
