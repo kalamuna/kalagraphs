@@ -384,3 +384,25 @@ function kalaponents_variable_update($name, $value, $old_value, $options) {
     }
   }
 }
+
+/**
+ * Implements hook_field_widget_WIDGET_TYPE_form_alter() for options_select().
+ *
+ * Automatically selects the first component type if there is only one.
+ */
+function kalaponents_field_widget_options_select_form_alter(&$element, &$form_state, $context) {
+
+  // Only for the Kalaponents "component type" field.
+  if ('field_kalaponents_type' !== $element['#field_name']) {
+    return;
+  }
+
+  // Get a reference to the options array.
+  $options = &$element['#options'];
+
+  // If there is only one option, set it as the default.
+  if (1 === count($options)) {
+    reset($options);
+    $element['#default_value'] = key($options);
+  }
+}
