@@ -193,11 +193,9 @@ function _kalaponents_sync_composites() {
 }
 
 /**
- * Implements hook_field_widget_WIDGET_TYPE_form_alter() for paragraphs_embed().
+ * Returns the Kalaponents field states for each component type.
  */
-function kalaponents_field_widget_paragraphs_embed_form_alter(&$element, &$form_state, $context) {
-
-  // Build the field states for each component type.
+function _kalaponents_field_states() {
   $field_states = &drupal_static(__FUNCTION__);
   if (!isset($field_states)) {
     module_load_include('variable.inc', 'kalaponents');
@@ -211,6 +209,13 @@ function kalaponents_field_widget_paragraphs_embed_form_alter(&$element, &$form_
       }
     }
   }
+  return $field_states;
+}
+
+/**
+ * Implements hook_field_widget_WIDGET_TYPE_form_alter() for paragraphs_embed().
+ */
+function kalaponents_field_widget_paragraphs_embed_form_alter(&$element, &$form_state, $context) {
 
   // Make shortcut variables to facilitate cleaner code below.
   $field_name = $element['#field_name'];
@@ -230,9 +235,13 @@ function kalaponents_field_widget_paragraphs_embed_form_alter(&$element, &$form_
     // Remove the "Paragraph type:" message from the top of each paragraph.
     unset($paragraph['paragraph_bundle_title']);
 
-    // Set field states for each field in the Paragraphs Item.
-    foreach ($field_states as $field => $states) {
-      $selector = ":input[name='{$field_name}[$und][$delta][field_kalaponents_type][$und]']";
+    // Gather the parent selectors.
+    $parents      = $paragraph['#parents'];
+    $first_parent = array_shift($parents);
+    $parents      = $first_parent . '[' . implode('][', $parents) . ']';
+
+    foreach (_kalaponents_field_states() as $field => $states) {
+      $selector = ":input[name='{$parents}[field_kalaponents_type][$und]']";
       $paragraph[$field]['#states']['visible'][$selector] = $states;
     }
   }
