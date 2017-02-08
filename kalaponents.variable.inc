@@ -106,9 +106,8 @@ function kalaponents_get_available_fields() {
       $weight = &$info['display']['default']['weight'];
       $weights[$field] = empty($weight) ? 0 : $weight;
 
-      // Include the machine name in display.
-      $template_variable_name = substr($field, 18);
-      $fields[$field] = "{$info['label']} ($template_variable_name)";
+      // Add the field to the list.
+      $fields[$field] = $info['label'];
     }
     // Sort fields by position on the edit form.
     array_multisort($weights, SORT_ASC, $fields);
