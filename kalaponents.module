@@ -54,6 +54,17 @@ function kalaponents_theme($existing, $type, $theme, $path) {
  */
 function theme_paragraphs_item__kalaponents_component__full(&$vars) {
 
+  // Define a function that we use later to process link data.
+  static $get_link_data;
+  if (!isset($get_link_data)) {
+    $get_link_data = function ($link) {
+      return !$link->value() ? NULL : array(
+        'text' => check_plain($link->title->value()),
+        'url'  => url($link->url->value()),
+      );
+    };
+  }
+
   // Get a wrapper for the paragraph entity.
   $paragraph = entity_metadata_wrapper('paragraphs_item', $vars['paragraphs_item']);
 
@@ -92,13 +103,28 @@ function theme_paragraphs_item__kalaponents_component__full(&$vars) {
       // Link text and url as separate variables.
       // @TODO Replace with rendered versions, using custom display settings.
       case 'field_kalaponents_link':
-        $data['link'] = array();
-        if ($paragraph->$field->value()) {
-          $data['link']['text'] = check_plain($paragraph->$field->title->value());
-          $data['link']['url']  = url($paragraph->$field->url->value());
+
+        // Allow the link field to accept single or multiple values.
+        if ($paragraph->$field instanceof EntityStructureWrapper) {
+          $data['link'] = $get_link_data($paragraph->$field);
+        }
+
+        // If multiple values are allowed but only one is specified, treat it
+        // like a single link in the data template structure.
+        elseif ($paragraph->$field->count() === 1) {
+          $data['link'] = $get_link_data($paragraph->{$field}[0]);
+        }
+
+        // When multiple values are specified, make an array of links.
+        else {
+          foreach ($paragraph->$field as $link) {
+            $data['links'][] = $get_link_data($link);
+          }
         }
         break;
     }
+
+    // Fallback to preferred data extraction method (drupal render).
     if (isset($name)) {
       $data[$name] = render($vars['content'][$field]);
       unset($name);
@@ -410,7 +436,7 @@ function kalaponents_field_widget_options_select_form_alter(&$element, &$form_st
   $options = &$element['#options'];
 
   // If there is only one option, set it as the default.
-  if (1 === count($options)) {
+  if (count($options) === 1) {
     reset($options);
     $element['#default_value'] = key($options);
   }
