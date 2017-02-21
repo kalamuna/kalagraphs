@@ -11,6 +11,17 @@ In practice, Kalaponents facilitates rapid development of components from
 implementation ([Drupals](https://www.drupal.org/) via
 [Paragraphs](https://www.drupal.org/project/paragraphs)).
 
+## Benefits
+
+1.  Decrease development time/effort to wire new components to the CMS (don't
+    need new Paragraph types for each one)
+
+1.  Improve the editorial UX by decluttering the edit form (fewer Paragraph
+    types) and adding logos/icons to help editors identify each type
+
+1.  Make it possible to switch between component types without data loss /
+    having to re-input the field data
+
 ## Nomenclature
 The following terms are used in code comments and as variable names and deserve
 some explanation.
