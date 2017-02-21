@@ -2,12 +2,14 @@
 
 Kalaponents aims is to make components cheap and easy to create and manage.
 Components to the masses! No longer dost thou need to be a badass PHP developer
-with Feeatures fairy dust just to get your components on the page. Let the
+with Features fairy dust just to get your components on the page. Let the
 component names be specific and let the markup do its thing, all without needing
 to create a ba-jillion Paragraph types!
 
 In practice, Kalaponents facilitates rapid development of components from
-[kalastatic](https://github.com/kalamuna/kalastatic) (styleguide/prototype) to
+styleguide/prototype (e.g.,
+[kalastatic](https://github.com/kalamuna/kalastatic),
+[kss](http://warpspire.com/kss/), [Pattern Lab](http://patternlab.io/)) to
 implementation ([Drupals](https://www.drupal.org/) via
 [Paragraphs](https://www.drupal.org/project/paragraphs)).
 
