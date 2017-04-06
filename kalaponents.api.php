@@ -12,8 +12,10 @@
  *   The array of template variables to be passed into `twigshim_render()`.
  * @param string $component_type
  *   The Kalaponent component type.
+ * @param EntityDrupalWrapper $paragraph
+ *   An EntityMetadataWrapper for the paragraph entity being rendered.
  */
-function hook_kalaponents_data_alter(array &$data, $component_type) {
+function hook_kalaponents_data_alter(array &$data, $component_type, EntityDrupalWrapper $paragraph) {
   switch ($component_type) {
 
     // Rename the link text to "scrolltext" for use in the hero template.
@@ -30,8 +32,10 @@ function hook_kalaponents_data_alter(array &$data, $component_type) {
  *   The markup rendered by Twig.
  * @param string $component_type
  *   The Kalaponent component type.
+ * @param EntityDrupalWrapper $paragraph
+ *   An EntityMetadataWrapper for the paragraph entity that was rendered.
  */
-function hook_kalaponents_markup_alter(&$markup, $component_type) {
+function hook_kalaponents_markup_alter(&$markup, $component_type, EntityDrupalWrapper $paragraph) {
   // Add the appropriate wrapper for the component type.
   $prefix = $suffix = '';
   switch ($component_type) {
