@@ -96,7 +96,9 @@ function theme_paragraphs_item__kalaponents_component__full(&$vars) {
       // @TODO Replace image field with file and use "file path" display.
       case 'field_kalaponents_image':
         if ($paragraph->$field->value()) {
-          $data['image']['src'] = file_create_url($paragraph->$field->file->value()->uri);
+          $uri = $paragraph->$field->file->value()->uri;
+          $data['image']['uri'] = $uri;
+          $data['image']['src'] = file_create_url($uri);
         }
         break;
 
