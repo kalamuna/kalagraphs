@@ -1,0 +1,42 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.paragraph.preview
+    - field.field.paragraph.kalagraphs_component.field_kalagraphs_image
+    - field.field.paragraph.kalagraphs_component.field_kalagraphs_link
+    - field.field.paragraph.kalagraphs_component.field_kalagraphs_text
+    - field.field.paragraph.kalagraphs_component.field_kalagraphs_title
+    - field.field.paragraph.kalagraphs_component.field_kalagraphs_type
+    - paragraphs.paragraphs_type.kalagraphs_component
+  module:
+    - options
+    - text
+id: paragraph.kalagraphs_component.preview
+targetEntityType: paragraph
+bundle: kalagraphs_component
+mode: preview
+content:
+  field_kalagraphs_text:
+    type: text_summary_or_trimmed
+    weight: 2
+    label: inline
+    settings:
+      trim_length: 200
+    third_party_settings: {  }
+  field_kalagraphs_title:
+    weight: 1
+    label: inline
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+  field_kalagraphs_type:
+    type: list_default
+    weight: 0
+    label: inline
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  field_kalagraphs_image: true
+  field_kalagraphs_link: true

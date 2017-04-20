@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_kalagraphs_type
+    - paragraphs.paragraphs_type.kalagraphs_component
+  module:
+    - options
+id: paragraph.kalagraphs_component.field_kalagraphs_type
+field_name: field_kalagraphs_type
+entity_type: paragraph
+bundle: kalagraphs_component
+label: 'Display as'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

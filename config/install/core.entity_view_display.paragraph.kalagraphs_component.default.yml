@@ -1,0 +1,54 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.kalagraphs_component.field_kalagraphs_image
+    - field.field.paragraph.kalagraphs_component.field_kalagraphs_link
+    - field.field.paragraph.kalagraphs_component.field_kalagraphs_text
+    - field.field.paragraph.kalagraphs_component.field_kalagraphs_title
+    - field.field.paragraph.kalagraphs_component.field_kalagraphs_type
+    - image.style.large
+    - paragraphs.paragraphs_type.kalagraphs_component
+  module:
+    - image
+    - link
+    - text
+id: paragraph.kalagraphs_component.default
+targetEntityType: paragraph
+bundle: kalagraphs_component
+mode: default
+content:
+  field_kalagraphs_image:
+    weight: 3
+    label: hidden
+    settings:
+      image_style: large
+      image_link: ''
+    third_party_settings: {  }
+    type: image
+  field_kalagraphs_link:
+    weight: 2
+    label: hidden
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+    type: link
+  field_kalagraphs_text:
+    weight: 1
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+  field_kalagraphs_title:
+    weight: 0
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+hidden:
+  field_kalagraphs_type: true

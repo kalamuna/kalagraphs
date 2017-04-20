@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_kalagraphs_link
+    - paragraphs.paragraphs_type.kalagraphs_component
+  module:
+    - link
+id: paragraph.kalagraphs_component.field_kalagraphs_link
+field_name: field_kalagraphs_link
+entity_type: paragraph
+bundle: kalagraphs_component
+label: Link
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  link_type: 17
+  title: 1
+field_type: link

@@ -1,0 +1,8 @@
+name: Kalagraphs
+type: module
+description: Kalagraphs provides a flexible Paragraph type that allows editors to choose with which Twig template to render it.
+core: 8.x
+package: Kalamuna
+dependencies:
+  - options
+  - paragraphs

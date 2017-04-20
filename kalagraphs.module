@@ -1,0 +1,90 @@
+<?php
+
+/**
+ * @file
+ * Contains kalagraphs.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function kalagraphs_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the kalagraphs module.
+    case 'help.page.kalagraphs':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Kalaponents provides a flexible Paragraph type called &quot;Components&quot; that allows editors to choose with which Twig template it will be rendered.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_preprocess().
+ *
+ * Adds a flag to all relevant theme implementations to indicate it is rendering
+ * in a Drupal context.
+ */
+function kalagraphs_preprocess(&$vars) {
+  $vars['drupal'] = TRUE;
+}
+
+/**
+ * Implements hook_theme_registry_alter().
+ */
+function kalagraphs_theme_registry_alter(&$theme_registry) {
+  $components = [
+    'atoms' => [
+      '' => [
+        'image',
+        'link',
+      ],
+    ],
+    'molecules' => [
+      '' => [
+        'section_header',
+      ],
+      'blocks' => [
+        'image_left',
+        'image_right',
+      ],
+    ],
+  ];
+  $base = $theme_registry['paragraph'];
+  foreach ($components as $type => $directories) {
+    foreach ($directories as $directory => $templates) {
+      foreach ($templates as $template) {
+        $theme_registry[$template] = $base;
+        $theme_registry[$template]['template'] = "kalagraphs_$template";
+        $theme_registry[$template]['path'] = "@$type/$directory/$template";
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter() for paragraph().
+ */
+function kalagraphs_theme_suggestions_paragraph_alter(array &$suggestions, array $vars) {
+  return;
+  $paragraph = $vars['elements']['#paragraph'];
+  // $tid = $paragraph->field_component_display->target_id;
+  // $term = entity_load('taxonomy_term', $tid);
+  $suggestions[] = $term->field_file_name->value;
+}
+
+/**
+ * Returns the allowed values for the "Kalagraphs Type" options list field.
+ *
+ * @see callback_allowed_values_function()
+ */
+function _kalagraphs_options(FieldStorageDefinitionInterface $definition, FieldableEntityInterface $entity = NULL, &$cacheable = TRUE) {
+  return [
+    'foo' => 'Foo',
+    'bar' => 'Bar',
+  ];
+}

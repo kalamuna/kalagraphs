@@ -1,0 +1,17 @@
+{
+  "name": "drupal/kalagraphs",
+  "type": "drupal-module",
+  "description": "Kalagraphs provides a flexible Paragraph type that allows editors to choose with which Twig template to render it.",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "https://github.com/kalamuna/kalagraphs",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "https://github.com/kalamuna/kalagraphs/issues",
+    "source": "https://github.com/kalamuna/kalagraphs.git"
+  },
+  "require": {
+    "drupal/options": "^8.0",
+    "drupal/paragraphs": "^1.0"
+  }
+}
