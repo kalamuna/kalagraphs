@@ -1,5 +1,5 @@
 {
-    "name": "derekderaps/kalaponents",
+    "name": "derekderaps/kalagraphs",
     "description": "Facilitates rapid development of components from kalastatic (styleguide/prototype) to CMS (Drupal) implementation.",
     "type": "drupal-module",
     "require": {
