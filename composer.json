@@ -1,5 +1,5 @@
 {
-  "name": "drupal/kalagraphs",
+  "name": "derekderaps/kalagraphs",
   "type": "drupal-module",
   "description": "Kalagraphs provides a flexible Paragraph type that allows editors to choose with which Twig template to render it.",
   "keywords": ["Drupal"],
