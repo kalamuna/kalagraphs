@@ -6,6 +6,34 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Field\FieldStorageDefinitionInterface;
+use Drupal\Core\Entity\FieldableEntityInterface;
+use Drupal\Core\Render\Element;
+
+const KALAGRAPHS_TYPES = [
+  'section_header' => [
+    'title' => 'Section Header',
+    'namespace' => 'molecules',
+    'base' => 'paragraph',
+  ],
+  'image_left' => [
+    'title' => 'Image Left',
+    'namespace' => 'molecules',
+    'subdirectory' => 'blocks',
+    'base' => 'paragraph',
+  ],
+  'image_right' => [
+    'title' => 'Image Right',
+    'namespace' => 'molecules',
+    'subdirectory' => 'blocks',
+    'base' => 'paragraph',
+  ],
+  'triangle_flow' => [
+    'title' => 'Triangle Flow',
+    'namespace' => 'organisms',
+    'base' => 'paragraph',
+  ],
+];
 
 /**
  * Implements hook_help().
@@ -16,7 +44,7 @@ function kalagraphs_help($route_name, RouteMatchInterface $route_match) {
     case 'help.page.kalagraphs':
       $output = '';
       $output .= '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('Kalaponents provides a flexible Paragraph type called &quot;Components&quot; that allows editors to choose with which Twig template it will be rendered.') . '</p>';
+      $output .= '<p>' . t('Kalagraphs provides a flexible Paragraph type called &quot;Components&quot; that allows editors to choose with which Twig template it will be rendered.') . '</p>';
       return $output;
 
     default:
@@ -24,45 +52,72 @@ function kalagraphs_help($route_name, RouteMatchInterface $route_match) {
 }
 
 /**
- * Implements hook_preprocess().
- *
- * Adds a flag to all relevant theme implementations to indicate it is rendering
- * in a Drupal context.
+ * Implements hook_preprocess_HOOK() for paragraph().
  */
-function kalagraphs_preprocess(&$vars) {
+function kalagraphs_preprocess_paragraph(&$vars) {
+
+  // Only run on the special Paragraphs bundle.
+  if ('kalagraphs_component' !== $vars['paragraph']->bundle()) {
+    return;
+  }
+
+  // Add a flag to indicate it is rendering in a Drupal context.
   $vars['drupal'] = TRUE;
+
+  // Map field items to template variables.
+  foreach (['title', 'text', 'image', 'links'] as $field) {
+    $content = &$vars['content']["field_kalagraphs_$field"];
+    if (!empty($content)) {
+      foreach (Element::children($content) as $index) {
+        $item = $content[$index];
+        switch ($field) {
+          case 'image':
+            $uri = $item['#item']->entity->getFileUri();
+            $vars[$field] = file_create_url($uri);
+            break;
+
+          case 'links':
+            $vars[$field][] = [
+              'url' => $item['#url'],
+              'title' => $item['#title'],
+              'classes' => '',
+            ];
+            break;
+
+          default:
+            $vars[$field][] = $item;
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for field().
+ */
+function kalagraphs_preprocess_field(&$vars) {
+  if ('field_kalagraphs_links' === $vars['field_name']) {
+    foreach ($vars['items'] as $item) {
+      $item['attributes']->addClass('btn', 'btn-default');
+    }
+  }
 }
 
 /**
  * Implements hook_theme_registry_alter().
+ *
+ * Adds theme hooks for various Twig templates.
  */
 function kalagraphs_theme_registry_alter(&$theme_registry) {
-  $components = [
-    'atoms' => [
-      '' => [
-        'image',
-        'link',
-      ],
-    ],
-    'molecules' => [
-      '' => [
-        'section_header',
-      ],
-      'blocks' => [
-        'image_left',
-        'image_right',
-      ],
-    ],
-  ];
-  $base = $theme_registry['paragraph'];
-  foreach ($components as $type => $directories) {
-    foreach ($directories as $directory => $templates) {
-      foreach ($templates as $template) {
-        $theme_registry[$template] = $base;
-        $theme_registry[$template]['template'] = "kalagraphs_$template";
-        $theme_registry[$template]['path'] = "@$type/$directory/$template";
-      }
+  foreach (KALAGRAPHS_TYPES as $type => $info) {
+    $hook = &$theme_registry["kalagraphs_$type"];
+    $hook = $theme_registry[$info['base']];
+    $hook['template'] = $type;
+    $path = "@{$info['namespace']}";
+    if (!empty($info['subdirectory'])) {
+      $path .= "/{$info['subdirectory']}";
     }
+    $hook['path'] = "$path/$type";
   }
 }
 
@@ -70,11 +125,19 @@ function kalagraphs_theme_registry_alter(&$theme_registry) {
  * Implements hook_theme_suggestions_HOOK_alter() for paragraph().
  */
 function kalagraphs_theme_suggestions_paragraph_alter(array &$suggestions, array $vars) {
-  return;
   $paragraph = $vars['elements']['#paragraph'];
-  // $tid = $paragraph->field_component_display->target_id;
-  // $term = entity_load('taxonomy_term', $tid);
-  $suggestions[] = $term->field_file_name->value;
+  $suggestions[] = "kalagraphs_{$paragraph->field_kalagraphs_type->value}";
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter() for field().
+ */
+function kalagraphs_theme_suggestions_field_alter(array &$suggestions, array $vars) {
+  foreach (KALAGRAPHS_TYPES as $type => $info) {
+    if ('field' === $info['base'] && $vars['element']['#field_name'] === $info['field']) {
+      // $suggestions[] = "kalagraphs_{$type}";
+    }
+  }
 }
 
 /**
@@ -83,8 +146,11 @@ function kalagraphs_theme_suggestions_paragraph_alter(array &$suggestions, array
  * @see callback_allowed_values_function()
  */
 function _kalagraphs_options(FieldStorageDefinitionInterface $definition, FieldableEntityInterface $entity = NULL, &$cacheable = TRUE) {
-  return [
-    'foo' => 'Foo',
-    'bar' => 'Bar',
-  ];
+  $options = [];
+  foreach (KALAGRAPHS_TYPES as $type => $info) {
+    if ('paragraph' === $info['base']) {
+      $options[$type] = $info['title'];
+    }
+  }
+  return $options;
 }
