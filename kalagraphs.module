@@ -93,17 +93,6 @@ function kalagraphs_preprocess_paragraph(&$vars) {
 }
 
 /**
- * Implements hook_preprocess_HOOK() for field().
- */
-function kalagraphs_preprocess_field(&$vars) {
-  if ('field_kalagraphs_links' === $vars['field_name']) {
-    foreach ($vars['items'] as $item) {
-      $item['attributes']->addClass('btn', 'btn-default');
-    }
-  }
-}
-
-/**
  * Implements hook_theme_registry_alter().
  *
  * Adds theme hooks for various Twig templates.
@@ -127,17 +116,6 @@ function kalagraphs_theme_registry_alter(&$theme_registry) {
 function kalagraphs_theme_suggestions_paragraph_alter(array &$suggestions, array $vars) {
   $paragraph = $vars['elements']['#paragraph'];
   $suggestions[] = "kalagraphs_{$paragraph->field_kalagraphs_type->value}";
-}
-
-/**
- * Implements hook_theme_suggestions_HOOK_alter() for field().
- */
-function kalagraphs_theme_suggestions_field_alter(array &$suggestions, array $vars) {
-  foreach (KALAGRAPHS_TYPES as $type => $info) {
-    if ('field' === $info['base'] && $vars['element']['#field_name'] === $info['field']) {
-      // $suggestions[] = "kalagraphs_{$type}";
-    }
-  }
 }
 
 /**
