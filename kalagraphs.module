@@ -71,14 +71,9 @@ function kalagraphs_preprocess_paragraph(&$vars) {
       foreach (Element::children($content) as $index) {
         $item = $content[$index];
         switch ($field) {
-          case 'image':
-            $uri = $item['#item']->entity->getFileUri();
-            $vars[$field] = file_create_url($uri);
-            break;
-
           case 'links':
             $vars[$field][] = [
-              'url' => $item['#url'],
+              'link' => $item['#url'],
               'title' => $item['#title'],
               'classes' => '',
             ];
