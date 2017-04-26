@@ -70,21 +70,43 @@ function kalagraphs_preprocess_paragraph(&$vars) {
     if (!empty($content)) {
       foreach (Element::children($content) as $index) {
         $item = $content[$index];
-        switch ($field) {
-          case 'links':
-            $vars[$field][] = [
-              'link' => $item['#url'],
-              'title' => $item['#title'],
-              'classes' => '',
-            ];
-            break;
-
-          default:
-            $vars[$field][] = $item;
-        }
+        $vars[$field][] = $item;
       }
     }
   }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function kalagraphs_theme() {
+  $hooks['kalagraphs_basic_link'] = [
+    'template' => 'basic_link',
+    'path' => '@atoms/basic_link',
+    'variables' => [
+      'href' => '#',
+      'classList' => '',
+      'text' => 'Get Started',
+    ],
+  ];
+
+  // foreach (KALAGRAPHS_TYPES as $type => $info) {
+  //   $hook = &$hooks["kalagraphs_$type"];
+  //   if (isset($info['base'])) {
+  //     $hook['base hook'] = $info['base'];
+  //   }
+  //   if (isset($info['vars'])) {
+  //     $hook['variables'] = $info['vars'];
+  //   }
+  //   $hook['template'] = $type;
+  //   $path = "@{$info['namespace']}";
+  //   if (!empty($info['subdirectory'])) {
+  //     $path .= "/{$info['subdirectory']}";
+  //   }
+  //   $hook['path'] = "$path/$type";
+  // }
+
+  return $hooks;
 }
 
 /**
