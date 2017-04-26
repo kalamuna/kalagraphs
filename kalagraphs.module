@@ -21,12 +21,18 @@ const KALAGRAPHS_TYPES = [
     'namespace' => 'molecules',
     'subdirectory' => 'blocks',
     'base' => 'paragraph',
+    'subtemplates' => [
+      'links' => 'cta_link',
+    ],
   ],
   'image_right' => [
     'title' => 'Image Right',
     'namespace' => 'molecules',
     'subdirectory' => 'blocks',
     'base' => 'paragraph',
+    'subtemplates' => [
+      'links' => 'cta_link',
+    ],
   ],
   'triangle_flow' => [
     'title' => 'Triangle Flow',
@@ -86,7 +92,27 @@ function kalagraphs_theme() {
     'variables' => [
       'href' => '#',
       'classList' => '',
-      'text' => 'Get Started',
+      'text' => t('Get Started'),
+    ],
+  ];
+
+  $hooks['kalagraphs_cta_link'] = [
+    'template' => 'link',
+    'path' => '@atoms/cta/link',
+    'variables' => [
+      'href' => '#',
+      'classList' => '',
+      'text' => t('Get Started'),
+    ],
+  ];
+
+  $hooks['kalagraphs_basic_image'] = [
+    'template' => 'basic_image',
+    'path' => '@atoms/basic_image',
+    'variables' => [
+      'src' => '',
+      'alt' => '',
+      'class' => '',
     ],
   ];
 
@@ -143,9 +169,7 @@ function kalagraphs_theme_suggestions_paragraph_alter(array &$suggestions, array
 function _kalagraphs_options(FieldStorageDefinitionInterface $definition, FieldableEntityInterface $entity = NULL, &$cacheable = TRUE) {
   $options = [];
   foreach (KALAGRAPHS_TYPES as $type => $info) {
-    if ('paragraph' === $info['base']) {
-      $options[$type] = $info['title'];
-    }
+    $options[$type] = $info['title'];
   }
   return $options;
 }
