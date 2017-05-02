@@ -155,10 +155,14 @@ function kalagraphs_theme_registry_alter(&$theme_registry) {
 
 /**
  * Implements hook_theme_suggestions_HOOK_alter() for paragraph().
+ *
+ * Tells the Kalagraphs component to use the proper theme hook.
  */
 function kalagraphs_theme_suggestions_paragraph_alter(array &$suggestions, array $vars) {
   $paragraph = $vars['elements']['#paragraph'];
-  $suggestions[] = "kalagraphs_{$paragraph->field_kalagraphs_type->value}";
+  if ('kalagraphs_component' === $paragraph->bundle() && 'default' === $vars['elements']['#view_mode']) {
+    $suggestions[] = "kalagraphs_{$paragraph->field_kalagraphs_type->value}";
+  }
 }
 
 /**
