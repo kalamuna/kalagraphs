@@ -71,7 +71,7 @@ function kalagraphs_preprocess_paragraph(&$vars) {
   $vars['drupal'] = TRUE;
 
   // Map field items to template variables.
-  foreach (['title', 'text', 'image', 'links'] as $field) {
+  foreach (['title', 'text', 'image', 'links', 'subcomponents'] as $field) {
     $content = &$vars['content']["field_kalagraphs_$field"];
     if (!empty($content)) {
       foreach (Element::children($content) as $index) {
