@@ -16,23 +16,23 @@ const KALAGRAPHS_TYPES = [
     'namespace' => 'molecules',
     'base' => 'paragraph',
   ],
+  'icon' => [
+    'title' => 'Icon',
+    'namespace' => 'molecules',
+    'subdirectory' => 'blocks',
+    'base' => 'paragraph',
+  ],
   'image_left' => [
     'title' => 'Image Left',
     'namespace' => 'molecules',
     'subdirectory' => 'blocks',
     'base' => 'paragraph',
-    'subtemplates' => [
-      'links' => 'cta_link',
-    ],
   ],
   'image_right' => [
     'title' => 'Image Right',
     'namespace' => 'molecules',
     'subdirectory' => 'blocks',
     'base' => 'paragraph',
-    'subtemplates' => [
-      'links' => 'cta_link',
-    ],
   ],
   'triangle_flow' => [
     'title' => 'Triangle Flow',
