@@ -9,35 +9,85 @@ use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Render\Element;
+use Drupal\Core\Form\FormStateInterface;
 
 const KALAGRAPHS_TYPES = [
   'section_header' => [
     'title' => 'Section Header',
     'namespace' => 'molecules',
     'base' => 'paragraph',
+    'fields' => [
+      'title',
+      'text',
+      'image',
+      'links',
+    ],
+    'help' => '<em>Add some help text here for creating "Section Header" components...</em>',
+    'bundles' => ['kalagraphs_component'],
   ],
   'icon' => [
     'title' => 'Icon',
     'namespace' => 'molecules',
     'subdirectory' => 'blocks',
     'base' => 'paragraph',
+    'fields' => [
+      'title',
+      'text',
+      'links',
+    ],
+    'help' => '<em>Add some help text here for creating "Icon" components...</em>',
+    'bundles' => ['kalagraphs_subcomponent'],
   ],
   'image_left' => [
     'title' => 'Image Left',
     'namespace' => 'molecules',
     'subdirectory' => 'blocks',
     'base' => 'paragraph',
+    'fields' => [
+      'title',
+      'text',
+      'image',
+      'links',
+    ],
+    'help' => '<em>Add some help text here for creating "Image Left" components...</em>',
+    'bundles' => ['kalagraphs_component'],
   ],
   'image_right' => [
     'title' => 'Image Right',
     'namespace' => 'molecules',
     'subdirectory' => 'blocks',
     'base' => 'paragraph',
+    'fields' => [
+      'title',
+      'text',
+      'image',
+      'links',
+    ],
+    'help' => '<em>Add some help text here for creating "Image Right" components...</em>',
+    'bundles' => ['kalagraphs_component'],
+  ],
+  'basic_hero' => [
+    'title' => 'Basic Hero',
+    'namespace' => 'molecules',
+    'base' => 'paragraph',
+    'fields' => [
+      'title',
+      'text',
+      'image',
+    ],
+    'help' => '<em>Add some help text here for creating "Basic Hero" components...</em>',
+    'bundles' => ['kalagraphs_component'],
   ],
   'triangle_flow' => [
     'title' => 'Triangle Flow',
     'namespace' => 'organisms',
     'base' => 'paragraph',
+    'fields' => [
+      'image',
+      'subcomponents',
+    ],
+    'help' => 'Now add three images and five "Icon" sub-components.',
+    'bundles' => ['kalagraphs_component'],
   ],
 ];
 
@@ -166,14 +216,61 @@ function kalagraphs_theme_suggestions_paragraph_alter(array &$suggestions, array
 }
 
 /**
- * Returns the allowed values for the "Kalagraphs Type" options list field.
+ * Implements callback_allowed_values_function().
  *
- * @see callback_allowed_values_function()
+ * Returns the allowed values for the "Kalagraphs Type" options list field.
  */
 function _kalagraphs_options(FieldStorageDefinitionInterface $definition, FieldableEntityInterface $entity = NULL, &$cacheable = TRUE) {
+  // Don't let options_allowed_values() cache the values, because we need to
+  // vary them by parent entity.
+  $cacheable = FALSE;
   $options = [];
   foreach (KALAGRAPHS_TYPES as $type => $info) {
-    $options[$type] = $info['title'];
+    if (in_array($entity->bundle(), $info['bundles'])) {
+      $options[$type] = $info['title'];
+    }
   }
   return $options;
+}
+
+/**
+ * Implements hook_field_widget_WIDGET_TYPE_form_alter() for paragraphs().
+ */
+function kalagraphs_field_widget_paragraphs_form_alter(&$element, FormStateInterface $form_state, $context) {
+  $subform = &$element['subform'];
+  if (count(Element::children($subform))) {
+    $parents_array = $subform['#parents'];
+    $first_parent = array_shift($parents_array);
+    $parents = $first_parent . '[' . implode('][', $parents_array) . ']';
+    $selector = ":input[name='{$parents}[field_kalagraphs_type]']";
+
+    // Add helptext for when no component type is yet selected.
+    $subform['help']['_none'] = [
+      '#type' => 'item',
+      '#markup' => '<strong>' . t('Choose a component type to create.') . '</strong>',
+    ];
+    $subform['help']['_none']['#states']['visible'][$selector][] = ['value' => '_none'];
+
+    // Add helptext and conditional states for each field type.
+    foreach (KALAGRAPHS_TYPES as $type => $info) {
+      $condition = ['value' => $type];
+
+      // Add helptext for each component type.
+      $subform['help'][$type] = [
+        '#type' => 'item',
+        '#markup' => "<strong>{$info['help']}</strong>",
+      ];
+      $subform['help'][$type]['#states']['visible'][$selector][] = $condition;
+
+      // Only show the fields appropriate for the component type.
+      foreach ($info['fields'] as $field) {
+        if (isset($subform["field_kalagraphs_$field"])) {
+          $subform["field_kalagraphs_$field"]['#states']['visible'][$selector][] = $condition;
+        }
+      }
+      // $dump = print_r($type)
+      // xdebug_break();
+      watchdog_exception('kalagraphs', new \Exception(), $type);
+    }
+  }
 }
