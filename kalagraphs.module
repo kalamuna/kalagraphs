@@ -110,7 +110,11 @@ function kalagraphs_help($route_name, RouteMatchInterface $route_match) {
 /**
  * Implements hook_preprocess_HOOK() for paragraph().
  */
-function kalagraphs_preprocess_paragraph(&$vars) {
+function kalagraphs_preprocess(&$vars, $hook) {
+
+  // dpm('bar', $hook);
+  if ('paragraph' !== $hook) return;
+  return;
 
   // Only run on the special Paragraphs bundle.
   if ('kalagraphs_component' !== $vars['paragraph']->bundle()) {
@@ -166,34 +170,11 @@ function kalagraphs_theme() {
     ],
   ];
 
-  // foreach (KALAGRAPHS_TYPES as $type => $info) {
-  //   $hook = &$hooks["kalagraphs_$type"];
-  //   if (isset($info['base'])) {
-  //     $hook['base hook'] = $info['base'];
-  //   }
-  //   if (isset($info['vars'])) {
-  //     $hook['variables'] = $info['vars'];
-  //   }
-  //   $hook['template'] = $type;
-  //   $path = "@{$info['namespace']}";
-  //   if (!empty($info['subdirectory'])) {
-  //     $path .= "/{$info['subdirectory']}";
-  //   }
-  //   $hook['path'] = "$path/$type";
-  // }
-
-  return $hooks;
-}
-
-/**
- * Implements hook_theme_registry_alter().
- *
- * Adds theme hooks for various Twig templates.
- */
-function kalagraphs_theme_registry_alter(&$theme_registry) {
   foreach (KALAGRAPHS_TYPES as $type => $info) {
-    $hook = &$theme_registry["kalagraphs_$type"];
-    $hook = $theme_registry[$info['base']];
+    $hook = &$hooks["kalagraphs_$type"];
+    if (isset($info['base'])) {
+      $hook['base hook'] = $info['base'];
+    }
     $hook['template'] = $type;
     $path = "@{$info['namespace']}";
     if (!empty($info['subdirectory'])) {
@@ -201,6 +182,8 @@ function kalagraphs_theme_registry_alter(&$theme_registry) {
     }
     $hook['path'] = "$path/$type";
   }
+
+  return $hooks;
 }
 
 /**
@@ -210,6 +193,7 @@ function kalagraphs_theme_registry_alter(&$theme_registry) {
  */
 function kalagraphs_theme_suggestions_paragraph_alter(array &$suggestions, array $vars) {
   $paragraph = $vars['elements']['#paragraph'];
+  kint('batbaz');
   if ('kalagraphs_component' === $paragraph->bundle() && 'default' === $vars['elements']['#view_mode']) {
     $suggestions[] = "kalagraphs_{$paragraph->field_kalagraphs_type->value}";
   }
@@ -237,40 +221,40 @@ function _kalagraphs_options(FieldStorageDefinitionInterface $definition, Fielda
  * Implements hook_field_widget_WIDGET_TYPE_form_alter() for paragraphs().
  */
 function kalagraphs_field_widget_paragraphs_form_alter(&$element, FormStateInterface $form_state, $context) {
+
+  // Only run once a Paragraph form has been loaded.
   $subform = &$element['subform'];
-  if (count(Element::children($subform))) {
-    $parents_array = $subform['#parents'];
-    $first_parent = array_shift($parents_array);
-    $parents = $first_parent . '[' . implode('][', $parents_array) . ']';
-    $selector = ":input[name='{$parents}[field_kalagraphs_type]']";
+  if (!count(Element::children($subform))) {
+    return;
+  }
 
-    // Add helptext for when no component type is yet selected.
-    $subform['help']['_none'] = [
-      '#type' => 'item',
-      '#markup' => '<strong>' . t('Choose a component type to create.') . '</strong>',
-    ];
-    $subform['help']['_none']['#states']['visible'][$selector][] = ['value' => '_none'];
+  // Use the form's #parents to determine the States API selector.
+  $parents_array = $subform['#parents'];
+  $first_parent = array_shift($parents_array);
+  $parents = $first_parent . '[' . implode('][', $parents_array) . ']';
+  $selector = ":input[name='{$parents}[field_kalagraphs_type]']";
 
-    // Add helptext and conditional states for each field type.
-    foreach (KALAGRAPHS_TYPES as $type => $info) {
-      $condition = ['value' => $type];
+  // Add helptext for when no component type is yet selected.
+  $help = &$subform['help']['_none'];
+  $help['#type'] = 'item';
+  $help['#title'] = t('Choose a component type to create.');
+  $help['#states']['visible'][$selector][] = ['value' => '_none'];
 
-      // Add helptext for each component type.
-      $subform['help'][$type] = [
-        '#type' => 'item',
-        '#markup' => "<strong>{$info['help']}</strong>",
-      ];
-      $subform['help'][$type]['#states']['visible'][$selector][] = $condition;
+  // Add helptext and conditional states for each field type.
+  foreach (KALAGRAPHS_TYPES as $type => $info) {
+    $condition = ['value' => $type];
 
-      // Only show the fields appropriate for the component type.
-      foreach ($info['fields'] as $field) {
-        if (isset($subform["field_kalagraphs_$field"])) {
-          $subform["field_kalagraphs_$field"]['#states']['visible'][$selector][] = $condition;
-        }
+    // Add helptext for each component type.
+    $help = &$subform['help'][$type];
+    $help['#type'] = 'item';
+    $help['#title'] = $info['help'];
+    $help['#states']['visible'][$selector][] = $condition;
+
+    // Only show the fields appropriate for the component type.
+    foreach ($info['fields'] as $field) {
+      if (isset($subform["field_kalagraphs_$field"])) {
+        $subform["field_kalagraphs_$field"]['#states']['visible'][$selector][] = $condition;
       }
-      // $dump = print_r($type)
-      // xdebug_break();
-      watchdog_exception('kalagraphs', new \Exception(), $type);
     }
   }
 }
