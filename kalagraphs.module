@@ -11,10 +11,15 @@ use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Render\Element;
 use Drupal\Core\Form\FormStateInterface;
 
+// @todo
+// - Don't hardcode these here but rather use an info hook, yaml file, managed
+//   configuration, State API, etc. Or grab them directly from the styleguide
+//   component's JSON files!
+// - Make sure the "help" text gets translated.
 const KALAGRAPHS_TYPES = [
   'section_header' => [
     'title' => 'Section Header',
-    'namespace' => 'molecules',
+    'path' => '@molecules',
     'base' => 'paragraph',
     'fields' => [
       'title',
@@ -27,8 +32,7 @@ const KALAGRAPHS_TYPES = [
   ],
   'icon' => [
     'title' => 'Icon',
-    'namespace' => 'molecules',
-    'subdirectory' => 'blocks',
+    'path' => '@molecules/blocks',
     'base' => 'paragraph',
     'fields' => [
       'title',
@@ -40,8 +44,7 @@ const KALAGRAPHS_TYPES = [
   ],
   'image_left' => [
     'title' => 'Image Left',
-    'namespace' => 'molecules',
-    'subdirectory' => 'blocks',
+    'path' => '@molecules/blocks',
     'base' => 'paragraph',
     'fields' => [
       'title',
@@ -54,8 +57,7 @@ const KALAGRAPHS_TYPES = [
   ],
   'image_right' => [
     'title' => 'Image Right',
-    'namespace' => 'molecules',
-    'subdirectory' => 'blocks',
+    'path' => '@molecules/blocks',
     'base' => 'paragraph',
     'fields' => [
       'title',
@@ -68,7 +70,7 @@ const KALAGRAPHS_TYPES = [
   ],
   'basic_hero' => [
     'title' => 'Basic Hero',
-    'namespace' => 'molecules',
+    'path' => 'molecules',
     'base' => 'paragraph',
     'fields' => [
       'title',
@@ -80,7 +82,7 @@ const KALAGRAPHS_TYPES = [
   ],
   'triangle_flow' => [
     'title' => 'Triangle Flow',
-    'namespace' => 'organisms',
+    'path' => 'organisms',
     'base' => 'paragraph',
     'fields' => [
       'image',
@@ -100,7 +102,7 @@ function kalagraphs_help($route_name, RouteMatchInterface $route_match) {
     case 'help.page.kalagraphs':
       $output = '';
       $output .= '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('Kalagraphs provides a flexible Paragraph type called &quot;Components&quot; that allows editors to choose with which Twig template it will be rendered.') . '</p>';
+      $output .= '<p>' . t('Kalagraphs provides a flexible Paragraph type called &quot;Component&quot; that allows editors to choose with which Twig template the component will render.') . '</p>';
       return $output;
 
     default:
@@ -108,30 +110,42 @@ function kalagraphs_help($route_name, RouteMatchInterface $route_match) {
 }
 
 /**
- * Implements hook_preprocess_HOOK() for paragraph().
+ * A custom preprocess callback specified in kalagraphs_theme().
+ *
+ * Populates template data with field items, using template-friendly variable
+ * names.
+ *
+ * Note that despite what the documentation says about "base hook" (see
+ * hook_theme()), the original theme hook's preprocess functions aren't getting
+ * called (i.e., hook_preprocess_paragraph()), perhaps because we are using
+ * hook_theme_suggestions_alter() to invoke our custom theme hook rather than
+ * doing it directly. We get around this limitation by specifying this
+ * preprocessor manually in the theme hook definition.
+ *
+ * @see kalagraphs_theme()
+ * @see hook_preprocess_HOOK()
  */
-function kalagraphs_preprocess(&$vars, $hook) {
-
-  // dpm('bar', $hook);
-  if ('paragraph' !== $hook) return;
-  return;
+function _kalagraphs_populate_fields(&$vars) {
 
   // Only run on the special Paragraphs bundle.
-  if ('kalagraphs_component' !== $vars['paragraph']->bundle()) {
+  $elements = &$vars['elements'];
+  if ('kalagraphs_component' !== $elements['#paragraph']->bundle()) {
     return;
   }
 
   // Add a flag to indicate it is rendering in a Drupal context.
+  // @todo This doesn't cover non-Paragraph theme hooks, e.g., atom components
+  // used for some fields.
   $vars['drupal'] = TRUE;
 
   // Map field items to template variables.
-  foreach (['title', 'text', 'image', 'links', 'subcomponents'] as $field) {
-    $content = &$vars['content']["field_kalagraphs_$field"];
-    if (!empty($content)) {
-      foreach (Element::children($content) as $index) {
-        $item = $content[$index];
-        $vars[$field][] = $item;
-      }
+  foreach (Element::children($elements) as $field) {
+    $element = &$elements[$field];
+    foreach (Element::children($element) as $item) {
+      // Make a template-friendly variable name by stripping "field_kalagraphs_"
+      // from the front.
+      $name = substr($field, 17);
+      $vars[$name][] = $element[$item];
     }
   }
 }
@@ -140,7 +154,16 @@ function kalagraphs_preprocess(&$vars, $hook) {
  * Implements hook_theme().
  */
 function kalagraphs_theme() {
-  $hooks['kalagraphs_basic_link'] = [
+
+  // First, manually create some theme hooks for certain atoms.
+  //
+  // @todo Don't hardcode these here but rather use an info hook, yaml file,
+  // managed configuration, State API, etc. Or grab them directly from the
+  // styleguide component's JSON files!
+  //
+  // @see \Drupal\kalagraphs\Plugin\Field\FieldFormatter\KalagraphsLinkFormatter
+  // @see \Drupal\kalagraphs\Plugin\Field\FieldFormatter\KalagraphsImageFormatter
+  $items['kalagraphs_basic_link'] = [
     'template' => 'basic_link',
     'path' => '@atoms/basic_link',
     'variables' => [
@@ -149,8 +172,7 @@ function kalagraphs_theme() {
       'text' => t('Get Started'),
     ],
   ];
-
-  $hooks['kalagraphs_cta_link'] = [
+  $items['kalagraphs_cta_link'] = [
     'template' => 'link',
     'path' => '@atoms/cta/link',
     'variables' => [
@@ -159,8 +181,7 @@ function kalagraphs_theme() {
       'text' => t('Get Started'),
     ],
   ];
-
-  $hooks['kalagraphs_basic_image'] = [
+  $items['kalagraphs_basic_image'] = [
     'template' => 'basic_image',
     'path' => '@atoms/basic_image',
     'variables' => [
@@ -170,20 +191,22 @@ function kalagraphs_theme() {
     ],
   ];
 
-  foreach (KALAGRAPHS_TYPES as $type => $info) {
-    $hook = &$hooks["kalagraphs_$type"];
-    if (isset($info['base'])) {
-      $hook['base hook'] = $info['base'];
-    }
-    $hook['template'] = $type;
-    $path = "@{$info['namespace']}";
-    if (!empty($info['subdirectory'])) {
-      $path .= "/{$info['subdirectory']}";
-    }
-    $hook['path'] = "$path/$type";
+  // Next, create theme hooks for each Kalagraphs component type. These don't
+  // usually get invoked directly but rather via hook_theme_suggestions_alter().
+  //
+  // @todo Replace reference to hard-coded component types with a function that
+  // pulls them from another source: other modules, themes, managed config,
+  // State API, yaml files, styleguide components' JSON data, etc.
+  foreach (KALAGRAPHS_TYPES as $component => $info) {
+    $items["kalagraphs_$component"] = [
+      'template' => $component,
+      'path' => "{$info['path']}/$component",
+      // See _kalagraphs_populate_fields() for explanation of why this is here.
+      'preprocess functions' => ['_kalagraphs_populate_fields'],
+    ];
   }
 
-  return $hooks;
+  return $items;
 }
 
 /**
@@ -193,7 +216,6 @@ function kalagraphs_theme() {
  */
 function kalagraphs_theme_suggestions_paragraph_alter(array &$suggestions, array $vars) {
   $paragraph = $vars['elements']['#paragraph'];
-  kint('batbaz');
   if ('kalagraphs_component' === $paragraph->bundle() && 'default' === $vars['elements']['#view_mode']) {
     $suggestions[] = "kalagraphs_{$paragraph->field_kalagraphs_type->value}";
   }
