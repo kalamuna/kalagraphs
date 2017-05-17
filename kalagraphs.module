@@ -10,6 +10,7 @@ use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Render\Element;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Component\Utility\Html;
 
 // @todo
 // - Don't hardcode these here but rather use an info hook, yaml file, managed
@@ -20,70 +21,69 @@ const KALAGRAPHS_TYPES = [
   'section_header' => [
     'title' => 'Section Header',
     'path' => '@molecules',
-    'base' => 'paragraph',
     'fields' => [
       'title',
       'text',
       'image',
       'links',
     ],
-    'help' => '<em>Add some help text here for creating "Section Header" components...</em>',
+    'bundles' => ['kalagraphs_component'],
+  ],
+  'dropdown' => [
+    'title' => 'Dropdown menu links',
+    'path' => '@molecules',
+    'fields' => [
+      'title',
+      'text',
+      'links',
+    ],
     'bundles' => ['kalagraphs_component'],
   ],
   'icon' => [
     'title' => 'Icon',
     'path' => '@molecules/blocks',
-    'base' => 'paragraph',
     'fields' => [
       'title',
       'text',
       'links',
     ],
-    'help' => '<em>Add some help text here for creating "Icon" components...</em>',
     'bundles' => ['kalagraphs_subcomponent'],
   ],
   'image_left' => [
     'title' => 'Image Left',
     'path' => '@molecules/blocks',
-    'base' => 'paragraph',
     'fields' => [
       'title',
       'text',
       'image',
       'links',
     ],
-    'help' => '<em>Add some help text here for creating "Image Left" components...</em>',
     'bundles' => ['kalagraphs_component'],
   ],
   'image_right' => [
     'title' => 'Image Right',
     'path' => '@molecules/blocks',
-    'base' => 'paragraph',
     'fields' => [
       'title',
       'text',
       'image',
       'links',
     ],
-    'help' => '<em>Add some help text here for creating "Image Right" components...</em>',
     'bundles' => ['kalagraphs_component'],
   ],
   'basic_hero' => [
     'title' => 'Basic Hero',
     'path' => 'molecules',
-    'base' => 'paragraph',
     'fields' => [
       'title',
       'text',
       'image',
     ],
-    'help' => '<em>Add some help text here for creating "Basic Hero" components...</em>',
     'bundles' => ['kalagraphs_component'],
   ],
   'triangle_flow' => [
     'title' => 'Triangle Flow',
     'path' => 'organisms',
-    'base' => 'paragraph',
     'fields' => [
       'image',
       'subcomponents',
@@ -127,9 +127,10 @@ function kalagraphs_help($route_name, RouteMatchInterface $route_match) {
  */
 function _kalagraphs_populate_fields(&$vars) {
 
-  // Only run on the special Paragraphs bundle.
+  // Only run on the special Paragraphs bundles.
   $elements = &$vars['elements'];
-  if ('kalagraphs_component' !== $elements['#paragraph']->bundle()) {
+  $paragraph = $elements['#paragraph'];
+  if (substr($paragraph->bundle(), 0, 11) !== 'kalagraphs_') {
     return;
   }
 
@@ -148,6 +149,9 @@ function _kalagraphs_populate_fields(&$vars) {
       $vars[$name][] = $element[$item];
     }
   }
+
+  // Provide a unique id attribute for the element that may or may not get used.
+  $vars['id'] = Html::getUniqueId("kalagraphs-component-{$paragraph->field_kalagraphs_type->value}");
 }
 
 /**
@@ -216,7 +220,7 @@ function kalagraphs_theme() {
  */
 function kalagraphs_theme_suggestions_paragraph_alter(array &$suggestions, array $vars) {
   $paragraph = $vars['elements']['#paragraph'];
-  if ('kalagraphs_component' === $paragraph->bundle() && 'default' === $vars['elements']['#view_mode']) {
+  if (substr($paragraph->bundle(), 0, 11) === 'kalagraphs_'  && 'default' === $vars['elements']['#view_mode']) {
     $suggestions[] = "kalagraphs_{$paragraph->field_kalagraphs_type->value}";
   }
 }
@@ -269,7 +273,9 @@ function kalagraphs_field_widget_paragraphs_form_alter(&$element, FormStateInter
     // Add helptext for each component type.
     $help = &$subform['help'][$type];
     $help['#type'] = 'item';
-    $help['#title'] = $info['help'];
+    $help['#title'] = empty($info['help'])
+      ? t('<em>Add some help text here for creating "Section Header" components...</em>')
+      : $info['help'];
     $help['#states']['visible'][$selector][] = $condition;
 
     // Only show the fields appropriate for the component type.
