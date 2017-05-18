@@ -4,6 +4,16 @@
   "description": "Kalagraphs provides a flexible Paragraph type that allows editors to choose with which Twig template to render it.",
   "keywords": ["Drupal"],
   "license": "GPL-2.0+",
+  "authors": [{
+    "name": "Derek \"Hawkeye Tenderwolf\" DeRaps",
+    "email": "hawkeye@tenderwolf.io",
+    "homepage": "https://tenderwolf.io",
+    "role": "Maintainer"
+  }],
+  "repositories": [{
+    "type": "composer",
+    "url": "https://packages.drupal.org/8"
+  }],
   "homepage": "https://github.com/kalamuna/kalagraphs",
   "minimum-stability": "dev",
   "support": {
