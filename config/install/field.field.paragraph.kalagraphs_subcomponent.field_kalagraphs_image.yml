@@ -1,10 +1,10 @@
-uuid: bcdc5226-5043-4320-886d-e3d9748e7611
+uuid: 240c4e33-1c46-41e8-8b77-208e732ed7b3
 langcode: en
 status: true
 dependencies:
   config:
     - field.storage.paragraph.field_kalagraphs_image
-    - paragraphs.paragraphs_type.kalagraphs_component
+    - paragraphs.paragraphs_type.kalagraphs_subcomponent
   module:
     - content_translation
     - image
@@ -14,10 +14,10 @@ third_party_settings:
       file: file
       alt: '0'
       title: '0'
-id: paragraph.kalagraphs_component.field_kalagraphs_image
+id: paragraph.kalagraphs_subcomponent.field_kalagraphs_image
 field_name: field_kalagraphs_image
 entity_type: paragraph
-bundle: kalagraphs_component
+bundle: kalagraphs_subcomponent
 label: Image
 description: ''
 required: false
@@ -26,7 +26,7 @@ default_value: {  }
 default_value_callback: ''
 settings:
   file_directory: '[date:custom:Y]-[date:custom:m]'
-  file_extensions: 'png gif jpg jpeg svg'
+  file_extensions: 'png gif jpg jpeg'
   max_filesize: ''
   max_resolution: ''
   min_resolution: ''

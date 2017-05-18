@@ -1,18 +1,18 @@
-uuid: 5e68de31-070b-4af1-b2c5-a27970a26272
+uuid: c01928ed-a878-4626-abfa-a15ae44fa238
 langcode: en
 status: true
 dependencies:
   module:
+    - link
     - paragraphs
-    - text
-id: paragraph.field_kalagraphs_text
-field_name: field_kalagraphs_text
+id: paragraph.field_kalagraphs_links
+field_name: field_kalagraphs_links
 entity_type: paragraph
-type: text_with_summary
+type: link
 settings: {  }
-module: text
+module: link
 locked: false
-cardinality: 1
+cardinality: -1
 translatable: true
 indexes: {  }
 persist_with_no_fields: false

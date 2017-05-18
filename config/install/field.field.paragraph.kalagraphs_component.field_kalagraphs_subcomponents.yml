@@ -1,0 +1,33 @@
+uuid: f99ae427-5d01-4e34-b91c-88b33b36f84e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_kalagraphs_subcomponents
+    - paragraphs.paragraphs_type.kalagraphs_component
+    - paragraphs.paragraphs_type.kalagraphs_subcomponent
+  module:
+    - entity_reference_revisions
+id: paragraph.kalagraphs_component.field_kalagraphs_subcomponents
+field_name: field_kalagraphs_subcomponents
+entity_type: paragraph
+bundle: kalagraphs_component
+label: Sub-components
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      kalagraphs_subcomponent: kalagraphs_subcomponent
+    target_bundles_drag_drop:
+      kalagraphs_component:
+        weight: 2
+        enabled: false
+      kalagraphs_subcomponent:
+        enabled: true
+        weight: 3
+field_type: entity_reference_revisions

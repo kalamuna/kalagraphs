@@ -1,0 +1,68 @@
+uuid: 2681fa4a-c045-4a53-a11f-892307e55821
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.paragraph.preview
+    - field.field.paragraph.kalagraphs_subcomponent.field_kalagraphs_image
+    - field.field.paragraph.kalagraphs_subcomponent.field_kalagraphs_links
+    - field.field.paragraph.kalagraphs_subcomponent.field_kalagraphs_text
+    - field.field.paragraph.kalagraphs_subcomponent.field_kalagraphs_title
+    - field.field.paragraph.kalagraphs_subcomponent.field_kalagraphs_type
+    - image.style.thumbnail
+    - paragraphs.paragraphs_type.kalagraphs_subcomponent
+  module:
+    - image
+    - link
+    - options
+    - text
+id: paragraph.kalagraphs_subcomponent.preview
+targetEntityType: paragraph
+bundle: kalagraphs_subcomponent
+mode: preview
+content:
+  field_kalagraphs_image:
+    weight: 3
+    label: inline
+    settings:
+      image_style: thumbnail
+      image_link: file
+    third_party_settings: {  }
+    type: image
+    region: content
+  field_kalagraphs_links:
+    weight: 4
+    label: inline
+    settings:
+      trim_length: 80
+      url_only: false
+      url_plain: false
+      rel: ''
+      target: ''
+    third_party_settings: {  }
+    type: link
+    region: content
+  field_kalagraphs_text:
+    weight: 2
+    label: inline
+    settings:
+      trim_length: 200
+    third_party_settings: {  }
+    type: text_summary_or_trimmed
+    region: content
+  field_kalagraphs_title:
+    weight: 1
+    label: inline
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_kalagraphs_type:
+    type: list_default
+    weight: 0
+    region: content
+    label: inline
+    settings: {  }
+    third_party_settings: {  }
+hidden: {  }

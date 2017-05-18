@@ -1,0 +1,23 @@
+uuid: ebd8f3eb-8cc4-4fb6-b2dd-f96ad6173059
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_kalagraphs_links
+    - paragraphs.paragraphs_type.kalagraphs_subcomponent
+  module:
+    - link
+id: paragraph.kalagraphs_subcomponent.field_kalagraphs_links
+field_name: field_kalagraphs_links
+entity_type: paragraph
+bundle: kalagraphs_subcomponent
+label: Links
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  link_type: 17
+  title: 1
+field_type: link

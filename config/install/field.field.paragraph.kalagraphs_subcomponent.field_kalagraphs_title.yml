@@ -1,14 +1,14 @@
-uuid: e9f66be2-7273-4444-8411-f8b9de8a4523
+uuid: 2f71677f-8dc9-4004-9bc7-ddee358567ae
 langcode: en
 status: true
 dependencies:
   config:
     - field.storage.paragraph.field_kalagraphs_title
-    - paragraphs.paragraphs_type.kalagraphs_component
-id: paragraph.kalagraphs_component.field_kalagraphs_title
+    - paragraphs.paragraphs_type.kalagraphs_subcomponent
+id: paragraph.kalagraphs_subcomponent.field_kalagraphs_title
 field_name: field_kalagraphs_title
 entity_type: paragraph
-bundle: kalagraphs_component
+bundle: kalagraphs_subcomponent
 label: Title
 description: ''
 required: false

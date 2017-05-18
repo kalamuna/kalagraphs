@@ -1,0 +1,50 @@
+uuid: e3879a7e-1912-4689-a264-679e0711fd21
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.kalagraphs_subcomponent.field_kalagraphs_image
+    - field.field.paragraph.kalagraphs_subcomponent.field_kalagraphs_links
+    - field.field.paragraph.kalagraphs_subcomponent.field_kalagraphs_text
+    - field.field.paragraph.kalagraphs_subcomponent.field_kalagraphs_title
+    - field.field.paragraph.kalagraphs_subcomponent.field_kalagraphs_type
+    - paragraphs.paragraphs_type.kalagraphs_subcomponent
+  module:
+    - kalagraphs
+    - text
+id: paragraph.kalagraphs_subcomponent.default
+targetEntityType: paragraph
+bundle: kalagraphs_subcomponent
+mode: default
+content:
+  field_kalagraphs_image:
+    weight: 2
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: kalagraphs_image
+    region: content
+  field_kalagraphs_links:
+    weight: 3
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: kalagraphs_link
+    region: content
+  field_kalagraphs_text:
+    weight: 1
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  field_kalagraphs_title:
+    weight: 0
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+hidden:
+  field_kalagraphs_type: true

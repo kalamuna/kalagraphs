@@ -1,0 +1,23 @@
+uuid: e0a4d0e6-2b53-49b8-b0d6-a365a39bf946
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_kalagraphs_links
+    - paragraphs.paragraphs_type.kalagraphs_component
+  module:
+    - link
+id: paragraph.kalagraphs_component.field_kalagraphs_links
+field_name: field_kalagraphs_links
+entity_type: paragraph
+bundle: kalagraphs_component
+label: Links
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  link_type: 17
+  title: 1
+field_type: link
