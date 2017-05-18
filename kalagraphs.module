@@ -30,11 +30,19 @@ const KALAGRAPHS_TYPES = [
     'bundles' => ['kalagraphs_component'],
   ],
   'dropdown' => [
-    'title' => 'Dropdown menu links',
+    'title' => 'Dropdown menu',
     'path' => '@molecules',
     'fields' => [
       'title',
       'text',
+      'links',
+    ],
+    'bundles' => ['kalagraphs_component'],
+  ],
+  'subnav' => [
+    'title' => 'Tabs',
+    'path' => '@molecules',
+    'fields' => [
       'links',
     ],
     'bundles' => ['kalagraphs_component'],
@@ -91,7 +99,20 @@ const KALAGRAPHS_TYPES = [
     'help' => 'Now add three images and five "Icon" sub-components.',
     'bundles' => ['kalagraphs_component'],
   ],
+  'hidden' => [
+    'title' => '_Hidden',
+    'fields' => [],
+    'bundles' => ['kalagraphs_component', 'kalagraphs_subcomponent'],
+    'help' => 'Temporarily hide this component without losing its data.',
+  ],
 ];
+
+/**
+ * Theme callback to render the "hidden" component type.
+ */
+function _kalagraphs_render_hidden() {
+  // Don't render anything.
+}
 
 /**
  * Implements hook_help().
@@ -202,10 +223,18 @@ function kalagraphs_theme() {
   // pulls them from another source: other modules, themes, managed config,
   // State API, yaml files, styleguide components' JSON data, etc.
   foreach (KALAGRAPHS_TYPES as $component => $info) {
-    $items["kalagraphs_$component"] = [
+    $item = &$items["kalagraphs_$component"];
+
+    // Create a special theme hook for the "hidden" component type.
+    if ('hidden' === $component) {
+      $item = ['function' => '_kalagraphs_render_hidden'];
+      continue;
+    }
+
+    $item = [
       'template' => $component,
       'path' => "{$info['path']}/$component",
-      // See _kalagraphs_populate_fields() for explanation of why this is here.
+      // See _kalagraphs_populate_fields() for explanation of this necessity.
       'preprocess functions' => ['_kalagraphs_populate_fields'],
     ];
   }
@@ -240,6 +269,7 @@ function _kalagraphs_options(FieldStorageDefinitionInterface $definition, Fielda
       $options[$type] = $info['title'];
     }
   }
+  asort($options);
   return $options;
 }
 
