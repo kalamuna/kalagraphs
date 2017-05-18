@@ -18,85 +18,15 @@ use Drupal\Component\Utility\Html;
 //   component's JSON files!
 // - Make sure the "help" text gets translated.
 const KALAGRAPHS_TYPES = [
-  'section_header' => [
-    'title' => 'Section Header',
-    'path' => '@molecules',
+  'megatout' => [
+    'title' => 'Megatout',
+    'path' => '@kalagraphs/molecules',
     'fields' => [
       'title',
       'text',
       'image',
       'links',
     ],
-    'bundles' => ['kalagraphs_component'],
-  ],
-  'dropdown' => [
-    'title' => 'Dropdown menu',
-    'path' => '@molecules',
-    'fields' => [
-      'title',
-      'text',
-      'links',
-    ],
-    'bundles' => ['kalagraphs_component'],
-  ],
-  'subnav' => [
-    'title' => 'Tabs',
-    'path' => '@molecules',
-    'fields' => [
-      'links',
-    ],
-    'bundles' => ['kalagraphs_component'],
-  ],
-  'icon' => [
-    'title' => 'Icon',
-    'path' => '@molecules/blocks',
-    'fields' => [
-      'title',
-      'text',
-      'links',
-    ],
-    'bundles' => ['kalagraphs_subcomponent'],
-  ],
-  'image_left' => [
-    'title' => 'Image Left',
-    'path' => '@molecules/blocks',
-    'fields' => [
-      'title',
-      'text',
-      'image',
-      'links',
-    ],
-    'bundles' => ['kalagraphs_component'],
-  ],
-  'image_right' => [
-    'title' => 'Image Right',
-    'path' => '@molecules/blocks',
-    'fields' => [
-      'title',
-      'text',
-      'image',
-      'links',
-    ],
-    'bundles' => ['kalagraphs_component'],
-  ],
-  'basic_hero' => [
-    'title' => 'Basic Hero',
-    'path' => '@molecules',
-    'fields' => [
-      'title',
-      'text',
-      'image',
-    ],
-    'bundles' => ['kalagraphs_component'],
-  ],
-  'triangle_flow' => [
-    'title' => 'Triangle Flow',
-    'path' => '@organisms',
-    'fields' => [
-      'image',
-      'subcomponents',
-    ],
-    'help' => 'Now add three images and five "Icon" sub-components.',
     'bundles' => ['kalagraphs_component'],
   ],
   'hidden' => [
@@ -188,30 +118,22 @@ function kalagraphs_theme() {
   //
   // @see \Drupal\kalagraphs\Plugin\Field\FieldFormatter\KalagraphsLinkFormatter
   // @see \Drupal\kalagraphs\Plugin\Field\FieldFormatter\KalagraphsImageFormatter
-  $items['kalagraphs_basic_link'] = [
-    'template' => 'basic_link',
-    'path' => '@atoms/basic_link',
-    'variables' => [
-      'href' => '#',
-      'classList' => '',
-      'text' => t('Get Started'),
-    ],
-  ];
-  $items['kalagraphs_cta_link'] = [
+  $items['kalagraphs_link'] = [
     'template' => 'link',
-    'path' => '@atoms/cta/link',
+    'path' => '@atoms/link',
     'variables' => [
-      'href' => '#',
-      'classList' => '',
-      'text' => t('Get Started'),
+      'url' => '#',
+      'text' => '',
+      'class' => '',
     ],
   ];
-  $items['kalagraphs_basic_image'] = [
-    'template' => 'basic_image',
-    'path' => '@atoms/basic_image',
+  $items['kalagraphs_image'] = [
+    'template' => 'image',
+    'path' => '@atoms/image',
     'variables' => [
       'src' => '',
       'alt' => '',
+      'title' => '',
       'class' => '',
     ],
   ];

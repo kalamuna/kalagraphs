@@ -42,6 +42,7 @@ class KalagraphsImageFormatter extends KalagraphsFieldFormatter {
           '#theme' => "kalagraphs_basic_image",
           '#src' => file_create_url($item->entity->getFileUri()),
           '#alt' => $item->alt,
+          '#title' => $item->title,
           '#class' => '',
         ];
     }

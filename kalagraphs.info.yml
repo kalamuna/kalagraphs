@@ -4,5 +4,7 @@ description: Kalagraphs provides a flexible Paragraph type that allows editors t
 core: 8.x
 package: Kalamuna
 dependencies:
+  - allowed_formats
+  - content_translation
   - options
   - paragraphs
