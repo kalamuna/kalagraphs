@@ -1,17 +1,18 @@
+uuid: 52d991ca-7c1d-4c64-a78f-a4582adfcd32
 langcode: en
 status: true
 dependencies:
   config:
     - field.field.paragraph.kalagraphs_component.field_kalagraphs_image
-    - field.field.paragraph.kalagraphs_component.field_kalagraphs_link
+    - field.field.paragraph.kalagraphs_component.field_kalagraphs_links
+    - field.field.paragraph.kalagraphs_component.field_kalagraphs_subcomponents
     - field.field.paragraph.kalagraphs_component.field_kalagraphs_text
     - field.field.paragraph.kalagraphs_component.field_kalagraphs_title
     - field.field.paragraph.kalagraphs_component.field_kalagraphs_type
-    - image.style.large
     - paragraphs.paragraphs_type.kalagraphs_component
   module:
-    - image
-    - link
+    - entity_reference_revisions
+    - kalagraphs
     - text
 id: paragraph.kalagraphs_component.default
 targetEntityType: paragraph
@@ -19,30 +20,35 @@ bundle: kalagraphs_component
 mode: default
 content:
   field_kalagraphs_image:
-    weight: 3
-    label: hidden
-    settings:
-      image_style: large
-      image_link: ''
-    third_party_settings: {  }
-    type: image
-  field_kalagraphs_link:
     weight: 2
     label: hidden
-    settings:
-      trim_length: 80
-      url_only: false
-      url_plain: false
-      rel: ''
-      target: ''
+    settings: {  }
     third_party_settings: {  }
-    type: link
+    type: kalagraphs_image
+    region: content
+  field_kalagraphs_links:
+    weight: 3
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: kalagraphs_link
+    region: content
+  field_kalagraphs_subcomponents:
+    type: entity_reference_revisions_entity_view
+    weight: 5
+    label: hidden
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    region: content
   field_kalagraphs_text:
     weight: 1
     label: hidden
     settings: {  }
     third_party_settings: {  }
     type: text_default
+    region: content
   field_kalagraphs_title:
     weight: 0
     label: hidden
@@ -50,5 +56,6 @@ content:
       link_to_entity: false
     third_party_settings: {  }
     type: string
+    region: content
 hidden:
   field_kalagraphs_type: true

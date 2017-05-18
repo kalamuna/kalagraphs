@@ -1,3 +1,4 @@
+uuid: 204c12fd-b82a-4825-aa6e-ca9e9a1c2843
 langcode: en
 status: true
 dependencies:
@@ -12,7 +13,7 @@ entity_type: paragraph
 bundle: kalagraphs_component
 label: 'Display as'
 description: ''
-required: false
+required: true
 translatable: true
 default_value: {  }
 default_value_callback: ''

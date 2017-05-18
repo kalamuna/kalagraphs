@@ -1,15 +1,20 @@
+uuid: adbaf838-11ba-4d60-badc-b2c4844f2524
 langcode: en
 status: true
 dependencies:
   config:
     - core.entity_view_mode.paragraph.preview
     - field.field.paragraph.kalagraphs_component.field_kalagraphs_image
-    - field.field.paragraph.kalagraphs_component.field_kalagraphs_link
+    - field.field.paragraph.kalagraphs_component.field_kalagraphs_links
+    - field.field.paragraph.kalagraphs_component.field_kalagraphs_subcomponents
     - field.field.paragraph.kalagraphs_component.field_kalagraphs_text
     - field.field.paragraph.kalagraphs_component.field_kalagraphs_title
     - field.field.paragraph.kalagraphs_component.field_kalagraphs_type
+    - image.style.thumbnail
     - paragraphs.paragraphs_type.kalagraphs_component
   module:
+    - image
+    - link
     - options
     - text
 id: paragraph.kalagraphs_component.preview
@@ -17,6 +22,27 @@ targetEntityType: paragraph
 bundle: kalagraphs_component
 mode: preview
 content:
+  field_kalagraphs_image:
+    type: image
+    weight: 3
+    region: content
+    label: inline
+    settings:
+      image_style: thumbnail
+      image_link: file
+    third_party_settings: {  }
+  field_kalagraphs_links:
+    type: link
+    weight: 4
+    region: content
+    label: inline
+    settings:
+      trim_length: 80
+      rel: ''
+      target: ''
+      url_only: false
+      url_plain: false
+    third_party_settings: {  }
   field_kalagraphs_text:
     type: text_summary_or_trimmed
     weight: 2
@@ -24,6 +50,7 @@ content:
     settings:
       trim_length: 200
     third_party_settings: {  }
+    region: content
   field_kalagraphs_title:
     weight: 1
     label: inline
@@ -31,12 +58,13 @@ content:
       link_to_entity: false
     third_party_settings: {  }
     type: string
+    region: content
   field_kalagraphs_type:
     type: list_default
     weight: 0
     label: inline
     settings: {  }
     third_party_settings: {  }
+    region: content
 hidden:
-  field_kalagraphs_image: true
-  field_kalagraphs_link: true
+  field_kalagraphs_subcomponents: true
