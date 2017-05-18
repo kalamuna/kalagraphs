@@ -81,7 +81,7 @@ const KALAGRAPHS_TYPES = [
   ],
   'basic_hero' => [
     'title' => 'Basic Hero',
-    'path' => 'molecules',
+    'path' => '@molecules',
     'fields' => [
       'title',
       'text',
@@ -91,7 +91,7 @@ const KALAGRAPHS_TYPES = [
   ],
   'triangle_flow' => [
     'title' => 'Triangle Flow',
-    'path' => 'organisms',
+    'path' => '@organisms',
     'fields' => [
       'image',
       'subcomponents',
