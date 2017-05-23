@@ -202,7 +202,7 @@ function kalagraphs_field_widget_paragraphs_form_alter(&$element, FormStateInter
 
   // Only run once a Paragraph form has been loaded.
   $subform = &$element['subform'];
-  if (!count(Element::children($subform))) {
+  if (!count($fields = Element::children($subform))) {
     return;
   }
 
@@ -218,7 +218,15 @@ function kalagraphs_field_widget_paragraphs_form_alter(&$element, FormStateInter
   $help['#title'] = t('Choose a component type to create.');
   $help['#states']['visible'][$selector][] = ['value' => '_none'];
 
-  // Add helptext and conditional states for each field type.
+  // Add a null state so fields not used on any component type are still hidden.
+  foreach ($fields as $field) {
+    // Don't hide the "Display as" selector.
+    if ('field_kalagraphs_type' !== $field) {
+      $subform[$field]['#states']['visible'][$selector][] = ['value' => -1];
+    }
+  }
+
+  // Add helptext and conditional states for each component type.
   foreach (KALAGRAPHS_TYPES as $type => $info) {
     $condition = ['value' => $type];
 
