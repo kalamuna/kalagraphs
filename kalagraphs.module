@@ -49,7 +49,7 @@ const KALAGRAPHS_TYPES = [
   ],
   'icon' => [
     'title' => 'Icon',
-    'path' => '@molecules/blocks',
+    'path' => '@molecules/basic_content',
     'fields' => [
       'title',
       'text',
@@ -97,6 +97,25 @@ const KALAGRAPHS_TYPES = [
       'subcomponents',
     ],
     'help' => 'Now add three images and five "Icon" sub-components.',
+    'bundles' => ['kalagraphs_component'],
+  ],
+  'full_width' => [
+    'title' => 'Full Width',
+    'path' => '@molecules/blocks',
+    'fields' => [
+      'title',
+      'text',
+      'links',
+    ],
+    'bundles' => ['kalagraphs_component'],
+  ],
+  'four_col_block' => [
+    'title' => '3 Columns',
+    'path' => '@organisms',
+    'fields' => [
+      'subcomponents',
+    ],
+    'help' => 'Now add three "Icon" sub-components, one for each column.',
     'bundles' => ['kalagraphs_component'],
   ],
   'hidden' => [
