@@ -31,9 +31,9 @@ class KalagraphsLinkFormatter extends KalagraphsFieldFormatter {
     // Render links with a twig template.
     return [
       '#theme' => "kalagraphs_link",
-      '#url' => $item->uri,
+      '#href' => $item->uri,
       '#text' => $item->title,
-      // @todo Make this variable.
+      // @todo Make the class variable.
       '#class' => 'button',
     ];
   }
