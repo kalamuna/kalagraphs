@@ -31,7 +31,7 @@ class KalagraphsLinkFormatter extends KalagraphsFieldFormatter {
     // Render links with a twig template.
     return [
       '#theme' => "kalagraphs_basic_link",
-      '#href' => $item->uri,
+      '#href' => $item->getUrl(),
       '#classList' => 'link__default',
       '#text' => $item->title,
     ];
