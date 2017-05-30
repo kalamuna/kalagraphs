@@ -37,7 +37,12 @@ abstract class KalagraphsFieldFormatter extends FormatterBase {
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $elements = [];
-    $this->kalagraphsType = $items->getEntity()->field_kalagraphs_type->value;
+    $entity = $items->getEntity();
+    if ($entity->bundle() == 'kalagraphs_component') {
+      $this->kalagraphsType = $items->getEntity()->field_kalagraphs_type->value;
+    } else {
+      $this->kalagraphsType = $entity->getEntityTypeId() . '__' . $entity->bundle();
+    }
 
     foreach ($items as $delta => $item) {
       $elements[$delta] = $this->viewValue($item);
