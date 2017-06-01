@@ -205,8 +205,17 @@ function kalagraphs_theme() {
   // managed configuration, State API, etc. Or grab them directly from the
   // styleguide component's JSON files!
   //
+  // @see \Drupal\kalagraphs\Plugin\Field\FieldFormatter\KalagraphsTitleFormatter
   // @see \Drupal\kalagraphs\Plugin\Field\FieldFormatter\KalagraphsLinkFormatter
   // @see \Drupal\kalagraphs\Plugin\Field\FieldFormatter\KalagraphsImageFormatter
+  $items['kalagraphs_title'] = [
+    'template' => 'title',
+    'path' => '@atoms/title',
+    'variables' => [
+      'title' => '',
+      'tag' => 'h2',
+    ],
+  ];
   $items['kalagraphs_basic_link'] = [
     'template' => 'basic_link',
     'path' => '@atoms/basic_link',
