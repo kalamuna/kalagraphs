@@ -18,7 +18,7 @@ use Drupal\Component\Utility\Html;
 //   component's JSON files!
 // - Make sure the "help" text gets translated.
 const KALAGRAPHS_TYPES = [
-  'megatout' => [
+  'tout--mega' => [
     'title' => 'Megatout',
     'path' => '@kalagraphs/molecules',
     'fields' => [
