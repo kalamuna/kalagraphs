@@ -358,7 +358,9 @@ function kalagraphs_field_widget_paragraphs_form_alter(&$element, FormStateInter
     $help = &$subform['help'][$type];
     $help['#type'] = 'item';
     $help['#title'] = empty($info['help'])
-      ? t('<em>Add some help text here for creating "Section Header" components...</em>')
+      ? t('<em>Add some help text here for creating "@type" components...</em>', array(
+        '@type' => $info['title'],
+      ))
       : $info['help'];
     $help['#states']['visible'][$selector][] = $condition;
 
