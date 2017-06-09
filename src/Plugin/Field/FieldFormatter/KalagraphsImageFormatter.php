@@ -31,6 +31,7 @@ class KalagraphsImageFormatter extends KalagraphsFieldFormatter {
     switch ($this->kalagraphsType) {
 
       // Some components just need the image URL for use as a background.
+      case 'hero':
       case 'basic_hero':
       case 'section_header':
       case 'triangle_flow':
