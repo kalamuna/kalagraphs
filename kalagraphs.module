@@ -327,6 +327,11 @@ function _kalagraphs_options(FieldStorageDefinitionInterface $definition, Fielda
  */
 function kalagraphs_field_widget_paragraphs_form_alter(&$element, FormStateInterface $form_state, $context) {
 
+  // Only run for Kalagraphs paragraphs.
+  if (!_kalagraphs_element_is_kalagraph($element, $form_state)) {
+    return;
+  }
+
   // Only run once a Paragraph form has been loaded.
   $subform = &$element['subform'];
   if (!count(Element::children($subform))) {
@@ -364,4 +369,46 @@ function kalagraphs_field_widget_paragraphs_form_alter(&$element, FormStateInter
       }
     }
   }
+}
+
+/**
+ * Determines whether to proceed with processing of the Paragraphs field widget.
+ *
+ * For parameter info, see hook_field_widget_WIDGET_TYPE_form_alter().
+ */
+function _kalagraphs_element_is_kalagraph(&$element, FormStateInterface $form_state) {
+
+  // For previously-saved items, the entity (and therefore bundle) is available.
+  if (isset($element['preview']['#paragraph'])) {
+    $bundle = $element['preview']['#paragraph']->bundle();
+    return strpos($bundle, 'kalagraphs_') === 0;
+  }
+
+  // For newly-added paragraphs, there is no entity yet, so we use the form's
+  // "triggering element" to identify which "Add Paragraph" button was pushed
+  // (i.e., the bundle of the new item). However, this only tells us about the
+  // item being added right now and nothing about the items previously-added in
+  // this session. To get around this, we use a flag to indicate whether each
+  // unsaved item has already been verified as Kalagraphs bundle.
+  //
+  // Initialise a container to hold the flags.
+  $kalagraphs_bundle_check = $form_state->has(__FUNCTION__)
+    ? $form_state->get(__FUNCTION__) : [];
+
+  // Get a reference to the result (whether the item is a Kalagraphs bundle).
+  $delta = $element['#delta'];
+  $is_kalagraph = &$kalagraphs_bundle_check[$delta];
+
+  // Has this item already been processed?
+  if (isset($is_kalagraph)) {
+    return $is_kalagraph;
+  }
+
+  // This item has not yet been processed, so we assume it was just created and
+  // can therefore safely rely on the form's triggering element.
+  $bundle = $form_state->getTriggeringElement()['#bundle_machine_name'];
+  $is_kalagraph = strpos($bundle, 'kalagraphs_') === 0;
+  $form_state->set(__FUNCTION__, $kalagraphs_bundle_check);
+
+  return $is_kalagraph;
 }
