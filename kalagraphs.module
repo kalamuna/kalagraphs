@@ -57,6 +57,15 @@ const KALAGRAPHS_TYPES = [
     ],
     'bundles' => ['kalagraphs_subcomponent'],
   ],
+  'small' => [
+    'title' => 'Small Block',
+    'path' => '@molecules/blocks',
+    'fields' => [
+      'title',
+      'links',
+    ],
+    'bundles' => ['kalagraphs_subcomponent'],
+  ],
   'image_left' => [
     'title' => 'Image Left',
     'path' => '@molecules/blocks',
@@ -87,6 +96,18 @@ const KALAGRAPHS_TYPES = [
       'text',
       'image',
     ],
+    'bundles' => ['kalagraphs_component'],
+  ],
+  'hero' => [
+    'title' => 'Home Hero',
+    'path' => '@molecules',
+    'fields' => [
+      'title',
+      'text',
+      'image',
+      'subcomponents',
+    ],
+    'help' => 'Now add a title, text, image, and two "Small Block" sub-components.',
     'bundles' => ['kalagraphs_component'],
   ],
   'triangle_flow' => [
