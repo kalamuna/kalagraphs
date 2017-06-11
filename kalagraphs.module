@@ -18,6 +18,8 @@ use Drupal\Component\Utility\Html;
 //   component's JSON files!
 // - Make sure the "help" text gets translated.
 const KALAGRAPHS_TYPES = [
+
+  // Molecules.
   'section_header' => [
     'title' => 'Section Header',
     'path' => '@molecules',
@@ -130,6 +132,20 @@ const KALAGRAPHS_TYPES = [
     ],
     'bundles' => ['kalagraphs_component'],
   ],
+  'nr002_item' => [
+    'title' => 'Content Item w/Photo, Header, Link',
+    'path' => '@molecules',
+    'fields' => [
+      'title',
+      'text',
+      'image',
+      'links',
+    ],
+    'help' => '',
+    'bundles' => ['kalagraphs_subcomponent'],
+  ],
+
+  // Organisms.
   'four_col_block' => [
     'title' => '3 Columns',
     'path' => '@organisms',
@@ -139,6 +155,17 @@ const KALAGRAPHS_TYPES = [
     'help' => 'Now add three "Icon" sub-components, one for each column.',
     'bundles' => ['kalagraphs_component'],
   ],
+  'nr002' => [
+    'title' => 'Content Block w/Photos, Headers, Links',
+    'path' => '@organisms/news_content',
+    'fields' => [
+      'subcomponents',
+    ],
+    'help' => 'Now add some "Content Item w/Photo, Header, Link" sub-components.',
+    'bundles' => ['kalagraphs_component'],
+  ],
+
+  // Special.
   'hidden' => [
     'title' => '_Hidden',
     'fields' => [],
