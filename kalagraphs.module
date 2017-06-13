@@ -260,35 +260,35 @@ function kalagraphs_theme() {
     'template' => 'title',
     'path' => '@atoms/title',
     'variables' => [
-      'title' => '',
-      'tag' => 'h2',
+      'title' => NULL,
+      'tag' => NULL,
     ],
   ];
   $items['kalagraphs_basic_link'] = [
     'template' => 'basic_link',
     'path' => '@atoms/basic_link',
     'variables' => [
-      'href' => '#',
-      'classList' => '',
-      'text' => t('Get Started'),
+      'href' => NULL,
+      'classList' => NULL,
+      'text' => NULL,
     ],
   ];
   $items['kalagraphs_cta_link'] = [
     'template' => 'link',
     'path' => '@atoms/cta/link',
     'variables' => [
-      'href' => '#',
-      'classList' => '',
-      'text' => t('Get Started'),
+      'href' => NULL,
+      'classList' => NULL,
+      'text' => NULL,
     ],
   ];
   $items['kalagraphs_basic_image'] = [
     'template' => 'basic_image',
     'path' => '@atoms/basic_image',
     'variables' => [
-      'src' => '',
-      'alt' => '',
-      'class' => '',
+      'src' => NULL,
+      'alt' => NULL,
+      'class' => NULL
     ],
   ];
 
