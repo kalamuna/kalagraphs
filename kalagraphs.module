@@ -11,6 +11,7 @@ use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Render\Element;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Component\Utility\Html;
+use Drupal\paragraphs\Entity\Paragraph;
 
 // @todo
 // - Don't hardcode these here but rather use an info hook, yaml file, managed
@@ -325,7 +326,8 @@ function kalagraphs_theme() {
  */
 function kalagraphs_theme_suggestions_paragraph_alter(array &$suggestions, array $vars) {
   $paragraph = $vars['elements']['#paragraph'];
-  if (substr($paragraph->bundle(), 0, 11) === 'kalagraphs_'  && 'default' === $vars['elements']['#view_mode']) {
+  if (substr($paragraph->bundle(), 0, 11) === 'kalagraphs_' &&
+      'default' === $vars['elements']['#view_mode']) {
     $suggestions[] = "kalagraphs_{$paragraph->field_kalagraphs_type->value}";
   }
 }
@@ -371,7 +373,7 @@ function kalagraphs_field_widget_paragraphs_form_alter(&$element, FormStateInter
 function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $context) {
 
   // Only run for Kalagraphs paragraphs.
-  if (!_kalagraphs_element_is_kalagraph($element, $form_state)) {
+  if (!_kalagraphs_element_is_kalagraph($element, $form_state, $context)) {
     return;
   }
 
@@ -421,11 +423,13 @@ function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $co
  *
  * For parameter info, see hook_field_widget_WIDGET_TYPE_form_alter().
  */
-function _kalagraphs_element_is_kalagraph(&$element, FormStateInterface $form_state) {
+function _kalagraphs_element_is_kalagraph(&$element, FormStateInterface $form_state, $context) {
 
   // For previously-saved items, the entity (and therefore bundle) is available.
-  if (isset($element['preview']['#paragraph'])) {
-    $bundle = $element['preview']['#paragraph']->bundle();
+  $delta = $element['#delta'];
+  if (isset($context['items'][$delta]->target_id)) {
+    $id = $context['items'][$delta]->target_id;
+    $bundle = Paragraph::load($id)->bundle();
     return strpos($bundle, 'kalagraphs_') === 0;
   }
 
