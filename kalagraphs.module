@@ -350,9 +350,25 @@ function _kalagraphs_options(FieldStorageDefinitionInterface $definition, Fielda
 }
 
 /**
+ * Implements hook_field_widget_WIDGET_TYPE_form_alter() for entity_reference_paragraphs().
+ */
+function kalagraphs_field_widget_entity_reference_paragraphs_form_alter(&$element, FormStateInterface $form_state, $context) {
+  _kalagraphs_process_form($element, $form_state, $context);
+}
+
+/**
  * Implements hook_field_widget_WIDGET_TYPE_form_alter() for paragraphs().
  */
 function kalagraphs_field_widget_paragraphs_form_alter(&$element, FormStateInterface $form_state, $context) {
+  _kalagraphs_process_form($element, $form_state, $context);
+}
+
+/**
+ * Adds conditional display and other sauce to the Paragaphs edit form.
+ *
+ * For paramter info, see hook_field_widget_WIDGET_TYPE_form_alter().
+ */
+function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $context) {
 
   // Only run for Kalagraphs paragraphs.
   if (!_kalagraphs_element_is_kalagraph($element, $form_state)) {
