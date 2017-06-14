@@ -147,15 +147,11 @@ const KALAGRAPHS_TYPES = [
     'bundles' => ['kalagraphs_subcomponent'],
   ],
   'news_header' => [
-    'title' => 'News Header - Full Width Content Area',
+    'title' => 'News Header',
     'path' => '@molecules',
     'fields' => [
       'title',
-      'subtile',
       'text',
-      'author',
-      'date',
-      'subcomponents',
     ],
     'help' => 'Please use the Text field\'s "Summary" subfield to specify the "Subtitle"',
     'bundles' => ['kalagraphs_component'],
