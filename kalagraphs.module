@@ -234,18 +234,17 @@ function _kalagraphs_populate_fields(&$vars) {
     return;
   }
 
-  $parent = $paragraph->getParentEntity();
-  $author = $parent->getOwner();
-
   // Add a flag to indicate it is rendering in a Drupal context.
   // @todo This doesn't cover non-Paragraph theme hooks, e.g., atom components
   // used for some fields.
   $vars['drupal'] = TRUE;
 
-  // Set generic values
-  $vars['author'] = $author->getUsername();
-  $date = DrupalDateTime::createFromTimestamp($parent->getCreatedTime());
-  $vars['date'] = $date->format('m/d/Y - h:i A');
+  // Insert the author's name and "created" (aka "Authored on") date from the
+  // entity to which this paragraph belongs.
+  $parent = $paragraph->getParentEntity();
+  $author = empty($parent) ? \Drupal::currentUser() : $parent->getOwner();
+  $vars['author'] = $author->getDisplayName();
+  $vars['date'] = date('m/d/Y - h:i A', $parent->getCreatedTime());
 
   // Map field items to template variables.
   foreach (Element::children($elements) as $field) {
