@@ -11,6 +11,7 @@ use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Render\Element;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Component\Utility\Html;
+use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\paragraphs\Entity\Paragraph;
 
 // @todo
@@ -145,6 +146,20 @@ const KALAGRAPHS_TYPES = [
     'help' => '',
     'bundles' => ['kalagraphs_subcomponent'],
   ],
+  'news_header' => [
+    'title' => 'News Header - Full Width Content Area',
+    'path' => '@molecules',
+    'fields' => [
+      'title',
+      'subtile',
+      'text',
+      'author',
+      'date',
+      'subcomponents',
+    ],
+    'help' => 'Please use the Text field\'s "Summary" subfield to specify the "Subtitle"',
+    'bundles' => ['kalagraphs_component'],
+  ],
 
   // Organisms.
   'four_col_block' => [
@@ -223,19 +238,31 @@ function _kalagraphs_populate_fields(&$vars) {
     return;
   }
 
+  $parent = $paragraph->getParentEntity();
+  $author = $parent->getOwner();
+
   // Add a flag to indicate it is rendering in a Drupal context.
   // @todo This doesn't cover non-Paragraph theme hooks, e.g., atom components
   // used for some fields.
   $vars['drupal'] = TRUE;
 
+  // Set generic values
+  $vars['author'] = $author->getUsername();
+  $date = DrupalDateTime::createFromTimestamp($parent->getCreatedTime());
+  $vars['date'] = $date->format('m/d/Y - h:i A');
+
   // Map field items to template variables.
   foreach (Element::children($elements) as $field) {
+    // Make a template-friendly variable name by stripping "field_kalagraphs_"
+    // from the front.
+    $name = substr($field, 17);
     $element = &$elements[$field];
+    $value = isset($element['#items']) ? $element['#items']->getValue() : array();
     foreach (Element::children($element) as $item) {
-      // Make a template-friendly variable name by stripping "field_kalagraphs_"
-      // from the front.
-      $name = substr($field, 17);
-      $vars[$name][] = $element[$item];
+      $vars[$name][$item] = $element[$item];
+      if ('text' === $name && isset($value[$item]['summary'])) {
+        $vars['subtitle'] = $value[$item]['summary'];
+      }
     }
   }
 
