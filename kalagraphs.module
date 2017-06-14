@@ -260,7 +260,7 @@ function _kalagraphs_populate_fields(&$vars) {
     $value = isset($element['#items']) ? $element['#items']->getValue() : array();
     foreach (Element::children($element) as $item) {
       $vars[$name][$item] = $element[$item];
-      if ($name == 'text' && isset($value[$item]['summary'])) {
+      if ('text' === $name && isset($value[$item]['summary'])) {
         $vars['subtitle'] = $value[$item]['summary'];
       }
     }
