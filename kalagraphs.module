@@ -311,7 +311,7 @@ function kalagraphs_theme() {
     'variables' => [
       'src' => NULL,
       'alt' => NULL,
-      'class' => NULL
+      'class' => NULL,
     ],
   ];
 
