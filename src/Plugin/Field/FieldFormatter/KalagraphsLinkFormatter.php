@@ -28,12 +28,38 @@ class KalagraphsLinkFormatter extends KalagraphsFieldFormatter {
    * {@inheritdoc}
    */
   protected function viewValue(FieldItemInterface $item) {
-    // Render links with a twig template.
+
+    // Determine which Twig template to use.
+    switch ($this->kalagraphsType) {
+
+      case 'basic_hero':
+        $theme_hook = 'kalagraphs_cta_link';
+        break;
+
+      default:
+        $theme_hook = 'kalagraphs_basic_link';
+    }
+
+    // Determine the links' classes.
+    switch ($this->kalagraphsType) {
+
+      case 'dropdown':
+      case 'jumpnav':
+      case 'subnav':
+        $class_list = [];
+        break;
+
+      default:
+        $class_list = ['link__default'];
+    }
+
+    // Return a render array which, when printed in the component's twig
+    // template, will call the appropriate link atom twig template.
     return [
-      '#theme' => "kalagraphs_basic_link",
-      '#href' => $item->getUrl(),
-      '#classList' => 'link__default',
-      '#text' => $item->title,
+      '#theme'     => $theme_hook,
+      '#href'      => $item->getUrl(),
+      '#classList' => implode(' ', $class_list),
+      '#text'      => $item->title,
     ];
   }
 

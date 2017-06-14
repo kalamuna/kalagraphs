@@ -12,6 +12,7 @@ use Drupal\Core\Render\Element;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Datetime\DrupalDateTime;
+use Drupal\paragraphs\Entity\Paragraph;
 
 // @todo
 // - Don't hardcode these here but rather use an info hook, yaml file, managed
@@ -290,35 +291,35 @@ function kalagraphs_theme() {
     'template' => 'title',
     'path' => '@atoms/title',
     'variables' => [
-      'title' => '',
-      'tag' => 'h2',
+      'title' => NULL,
+      'tag' => NULL,
     ],
   ];
   $items['kalagraphs_basic_link'] = [
     'template' => 'basic_link',
     'path' => '@atoms/basic_link',
     'variables' => [
-      'href' => '#',
-      'classList' => '',
-      'text' => t('Get Started'),
+      'href' => NULL,
+      'classList' => NULL,
+      'text' => NULL,
     ],
   ];
   $items['kalagraphs_cta_link'] = [
     'template' => 'link',
     'path' => '@atoms/cta/link',
     'variables' => [
-      'href' => '#',
-      'classList' => '',
-      'text' => t('Get Started'),
+      'href' => NULL,
+      'classList' => NULL,
+      'text' => NULL,
     ],
   ];
   $items['kalagraphs_basic_image'] = [
     'template' => 'basic_image',
     'path' => '@atoms/basic_image',
     'variables' => [
-      'src' => '',
-      'alt' => '',
-      'class' => '',
+      'src' => NULL,
+      'alt' => NULL,
+      'class' => NULL
     ],
   ];
 
@@ -355,7 +356,8 @@ function kalagraphs_theme() {
  */
 function kalagraphs_theme_suggestions_paragraph_alter(array &$suggestions, array $vars) {
   $paragraph = $vars['elements']['#paragraph'];
-  if (substr($paragraph->bundle(), 0, 11) === 'kalagraphs_'  && 'default' === $vars['elements']['#view_mode']) {
+  if (substr($paragraph->bundle(), 0, 11) === 'kalagraphs_' &&
+      'default' === $vars['elements']['#view_mode']) {
     $suggestions[] = "kalagraphs_{$paragraph->field_kalagraphs_type->value}";
   }
 }
@@ -380,12 +382,28 @@ function _kalagraphs_options(FieldStorageDefinitionInterface $definition, Fielda
 }
 
 /**
+ * Implements hook_field_widget_WIDGET_TYPE_form_alter() for entity_reference_paragraphs().
+ */
+function kalagraphs_field_widget_entity_reference_paragraphs_form_alter(&$element, FormStateInterface $form_state, $context) {
+  _kalagraphs_process_form($element, $form_state, $context);
+}
+
+/**
  * Implements hook_field_widget_WIDGET_TYPE_form_alter() for paragraphs().
  */
 function kalagraphs_field_widget_paragraphs_form_alter(&$element, FormStateInterface $form_state, $context) {
+  _kalagraphs_process_form($element, $form_state, $context);
+}
+
+/**
+ * Adds conditional display and other sauce to the Paragaphs edit form.
+ *
+ * For paramter info, see hook_field_widget_WIDGET_TYPE_form_alter().
+ */
+function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $context) {
 
   // Only run for Kalagraphs paragraphs.
-  if (!_kalagraphs_element_is_kalagraph($element, $form_state)) {
+  if (!_kalagraphs_element_is_kalagraph($element, $form_state, $context)) {
     return;
   }
 
@@ -435,11 +453,13 @@ function kalagraphs_field_widget_paragraphs_form_alter(&$element, FormStateInter
  *
  * For parameter info, see hook_field_widget_WIDGET_TYPE_form_alter().
  */
-function _kalagraphs_element_is_kalagraph(&$element, FormStateInterface $form_state) {
+function _kalagraphs_element_is_kalagraph(&$element, FormStateInterface $form_state, $context) {
 
   // For previously-saved items, the entity (and therefore bundle) is available.
-  if (isset($element['preview']['#paragraph'])) {
-    $bundle = $element['preview']['#paragraph']->bundle();
+  $delta = $element['#delta'];
+  if (isset($context['items'][$delta]->target_id)) {
+    $id = $context['items'][$delta]->target_id;
+    $bundle = Paragraph::load($id)->bundle();
     return strpos($bundle, 'kalagraphs_') === 0;
   }
 
