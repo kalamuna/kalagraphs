@@ -32,6 +32,7 @@ class KalagraphsTitleFormatter extends KalagraphsFieldFormatter {
 
       // Some items just need the value.
       case 'image_captioned':
+      case 'small':
         return ['#markup' => $item->value];
 
       // Customise the header tag type for certain components.

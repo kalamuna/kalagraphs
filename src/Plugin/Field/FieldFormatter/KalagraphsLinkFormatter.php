@@ -33,6 +33,7 @@ class KalagraphsLinkFormatter extends KalagraphsFieldFormatter {
     switch ($this->kalagraphsType) {
 
       case 'basic_hero':
+      case 'small':
         $theme_hook = 'kalagraphs_cta_link';
         break;
 
@@ -46,6 +47,8 @@ class KalagraphsLinkFormatter extends KalagraphsFieldFormatter {
       case 'dropdown':
       case 'jumpnav':
       case 'subnav':
+      case 'basic_hero':
+      case 'small':
         $class_list = [];
         break;
 

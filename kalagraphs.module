@@ -98,6 +98,7 @@ const KALAGRAPHS_TYPES = [
       'title',
       'text',
       'image',
+      'links',
     ],
     'bundles' => ['kalagraphs_component'],
   ],
@@ -264,7 +265,7 @@ function _kalagraphs_populate_fields(&$vars) {
   $parent = $paragraph->getParentEntity();
   $author = empty($parent) ? \Drupal::currentUser() : $parent->getOwner();
   $vars['author'] = $author->getDisplayName();
-  $vars['date'] = date('m/d/Y - h:i A', $parent->getCreatedTime());
+  $vars['date'] = date('m/d/Y - h:i A', empty($parent) ? time() : $parent->getCreatedTime());
 
   // Map field items to template variables.
   foreach (Element::children($elements) as $field) {
