@@ -11,7 +11,6 @@ use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Render\Element;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Component\Utility\Html;
-use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\paragraphs\Entity\Paragraph;
 
 // @todo
@@ -114,16 +113,6 @@ const KALAGRAPHS_TYPES = [
     'help' => 'Now add a title, text, image, and two "Small Block" sub-components.',
     'bundles' => ['kalagraphs_component'],
   ],
-  'triangle_flow' => [
-    'title' => 'Triangle Flow',
-    'path' => '@organisms',
-    'fields' => [
-      'image',
-      'subcomponents',
-    ],
-    'help' => 'Now add three images and five "Icon" sub-components.',
-    'bundles' => ['kalagraphs_component'],
-  ],
   'full_width' => [
     'title' => 'Full Width',
     'path' => '@molecules/blocks',
@@ -156,8 +145,28 @@ const KALAGRAPHS_TYPES = [
     'help' => 'Please use the Text field\'s "Summary" subfield to specify the "Subtitle"',
     'bundles' => ['kalagraphs_component'],
   ],
+  'image_captioned' => [
+    'title' => 'Image with Caption',
+    'path' => '@molecules',
+    'fields' => [
+      'title',
+      'text',
+      'image',
+    ],
+    'bundles' => ['kalagraphs_subcomponent'],
+  ],
 
   // Organisms.
+  'triangle_flow' => [
+    'title' => 'Triangle Flow',
+    'path' => '@organisms',
+    'fields' => [
+      'image',
+      'subcomponents',
+    ],
+    'help' => 'Now add three images and five "Icon" sub-components.',
+    'bundles' => ['kalagraphs_component'],
+  ],
   'four_col_block' => [
     'title' => '3 Columns',
     'path' => '@organisms',
@@ -174,6 +183,17 @@ const KALAGRAPHS_TYPES = [
       'subcomponents',
     ],
     'help' => 'Now add some "Content Item w/Photo, Header, Link" sub-components.',
+    'bundles' => ['kalagraphs_component'],
+  ],
+  'nr004' => [
+    'title' => 'Content Block w/Photos, Caption',
+    'path' => '@organisms/news_content',
+    'fields' => [
+      'title',
+      'text',
+      'subcomponents',
+    ],
+    'help' => 'Now add text, some "Image with Caption" sub-components, and an optional title.',
     'bundles' => ['kalagraphs_component'],
   ],
 
@@ -422,14 +442,12 @@ function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $co
     $condition = ['value' => $type];
 
     // Add helptext for each component type.
-    $help = &$subform['help'][$type];
-    $help['#type'] = 'item';
-    $help['#title'] = empty($info['help'])
-      ? t('<em>Add some help text here for creating "@type" components...</em>', array(
-        '@type' => $info['title'],
-      ))
-      : $info['help'];
-    $help['#states']['visible'][$selector][] = $condition;
+    if (!empty($info['help'])) {
+      $help = &$subform['help'][$type];
+      $help['#type'] = 'item';
+      $help['#title'] = $info['help'];
+      $help['#states']['visible'][$selector][] = $condition;
+    }
 
     // Only show the fields appropriate for the component type.
     foreach ($info['fields'] as $field) {
