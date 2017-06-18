@@ -42,6 +42,18 @@ const KALAGRAPHS_TYPES = [
     ],
     'bundles' => ['kalagraphs_component'],
   ],
+  'hero' => [
+    'title' => 'Hero',
+    'template' => 'hero',
+    'path' => '@kalagraphs/molecules',
+    'fields' => [
+      'title',
+      'text',
+      'image',
+      'links',
+    ],
+    'bundles' => ['kalagraphs_component'],
+  ],
   'hidden' => [
     'title' => '_Hidden',
     'fields' => [],
