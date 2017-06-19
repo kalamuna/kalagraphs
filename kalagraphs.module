@@ -42,6 +42,18 @@ const KALAGRAPHS_TYPES = [
     ],
     'bundles' => ['kalagraphs_component'],
   ],
+  'hero' => [
+    'title' => 'Hero',
+    'template' => 'hero',
+    'path' => '@kalagraphs/molecules',
+    'fields' => [
+      'title',
+      'text',
+      'image',
+      'links',
+    ],
+    'bundles' => ['kalagraphs_component'],
+  ],
   'hidden' => [
     'title' => '_Hidden',
     'fields' => [],
@@ -202,7 +214,7 @@ function kalagraphs_theme_suggestions_paragraph_alter(array &$suggestions, array
 }
 
 /**
- * Preprocess 
+ * Preprocess callback for the "kalagraphs_tout__cta" theme.
  */
 function template_preprocess_kalagraphs_tout__cta(&$vars) {
   if (!empty($vars['links'])) {
