@@ -54,6 +54,18 @@ const KALAGRAPHS_TYPES = [
     ],
     'bundles' => ['kalagraphs_component'],
   ],
+  'card__program' => [
+    'title' => 'Program Card',
+    'template' => 'card--program',
+    'path' => '@kalagraphs/molecules',
+    'fields' => [
+      'title',
+      'text',
+      'image',
+      'links',
+    ],
+    'bundles' => ['kalagraphs_component'],
+  ],
   'hidden' => [
     'title' => '_Hidden',
     'fields' => [],
