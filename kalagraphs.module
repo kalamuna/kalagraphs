@@ -214,18 +214,6 @@ function kalagraphs_theme_suggestions_paragraph_alter(array &$suggestions, array
 }
 
 /**
- * Preprocess callback for the "kalagraphs_tout__cta" theme.
- */
-function template_preprocess_kalagraphs_tout__cta(&$vars) {
-  if (!empty($vars['links'])) {
-    foreach ($vars['links'] as &$link) {
-      $link['#theme'] = 'kalagraphs_link__icon';
-      $link['#class'] = 'link--icon';
-    }
-  }
-}
-
-/**
  * Implements callback_allowed_values_function().
  *
  * Returns the allowed values for the "Kalagraphs Type" options list field.
