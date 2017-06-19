@@ -18,8 +18,33 @@ use Drupal\Component\Utility\Html;
 //   component's JSON files!
 // - Make sure the "help" text gets translated.
 const KALAGRAPHS_TYPES = [
-  'tout--mega' => [
+  'tout__mega' => [
     'title' => 'Megatout',
+    'template' => 'tout--mega',
+    'path' => '@kalagraphs/molecules',
+    'fields' => [
+      'title',
+      'text',
+      'image',
+      'links',
+    ],
+    'bundles' => ['kalagraphs_component'],
+  ],
+  'tout__cta' => [
+    'title' => 'CTA Tout',
+    'template' => 'tout--cta',
+    'path' => '@kalagraphs/molecules',
+    'fields' => [
+      'title',
+      'text',
+      'image',
+      'links',
+    ],
+    'bundles' => ['kalagraphs_component'],
+  ],
+  'hero' => [
+    'title' => 'Hero',
+    'template' => 'hero',
     'path' => '@kalagraphs/molecules',
     'fields' => [
       'title',
@@ -127,6 +152,15 @@ function kalagraphs_theme() {
       'class' => '',
     ],
   ];
+  $items['kalagraphs_link__icon'] = [
+    'template' => 'link--icon',
+    'path' => '@atoms/link--icon',
+    'variables' => [
+      'url' => '#',
+      'text' => '',
+      'class' => '',
+    ],
+  ];
   $items['kalagraphs_image'] = [
     'template' => 'image',
     'path' => '@atoms/image',
@@ -154,10 +188,13 @@ function kalagraphs_theme() {
     }
 
     $item = [
-      'template' => $component,
-      'path' => "{$info['path']}/$component",
+      'template' => $info['template'],
+      'path' => "{$info['path']}/{$info['template']}",
       // See _kalagraphs_populate_fields() for explanation of this necessity.
-      'preprocess functions' => ['_kalagraphs_populate_fields'],
+      'preprocess functions' => [
+        '_kalagraphs_populate_fields',
+        "template_preprocess_kalagraphs_$component",
+      ],
     ];
   }
 
@@ -173,6 +210,18 @@ function kalagraphs_theme_suggestions_paragraph_alter(array &$suggestions, array
   $paragraph = $vars['elements']['#paragraph'];
   if (substr($paragraph->bundle(), 0, 11) === 'kalagraphs_'  && 'default' === $vars['elements']['#view_mode']) {
     $suggestions[] = "kalagraphs_{$paragraph->field_kalagraphs_type->value}";
+  }
+}
+
+/**
+ * Preprocess callback for the "kalagraphs_tout__cta" theme.
+ */
+function template_preprocess_kalagraphs_tout__cta(&$vars) {
+  if (!empty($vars['links'])) {
+    foreach ($vars['links'] as &$link) {
+      $link['#theme'] = 'kalagraphs_link__icon';
+      $link['#class'] = 'link--icon';
+    }
   }
 }
 
