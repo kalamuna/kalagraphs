@@ -98,6 +98,19 @@ function kalagraphs_help($route_name, RouteMatchInterface $route_match) {
 }
 
 /**
+ * Implements hook_preprocess().
+ */
+function kalagraphs_preprocess(&$vars, $hook, $info) {
+  if ($hook == 'paragraph') {
+    // Only run on the special Paragraphs bundles.
+    $paragraph = &$vars['elements']['#paragraph'];
+    if (substr($paragraph->bundle(), 0, 12) !== 'kalagraphs__') {
+      _kalagraphs_populate_fields($vars);
+    }
+  }
+}
+
+/**
  * A custom preprocess callback specified in kalagraphs_theme().
  *
  * Populates template data with field items, using template-friendly variable
@@ -107,20 +120,15 @@ function kalagraphs_help($route_name, RouteMatchInterface $route_match) {
  * hook_theme()), the original theme hook's preprocess functions aren't getting
  * called (i.e., hook_preprocess_paragraph()), perhaps because we are using
  * hook_theme_suggestions_alter() to invoke our custom theme hook rather than
- * doing it directly. We get around this limitation by specifying this
- * preprocessor manually in the theme hook definition.
+ * doing it directly. We get around this limitation by calling this
+ * preprocessor manually in hook_preprocess() implementation.
  *
  * @see kalagraphs_theme()
  * @see hook_preprocess_HOOK()
  */
 function _kalagraphs_populate_fields(&$vars) {
-
-  // Only run on the special Paragraphs bundles.
   $elements = &$vars['elements'];
   $paragraph = $elements['#paragraph'];
-  if (substr($paragraph->bundle(), 0, 11) !== 'kalagraphs_') {
-    return;
-  }
 
   // Add a flag to indicate it is rendering in a Drupal context.
   // @todo This doesn't cover non-Paragraph theme hooks, e.g., atom components
@@ -146,7 +154,6 @@ function _kalagraphs_populate_fields(&$vars) {
  * Implements hook_theme().
  */
 function kalagraphs_theme() {
-
   // First, manually create some theme hooks for certain atoms.
   //
   // @todo Don't hardcode these here but rather use an info hook, yaml file,
@@ -155,7 +162,7 @@ function kalagraphs_theme() {
   //
   // @see \Drupal\kalagraphs\Plugin\Field\FieldFormatter\KalagraphsLinkFormatter
   // @see \Drupal\kalagraphs\Plugin\Field\FieldFormatter\KalagraphsImageFormatter
-  $items['kalagraphs_link'] = [
+  $items['kalastatic__link'] = [
     'template' => 'link',
     'path' => '@atoms/link',
     'variables' => [
@@ -164,7 +171,7 @@ function kalagraphs_theme() {
       'class' => '',
     ],
   ];
-  $items['kalagraphs_link__icon'] = [
+  $items['kalastatic__link__icon'] = [
     'template' => 'link--icon',
     'path' => '@atoms/link--icon',
     'variables' => [
@@ -173,7 +180,7 @@ function kalagraphs_theme() {
       'class' => '',
     ],
   ];
-  $items['kalagraphs_image'] = [
+  $items['kalastatic__image'] = [
     'template' => 'image',
     'path' => '@atoms/image',
     'variables' => [
@@ -191,7 +198,7 @@ function kalagraphs_theme() {
   // pulls them from another source: other modules, themes, managed config,
   // State API, yaml files, styleguide components' JSON data, etc.
   foreach (KALAGRAPHS_TYPES as $component => $info) {
-    $item = &$items["kalagraphs_$component"];
+    $item = &$items["kalagraphs__$component"];
 
     // Create a special theme hook for the "hidden" component type.
     if ('hidden' === $component) {
@@ -202,11 +209,7 @@ function kalagraphs_theme() {
     $item = [
       'template' => $info['template'],
       'path' => "{$info['path']}/{$info['template']}",
-      // See _kalagraphs_populate_fields() for explanation of this necessity.
-      'preprocess functions' => [
-        '_kalagraphs_populate_fields',
-        "template_preprocess_kalagraphs_$component",
-      ],
+      'base hook' => 'paragraph',
     ];
   }
 
@@ -221,7 +224,7 @@ function kalagraphs_theme() {
 function kalagraphs_theme_suggestions_paragraph_alter(array &$suggestions, array $vars) {
   $paragraph = $vars['elements']['#paragraph'];
   if (substr($paragraph->bundle(), 0, 11) === 'kalagraphs_'  && 'default' === $vars['elements']['#view_mode']) {
-    $suggestions[] = "kalagraphs_{$paragraph->field_kalagraphs_type->value}";
+    $suggestions[] = "kalagraphs__{$paragraph->field_kalagraphs_type->value}";
   }
 }
 

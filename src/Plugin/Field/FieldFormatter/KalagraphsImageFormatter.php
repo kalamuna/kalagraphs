@@ -39,7 +39,7 @@ class KalagraphsImageFormatter extends KalagraphsFieldFormatter {
       // Other components render images with a twig template.
       default:
         return [
-          '#theme' => "kalagraphs_image",
+          '#theme' => "kalastatic__image",
           '#src' => file_create_url($item->entity->getFileUri()),
           '#alt' => $item->alt,
           '#title' => $item->title,
