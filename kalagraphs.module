@@ -188,6 +188,8 @@ function kalagraphs_theme() {
       'alt' => '',
       'title' => '',
       'class' => '',
+      'width' => '',
+      'height' => '',
     ],
   ];
 

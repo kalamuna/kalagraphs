@@ -44,6 +44,8 @@ class KalagraphsImageFormatter extends KalagraphsFieldFormatter {
           '#alt' => $item->alt,
           '#title' => $item->title,
           '#class' => '',
+          '#width' => $item->width,
+          '#height' => $item->height,
         ];
     }
   }
