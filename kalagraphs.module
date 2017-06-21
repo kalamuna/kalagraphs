@@ -18,34 +18,38 @@ use Drupal\Component\Utility\Html;
 //   component's JSON files!
 // - Make sure the "help" text gets translated.
 const KALAGRAPHS_TYPES = [
+  'hidden' => [
+    'title' => '_Hidden',
+    'function' => '_kalagraphs_render_hidden',
+    'fields' => [],
+    'help' => 'Temporarily hide this component without losing its data.',
+  ],
   'tout__mega' => [
     'title' => 'Megatout',
     'template' => 'tout--mega',
-    'path' => '@kalagraphs/molecules',
+    'path' => '@molecules',
     'fields' => [
       'title',
       'text',
       'image',
       'links',
     ],
-    'bundles' => ['kalagraphs_component'],
   ],
   'tout__cta' => [
     'title' => 'CTA Tout',
     'template' => 'tout--cta',
-    'path' => '@kalagraphs/molecules',
+    'path' => '@molecules',
     'fields' => [
       'title',
       'text',
       'image',
       'links',
     ],
-    'bundles' => ['kalagraphs_component'],
   ],
   'hero' => [
     'title' => 'Hero',
     'template' => 'hero',
-    'path' => '@kalagraphs/molecules',
+    'path' => '@molecules',
     'fields' => [
       'title',
       'text',
@@ -57,20 +61,31 @@ const KALAGRAPHS_TYPES = [
   'card__program' => [
     'title' => 'Program Card',
     'template' => 'card--program',
-    'path' => '@kalagraphs/molecules',
+    'path' => '@molecules',
     'fields' => [
       'title',
       'text',
       'image',
       'links',
     ],
-    'bundles' => ['kalagraphs_component'],
   ],
-  'hidden' => [
-    'title' => '_Hidden',
-    'fields' => [],
-    'bundles' => ['kalagraphs_component', 'kalagraphs_subcomponent'],
-    'help' => 'Temporarily hide this component without losing its data.',
+  'layout__4_8' => [
+    'title' => 'Layout: Sidebar w/Main',
+    'template' => 'layout--4-8',
+    'path' => '@layouts',
+    'fields' => [
+      'subcomponents',
+    ],
+    'bundles' => ['kalagraphs_component'],
+    'help' => 'Now add two "layout column" components.',
+  ],
+  'layout__column' => [
+    'title' => 'Layout column',
+    'fields' => [
+      'subcomponents',
+    ],
+    'bundles' => ['kalagraphs_subcomponent'],
+    'help' => 'Add components to this layout column.',
   ],
 ];
 
@@ -121,7 +136,7 @@ function kalagraphs_preprocess(&$vars, $hook, $info) {
  * called (i.e., hook_preprocess_paragraph()), perhaps because we are using
  * hook_theme_suggestions_alter() to invoke our custom theme hook rather than
  * doing it directly. We get around this limitation by calling this
- * preprocessor manually in hook_preprocess() implementation.
+ * preprocessor manually in an implementation of the generic hook.
  *
  * @see kalagraphs_theme()
  * @see hook_preprocess_HOOK()
@@ -193,6 +208,14 @@ function kalagraphs_theme() {
     ],
   ];
 
+  // Add fallback templates that cure divitus.
+  $items['kalagraphs_default'] = [
+    'base hook' => 'paragraph',
+  ];
+  $items['kalagraphs_field'] = [
+    'base hook' => 'field',
+  ];
+
   // Next, create theme hooks for each Kalagraphs component type. These don't
   // usually get invoked directly but rather via hook_theme_suggestions_alter().
   //
@@ -200,19 +223,21 @@ function kalagraphs_theme() {
   // pulls them from another source: other modules, themes, managed config,
   // State API, yaml files, styleguide components' JSON data, etc.
   foreach (KALAGRAPHS_TYPES as $component => $info) {
-    $item = &$items["kalagraphs__$component"];
+    $name = "kalagraphs__$component";
 
-    // Create a special theme hook for the "hidden" component type.
-    if ('hidden' === $component) {
-      $item = ['function' => '_kalagraphs_render_hidden'];
-      continue;
+    // Some get rendered by functions.
+    if (!empty($info['function'])) {
+      $items[$name] = ['function' => $info['function']];
     }
 
-    $item = [
-      'template' => $info['template'],
-      'path' => "{$info['path']}/{$info['template']}",
-      'base hook' => 'paragraph',
-    ];
+    // Others use templates.
+    elseif (!empty($info['template'])) {
+      $items[$name] = [
+        'template' => $info['template'],
+        'path' => "{$info['path']}/{$info['template']}",
+        'base hook' => 'paragraph',
+      ];
+    }
   }
 
   return $items;
@@ -226,7 +251,21 @@ function kalagraphs_theme() {
 function kalagraphs_theme_suggestions_paragraph_alter(array &$suggestions, array $vars) {
   $paragraph = $vars['elements']['#paragraph'];
   if (substr($paragraph->bundle(), 0, 11) === 'kalagraphs_'  && 'default' === $vars['elements']['#view_mode']) {
+    $suggestions[] = 'kalagraphs_default';
     $suggestions[] = "kalagraphs__{$paragraph->field_kalagraphs_type->value}";
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter() for field().
+ *
+ * Renders Kalagraphs fields with a minimal template. Note that this only gets
+ * invoked when a Kalagraphs type doesn't map to a custom template or render
+ * function and therefore gets displayed through the regular field pipeline.
+ */
+function kalagraphs_theme_suggestions_field_alter(array &$suggestions, array $vars) {
+  if (strpos($vars['element']['#field_name'], 'field_kalagraphs_') === 0) {
+    $suggestions[] = 'kalagraphs_field';
   }
 }
 
@@ -241,7 +280,7 @@ function _kalagraphs_options(FieldStorageDefinitionInterface $definition, Fielda
   $cacheable = FALSE;
   $options = [];
   foreach (KALAGRAPHS_TYPES as $type => $info) {
-    if (in_array($entity->bundle(), $info['bundles'])) {
+    if (empty($info['bundles']) || in_array($entity->bundle(), $info['bundles'])) {
       $options[$type] = $info['title'];
     }
   }
@@ -285,12 +324,12 @@ function kalagraphs_field_widget_paragraphs_form_alter(&$element, FormStateInter
     $condition = ['value' => $type];
 
     // Add helptext for each component type.
-    $help = &$subform['help'][$type];
-    $help['#type'] = 'item';
-    $help['#title'] = empty($info['help'])
-      ? t('<em>Add some help text here for creating "Section Header" components...</em>')
-      : $info['help'];
-    $help['#states']['visible'][$selector][] = $condition;
+    if (!empty($info['help'])) {
+      $help = &$subform['help'][$type];
+      $help['#type'] = 'item';
+      $help['#title'] = $info['help'];
+      $help['#states']['visible'][$selector][] = $condition;
+    }
 
     // Only show the fields appropriate for the component type.
     foreach ($info['fields'] as $field) {
