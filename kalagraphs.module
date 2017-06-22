@@ -87,6 +87,16 @@ const KALAGRAPHS_TYPES = [
     'bundles' => ['kalagraphs_subcomponent'],
     'help' => 'Add components to this layout column.',
   ],
+  'layout__3_3_3' => [
+    'title' => 'Layout: Three Column',
+    'template' => 'layout--3-3-3',
+    'path' => '@layouts',
+    'fields' => [
+      'subcomponents',
+    ],
+    'bundles' => ['kalagraphs_component'],
+    'help' => 'Now add 3 sub-components. Add 6, 9, etc. and they will wrap to new rows.',
+  ],
 ];
 
 /**
