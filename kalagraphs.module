@@ -69,6 +69,16 @@ const KALAGRAPHS_TYPES = [
       'links',
     ],
   ],
+  'layout__2_up' => [
+    'title' => 'Layout: Two-up',
+    'template' => 'layout--2-up',
+    'path' => '@layouts',
+    'fields' => [
+      'subcomponents',
+    ],
+    'bundles' => ['kalagraphs_component'],
+    'help' => 'Now add 2 (or 4, 6, etc.) sub-components.',
+  ],
   'layout__4_8' => [
     'title' => 'Layout: Sidebar w/Main',
     'template' => 'layout--4-8',
@@ -95,7 +105,7 @@ const KALAGRAPHS_TYPES = [
       'subcomponents',
     ],
     'bundles' => ['kalagraphs_component'],
-    'help' => 'Now add 3 sub-components. Add 6, 9, etc. and they will wrap to new rows.',
+    'help' => 'Now add 3 (or 6, 9, etc.) sub-components.',
   ],
 ];
 
