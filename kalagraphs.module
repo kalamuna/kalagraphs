@@ -77,7 +77,7 @@ const KALAGRAPHS_TYPES = [
       'subcomponents',
     ],
     'bundles' => ['kalagraphs_component'],
-    'help' => 'Now add two "layout column" components.',
+    'help' => 'Now add two "layout column" sub-components.',
   ],
   'layout__column' => [
     'title' => 'Layout column',
