@@ -209,7 +209,7 @@ function kalagraphs_theme() {
     'template' => 'image',
     'path' => '@atoms/image',
     'variables' => [
-      'src' => '',
+      'uri' => '',
       'alt' => '',
       'title' => '',
       'class' => '',

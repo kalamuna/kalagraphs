@@ -40,7 +40,7 @@ class KalagraphsImageFormatter extends KalagraphsFieldFormatter {
       default:
         return [
           '#theme' => "kalastatic__image",
-          '#src' => file_create_url($item->entity->getFileUri()),
+          '#uri' => file_create_url($item->entity->getFileUri()),
           '#alt' => $item->alt,
           '#title' => $item->title,
           '#class' => '',
