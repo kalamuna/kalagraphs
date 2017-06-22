@@ -250,7 +250,7 @@ function kalagraphs_theme() {
  */
 function kalagraphs_theme_suggestions_paragraph_alter(array &$suggestions, array $vars) {
   $paragraph = $vars['elements']['#paragraph'];
-  if (substr($paragraph->bundle(), 0, 11) === 'kalagraphs_'  && 'default' === $vars['elements']['#view_mode']) {
+  if (substr($paragraph->bundle(), 0, 11) === 'kalagraphs_' && 'default' === $vars['elements']['#view_mode']) {
     $suggestions[] = 'kalagraphs_default';
     $suggestions[] = "kalagraphs__{$paragraph->field_kalagraphs_type->value}";
   }
