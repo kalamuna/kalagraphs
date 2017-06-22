@@ -264,7 +264,7 @@ function kalagraphs_theme_suggestions_paragraph_alter(array &$suggestions, array
  * function and therefore gets displayed through the regular field pipeline.
  */
 function kalagraphs_theme_suggestions_field_alter(array &$suggestions, array $vars) {
-  if (strpos($vars['element']['#field_name'], 'field_kalagraphs_') === 0) {
+  if (strpos($vars['element']['#field_name'], 'field_kalagraphs_') === 0 && 'default' === $vars['element']['#view_mode']) {
     $suggestions[] = 'kalagraphs_field';
   }
 }
