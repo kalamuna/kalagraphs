@@ -280,10 +280,14 @@ function _kalagraphs_options(FieldStorageDefinitionInterface $definition, Fielda
   $cacheable = FALSE;
   $options = [];
   foreach (KALAGRAPHS_TYPES as $type => $info) {
+    // @todo We _really_ can't get access to the name of the paragraphs field on
+    // the parent entity here? Then we wouldn't have to bother with having a
+    // separate bundle for "sub-components."
     if (empty($info['bundles']) || in_array($entity->bundle(), $info['bundles'])) {
       $options[$type] = $info['title'];
     }
   }
+  // @todo Manually add "hidden" option here (and remove from main list).
   asort($options);
   return $options;
 }
