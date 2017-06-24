@@ -139,7 +139,7 @@ function kalagraphs_preprocess(&$vars, $hook, $info) {
   if ($hook == 'paragraph') {
     // Only run on the special Paragraphs bundles.
     $paragraph = &$vars['elements']['#paragraph'];
-    if (substr($paragraph->bundle(), 0, 12) !== 'kalagraphs__') {
+    if (substr($paragraph->bundle(), 0, 11) === 'kalagraphs_') {
       _kalagraphs_populate_fields($vars);
     }
   }
