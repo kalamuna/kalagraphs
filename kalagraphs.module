@@ -315,6 +315,7 @@ function kalagraphs_theme() {
       'href' => NULL,
       'classList' => NULL,
       'text' => NULL,
+      'active' => NULL,
     ],
   ];
   $items['kalagraphs_cta_link'] = [
@@ -324,6 +325,7 @@ function kalagraphs_theme() {
       'href' => NULL,
       'classList' => NULL,
       'text' => NULL,
+      'active' => NULL,
     ],
   ];
   $items['kalagraphs_basic_image'] = [
