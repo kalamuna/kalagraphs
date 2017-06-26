@@ -15,7 +15,7 @@ use Drupal\Core\Field\FieldItemInterface;
  *   }
  * )
  */
-class KalagraphsImageFormatter extends KalagraphsFieldFormatter {
+abstract class KalagraphsImageFormatter extends KalagraphsFieldFormatter {
 
   /**
    * {@inheritdoc}
@@ -28,24 +28,16 @@ class KalagraphsImageFormatter extends KalagraphsFieldFormatter {
    * {@inheritdoc}
    */
   protected function viewValue(FieldItemInterface $item) {
-    switch ($this->kalagraphsType) {
 
-      // Some components just need the image URL for use as a background.
-      case 'hero':
-      case 'basic_hero':
-      case 'section_header':
-      case 'triangle_flow':
-        return $item->view(['type' => 'image_url']);
-
-      // Other components render images with a twig template.
-      default:
-        return [
-          '#theme' => "kalagraphs_basic_image",
-          '#src' => file_create_url($item->entity->getFileUri()),
-          '#alt' => $item->alt,
-          '#class' => '',
-        ];
-    }
+    // Fill in some default values for sub-classes.
+    return [
+      '#uri'     => file_create_url($item->entity->getFileUri()),
+      '#alt'     => $item->alt,
+      '#title'   => $item->title,
+      '#width'   => $item->width,
+      '#height'  => $item->height,
+      '#classes' => [],
+    ];
   }
 
 }

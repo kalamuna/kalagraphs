@@ -15,7 +15,7 @@ use Drupal\Core\Field\FieldItemInterface;
  *   }
  * )
  */
-class KalagraphsLinkFormatter extends KalagraphsFieldFormatter {
+abstract class KalagraphsLinkFormatter extends KalagraphsFieldFormatter {
 
   /**
    * {@inheritdoc}
@@ -29,40 +29,11 @@ class KalagraphsLinkFormatter extends KalagraphsFieldFormatter {
    */
   protected function viewValue(FieldItemInterface $item) {
 
-    // Determine which Twig template to use.
-    switch ($this->kalagraphsType) {
-
-      case 'basic_hero':
-      case 'small':
-        $theme_hook = 'kalagraphs_cta_link';
-        break;
-
-      default:
-        $theme_hook = 'kalagraphs_basic_link';
-    }
-
-    // Determine the links' classes.
-    switch ($this->kalagraphsType) {
-
-      case 'dropdown':
-      case 'jumpnav':
-      case 'subnav':
-      case 'basic_hero':
-      case 'small':
-        $class_list = [];
-        break;
-
-      default:
-        $class_list = ['link__default'];
-    }
-
-    // Return a render array which, when printed in the component's twig
-    // template, will call the appropriate link atom twig template.
+    // Fill in some default values for sub-classes.
     return [
-      '#theme'     => $theme_hook,
-      '#href'      => $item->getUrl(),
-      '#classList' => implode(' ', $class_list),
-      '#text'      => $item->title,
+      '#href'    => $item->getUrl(),
+      '#text'    => $item->title,
+      '#classes' => [],
     ];
   }
 
