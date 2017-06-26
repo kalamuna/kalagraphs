@@ -15,7 +15,7 @@ use Drupal\Core\Field\FieldItemInterface;
  *   }
  * )
  */
-abstract class KalagraphsTitleFormatter extends KalagraphsFieldFormatter {
+class KalagraphsTitleFormatter extends KalagraphsFieldFormatter {
 
   /**
    * {@inheritdoc}
