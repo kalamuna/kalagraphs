@@ -28,13 +28,22 @@ class KalagraphsLinkFormatter extends KalagraphsFieldFormatter {
    * {@inheritdoc}
    */
   protected function viewValue(FieldItemInterface $item) {
+    $classes = [];
+    switch ($this->kalagraphsType) {
+      case 'vertical_tabs':
+        $classes[] = 'tab';
+        break;
+
+      default:
+        $classes[] = 'button';
+    }
     // Render links with a twig template.
     return [
       '#theme' => "kalastatic__link",
       '#href' => $item->uri,
       '#text' => $item->title,
       // @todo Make the class variable.
-      '#class' => 'button',
+      '#class' => $classes,
     ];
   }
 

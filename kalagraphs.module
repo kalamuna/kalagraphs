@@ -18,12 +18,8 @@ use Drupal\Component\Utility\Html;
 //   component's JSON files!
 // - Make sure the "help" text gets translated.
 const KALAGRAPHS_TYPES = [
-  'hidden' => [
-    'title' => '_Hidden',
-    'function' => '_kalagraphs_render_hidden',
-    'fields' => [],
-    'help' => 'Temporarily hide this component without losing its data.',
-  ],
+
+  // Molecules.
   'tout__mega' => [
     'title' => 'Megatout',
     'template' => 'tout--mega',
@@ -69,6 +65,17 @@ const KALAGRAPHS_TYPES = [
       'links',
     ],
   ],
+  'vertical_tabs' => [
+    'title' => 'Sidebar Navigation',
+    'template' => 'vertical-tabs',
+    'path' => '@molecules',
+    'fields' => [
+      'links',
+    ],
+    'bundles' => ['kalagraphs_subcomponent'],
+  ],
+
+  // Layouts.
   'layout__2_up' => [
     'title' => 'Layout: Two-up',
     'template' => 'layout--2-up',
@@ -89,14 +96,6 @@ const KALAGRAPHS_TYPES = [
     'bundles' => ['kalagraphs_component'],
     'help' => 'Now add two "layout column" sub-components.',
   ],
-  'layout__column' => [
-    'title' => 'Layout column',
-    'fields' => [
-      'subcomponents',
-    ],
-    'bundles' => ['kalagraphs_subcomponent'],
-    'help' => 'Add components to this layout column.',
-  ],
   'layout__3_3_3' => [
     'title' => 'Layout: Three Column',
     'template' => 'layout--3-3-3',
@@ -106,6 +105,28 @@ const KALAGRAPHS_TYPES = [
     ],
     'bundles' => ['kalagraphs_component'],
     'help' => 'Now add 3 (or 6, 9, etc.) sub-components.',
+  ],
+
+  // Special.
+  'hidden' => [
+    'title' => '_Hidden',
+    'function' => '_kalagraphs_render_hidden',
+    'fields' => [],
+    'help' => 'Temporarily hide this component without losing its data.',
+  ],
+  'layout__column' => [
+    'title' => 'Layout column',
+    'fields' => [
+      'subcomponents',
+    ],
+    'bundles' => ['kalagraphs_subcomponent'],
+    'help' => 'Add components to this layout column.',
+  ],
+  'text' => [
+    'title' => 'Simple Text',
+    'fields' => [
+      'text',
+    ],
   ],
 ];
 
