@@ -83,7 +83,6 @@ const KALAGRAPHS_TYPES = [
     'fields' => [
       'subcomponents',
     ],
-    'bundles' => ['kalagraphs_component'],
     'help' => 'Now add 2 (or 4, 6, etc.) sub-components.',
   ],
   'layout__4_8' => [
@@ -103,7 +102,6 @@ const KALAGRAPHS_TYPES = [
     'fields' => [
       'subcomponents',
     ],
-    'bundles' => ['kalagraphs_component'],
     'help' => 'Now add 3 (or 6, 9, etc.) sub-components.',
   ],
 
