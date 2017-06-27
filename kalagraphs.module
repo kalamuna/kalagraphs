@@ -11,6 +11,7 @@ use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Render\Element;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\paragraphs\Entity\Paragraph;
+use Drupal\Component\Utility\Html;
 
 /**
  * Implements hook_help().
@@ -95,6 +96,9 @@ function template_preprocess_paragraph__kalagraphs_component__default(&$vars) {
       }
     }
   }
+
+  // Provide a unique id attribute for the element that may or may not get used.
+  $vars['id'] = Html::getUniqueId("kalagraphs-component-{$paragraph->field_kalagraphs_type->value}");
 }
 
 /**
