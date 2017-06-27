@@ -220,7 +220,7 @@ function kalagraphs_theme() {
     'template' => 'link',
     'path' => '@atoms/link',
     'variables' => [
-      'href' => '',
+      'uri' => '',
       'text' => '',
       'class' => '',
     ],
@@ -229,7 +229,7 @@ function kalagraphs_theme() {
     'template' => 'link--icon',
     'path' => '@atoms/link--icon',
     'variables' => [
-      'href' => '',
+      'uri' => '',
       'text' => '',
       'class' => '',
     ],
