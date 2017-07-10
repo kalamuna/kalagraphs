@@ -20,6 +20,15 @@ use Drupal\Component\Utility\Html;
 const KALAGRAPHS_TYPES = [
 
   // Molecules.
+  'article__image' => [
+    'title' => 'Article Image',
+    'template' => 'article__image',
+    'path' => '@molecules',
+    'fields' => [
+      'image',
+      'text',
+    ],
+  ],
   'tout__mega' => [
     'title' => 'Megatout',
     'template' => 'tout--mega',
