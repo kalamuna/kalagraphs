@@ -20,6 +20,15 @@ use Drupal\Component\Utility\Html;
 const KALAGRAPHS_TYPES = [
 
   // Molecules.
+  'article__image' => [
+    'title' => 'Article Image',
+    'template' => 'article__image',
+    'path' => '@molecules',
+    'fields' => [
+      'image',
+      'text',
+    ],
+  ],
   'tout__mega' => [
     'title' => 'Megatout',
     'template' => 'tout--mega',
@@ -52,6 +61,7 @@ const KALAGRAPHS_TYPES = [
       'image',
       'links',
     ],
+    'help' => 'Use the "Summary" field to enter a "Subtitle" for this component',
     'bundles' => ['kalagraphs_component'],
   ],
   'card__program' => [
@@ -197,6 +207,11 @@ function _kalagraphs_populate_fields(&$vars) {
       // from the front.
       $name = substr($field, 17);
       $vars[$name][] = $element[$item];
+
+      // Extract the longtext field's "summary" subfield.
+      if ('text' === $name) {
+        $vars['subtitle'] = $element['#items'][$item]->summary;
+      }
     }
   }
 
