@@ -1,7 +1,7 @@
 {#
 /**
  * @file
- * Custom theme implementation to display a paragraph.
+ * Custom theme implementation to display Kalagraphs components.
  *
  * Available variables:
  * - paragraph: Full paragraph entity.
@@ -38,8 +38,16 @@
  * @ingroup themeable
  */
 #}
-{% block paragraph %}
-  {% block content %}
-    {{ content }}
-  {% endblock %}
-{% endblock paragraph %}
+
+{# Simply use the component's template from the styleguide. #}
+{% set output = include(component, ignore_missing = true, sandboxed = true) %}
+{% if output is not empty %}
+  {{ output|raw }}
+{% else %}
+  {# For components without their own template, fall back to a minimal one. #}
+  {% block paragraph %}
+    {% block content %}
+      {{ content }}
+    {% endblock %}
+  {% endblock paragraph %}
+{% endif %}

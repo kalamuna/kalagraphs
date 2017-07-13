@@ -10,133 +10,43 @@ use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Render\Element;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\Component\Utility\Html;
 
-// @todo
-// - Don't hardcode these here but rather use an info hook, yaml file, managed
-//   configuration, State API, etc. Or grab them directly from the styleguide
-//   component's JSON files!
-// - Make sure the "help" text gets translated.
-const KALAGRAPHS_TYPES = [
+/**
+ * Implements hook_help().
+ */
+function kalagraphs_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.kalagraphs':
+      $output = '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Kalagraphs provides a flexible Paragraph type called &quot;Component&quot; that allows editors to choose with which Twig template the component will render.') . '</p>';
+      return $output;
+  }
+}
 
-  // Molecules.
-  'article__image' => [
-    'title' => 'Article Image',
-    'template' => 'article__image',
-    'path' => '@molecules',
-    'fields' => [
-      'image',
-      'text',
-    ],
-  ],
-  'tout__mega' => [
-    'title' => 'Megatout',
-    'template' => 'tout--mega',
-    'path' => '@molecules',
-    'fields' => [
-      'title',
-      'text',
-      'image',
-      'links',
-    ],
-  ],
-  'tout__cta' => [
-    'title' => 'CTA Tout',
-    'template' => 'tout--cta',
-    'path' => '@molecules',
-    'fields' => [
-      'title',
-      'text',
-      'image',
-      'links',
-    ],
-  ],
-  'hero' => [
-    'title' => 'Hero',
-    'template' => 'hero',
-    'path' => '@molecules',
-    'fields' => [
-      'title',
-      'text',
-      'image',
-      'links',
-    ],
-    'help' => 'Use the "Summary" field to enter a "Subtitle" for this component',
-    'bundles' => ['kalagraphs_component'],
-  ],
-  'card__program' => [
-    'title' => 'Program Card',
-    'template' => 'card--program',
-    'path' => '@molecules',
-    'fields' => [
-      'title',
-      'text',
-      'image',
-      'links',
-    ],
-  ],
-  'vertical_tabs' => [
-    'title' => 'Sidebar Navigation',
-    'template' => 'vertical-tabs',
-    'path' => '@molecules',
-    'fields' => [
-      'links',
-    ],
-    'bundles' => ['kalagraphs_subcomponent'],
-  ],
+/**
+ * Implements hook_theme().
+ */
+function kalagraphs_theme() {
+  return [
 
-  // Layouts.
-  'layout__2_up' => [
-    'title' => 'Layout: Two-up',
-    'template' => 'layout--2-up',
-    'path' => '@layouts',
-    'fields' => [
-      'subcomponents',
+    // Instantiate a master theme hook that calls the styleguide templates.
+    'paragraph__kalagraphs_component__default' => [
+      'base hook' => 'paragraph',
     ],
-    'help' => 'Now add 2 (or 4, 6, etc.) sub-components.',
-  ],
-  'layout__4_8' => [
-    'title' => 'Layout: Sidebar w/Main',
-    'template' => 'layout--4-8',
-    'path' => '@layouts',
-    'fields' => [
-      'subcomponents',
-    ],
-    'bundles' => ['kalagraphs_component'],
-    'help' => 'Now add two "layout column" sub-components.',
-  ],
-  'layout__3_3_3' => [
-    'title' => 'Layout: Three Column',
-    'template' => 'layout--3-3-3',
-    'path' => '@layouts',
-    'fields' => [
-      'subcomponents',
-    ],
-    'help' => 'Now add 3 (or 6, 9, etc.) sub-components.',
-  ],
 
-  // Special.
-  'hidden' => [
-    'title' => '_Hidden',
-    'function' => '_kalagraphs_render_hidden',
-    'fields' => [],
-    'help' => 'Temporarily hide this component without losing its data.',
-  ],
-  'layout__column' => [
-    'title' => 'Layout column',
-    'fields' => [
-      'subcomponents',
+    // Create a theme hook to hide paragraphs.
+    'kalagraphs_hidden' => [
+      'function' => '_kalagraphs_render_hidden',
     ],
-    'bundles' => ['kalagraphs_subcomponent'],
-    'help' => 'Add components to this layout column.',
-  ],
-  'text' => [
-    'title' => 'Simple Text',
-    'fields' => [
-      'text',
+
+    // Add a field template to relieve some divitus.
+    'kalagraphs_field' => [
+      'base hook' => 'field',
     ],
-  ],
-];
+  ];
+}
 
 /**
  * Theme callback to render the "hidden" component type.
@@ -146,66 +56,47 @@ function _kalagraphs_render_hidden() {
 }
 
 /**
- * Implements hook_help().
- */
-function kalagraphs_help($route_name, RouteMatchInterface $route_match) {
-  switch ($route_name) {
-    // Main module help for the kalagraphs module.
-    case 'help.page.kalagraphs':
-      $output = '';
-      $output .= '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('Kalagraphs provides a flexible Paragraph type called &quot;Component&quot; that allows editors to choose with which Twig template the component will render.') . '</p>';
-      return $output;
-
-    default:
-  }
-}
-
-/**
- * Implements hook_preprocess().
- */
-function kalagraphs_preprocess(&$vars, $hook, $info) {
-  if ($hook == 'paragraph') {
-    // Only run on the special Paragraphs bundles.
-    $paragraph = &$vars['elements']['#paragraph'];
-    if (substr($paragraph->bundle(), 0, 11) === 'kalagraphs_') {
-      _kalagraphs_populate_fields($vars);
-    }
-  }
-}
-
-/**
- * A custom preprocess callback specified in kalagraphs_theme().
+ * Preprocessor for the "paragraphs__kalagraphs_component__default" theme hook.
  *
  * Populates template data with field items, using template-friendly variable
  * names.
- *
- * Note that despite what the documentation says about "base hook" (see
- * hook_theme()), the original theme hook's preprocess functions aren't getting
- * called (i.e., hook_preprocess_paragraph()), perhaps because we are using
- * hook_theme_suggestions_alter() to invoke our custom theme hook rather than
- * doing it directly. We get around this limitation by calling this
- * preprocessor manually in an implementation of the generic hook.
- *
- * @see kalagraphs_theme()
- * @see hook_preprocess_HOOK()
  */
-function _kalagraphs_populate_fields(&$vars) {
-  $elements = &$vars['elements'];
-  $paragraph = $elements['#paragraph'];
+function template_preprocess_paragraph__kalagraphs_component__default(&$vars) {
+
+  // Provide the component's template name for inclusion by the master template.
+  $paragraph = $vars['paragraph'];
+  $type = $paragraph->field_kalagraphs_type->value;
+  $info = KALAGRAPHS_TYPES[$type];
+  if (isset($info['path'])) {
+    $path = $info['path'];
+    $template = isset($info['template']) ? $info['template'] : $type;
+    $vars['component'] = "$path/$template/$template.html.twig";
+  }
 
   // Add a flag to indicate it is rendering in a Drupal context.
   // @todo This doesn't cover non-Paragraph theme hooks, e.g., atom components
   // used for some fields.
   $vars['drupal'] = TRUE;
 
+  // Insert the author's name and "created" (aka "Authored on") date from the
+  // entity to which this paragraph belongs.
+  $parent = $paragraph->getParentEntity();
+  $author = empty($parent) ? \Drupal::currentUser() : $parent->getOwner();
+  $vars['author'] = $author->getDisplayName();
+  $timestamp = empty($parent) ? time() : $parent->getCreatedTime();
+  $vars['date'] = date('m/d/Y - h:i A', $timestamp);
+
   // Map field items to template variables.
+  $elements = &$vars['elements'];
   foreach (Element::children($elements) as $field) {
+
+    // Make a template-friendly variable name by stripping "field_kalagraphs_"
+    // from the front.
+    $name = substr($field, 17);
     $element = &$elements[$field];
     foreach (Element::children($element) as $item) {
-      // Make a template-friendly variable name by stripping "field_kalagraphs_"
-      // from the front.
-      $name = substr($field, 17);
+
+      // Send the field item's render array to Twig.
       $vars[$name][] = $element[$item];
 
       // Extract the longtext field's "summary" subfield.
@@ -216,97 +107,23 @@ function _kalagraphs_populate_fields(&$vars) {
   }
 
   // Provide a unique id attribute for the element that may or may not get used.
-  $vars['id'] = Html::getUniqueId("kalagraphs-component-{$paragraph->field_kalagraphs_type->value}");
-}
-
-/**
- * Implements hook_theme().
- */
-function kalagraphs_theme() {
-  // First, manually create some theme hooks for certain atoms.
-  //
-  // @todo Don't hardcode these here but rather use an info hook, yaml file,
-  // managed configuration, State API, etc. Or grab them directly from the
-  // styleguide component's JSON files!
-  //
-  // @see \Drupal\kalagraphs\Plugin\Field\FieldFormatter\KalagraphsLinkFormatter
-  // @see \Drupal\kalagraphs\Plugin\Field\FieldFormatter\KalagraphsImageFormatter
-  $items['kalastatic__link'] = [
-    'template' => 'link',
-    'path' => '@atoms/link',
-    'variables' => [
-      'url' => '',
-      'text' => '',
-      'class' => '',
-    ],
-  ];
-  $items['kalastatic__link__icon'] = [
-    'template' => 'link--icon',
-    'path' => '@atoms/link--icon',
-    'variables' => [
-      'url' => '',
-      'text' => '',
-      'class' => '',
-    ],
-  ];
-  $items['kalastatic__image'] = [
-    'template' => 'image',
-    'path' => '@atoms/image',
-    'variables' => [
-      'uri' => '',
-      'alt' => '',
-      'title' => '',
-      'class' => '',
-      'width' => '',
-      'height' => '',
-    ],
-  ];
-
-  // Add fallback templates that cure divitus.
-  $items['kalagraphs_default'] = [
-    'base hook' => 'paragraph',
-  ];
-  $items['kalagraphs_field'] = [
-    'base hook' => 'field',
-  ];
-
-  // Next, create theme hooks for each Kalagraphs component type. These don't
-  // usually get invoked directly but rather via hook_theme_suggestions_alter().
-  //
-  // @todo Replace reference to hard-coded component types with a function that
-  // pulls them from another source: other modules, themes, managed config,
-  // State API, yaml files, styleguide components' JSON data, etc.
-  foreach (KALAGRAPHS_TYPES as $component => $info) {
-    $name = "kalagraphs__$component";
-
-    // Some get rendered by functions.
-    if (!empty($info['function'])) {
-      $items[$name] = ['function' => $info['function']];
-    }
-
-    // Others use templates.
-    elseif (!empty($info['template'])) {
-      $items[$name] = [
-        'template' => $info['template'],
-        'path' => "{$info['path']}/{$info['template']}",
-        'base hook' => 'paragraph',
-      ];
-    }
-  }
-
-  return $items;
+  $vars['id'] = Html::getUniqueId("kalagraphs-component-$type");
 }
 
 /**
  * Implements hook_theme_suggestions_HOOK_alter() for paragraph().
  *
- * Tells the Kalagraphs component to use the proper theme hook.
+ * Adds support for per-component-type theme hooks.
  */
 function kalagraphs_theme_suggestions_paragraph_alter(array &$suggestions, array $vars) {
   $paragraph = $vars['elements']['#paragraph'];
-  if (substr($paragraph->bundle(), 0, 11) === 'kalagraphs_' && 'default' === $vars['elements']['#view_mode']) {
-    $suggestions[] = 'kalagraphs_default';
-    $suggestions[] = "kalagraphs__{$paragraph->field_kalagraphs_type->value}";
+  $bundle    = $paragraph->bundle();
+  if (substr($bundle, 0, 11) === 'kalagraphs_') {
+    $view_mode = $vars['elements']['#view_mode'];
+    if ('default' === $view_mode) {
+      $type = $paragraph->field_kalagraphs_type->value;
+      $suggestions[] = "kalagraphs_$type";
+    }
   }
 }
 
@@ -318,8 +135,12 @@ function kalagraphs_theme_suggestions_paragraph_alter(array &$suggestions, array
  * function and therefore gets displayed through the regular field pipeline.
  */
 function kalagraphs_theme_suggestions_field_alter(array &$suggestions, array $vars) {
-  if (strpos($vars['element']['#field_name'], 'field_kalagraphs_') === 0 && 'default' === $vars['element']['#view_mode']) {
-    $suggestions[] = 'kalagraphs_field';
+  $field = $vars['element']['#field_name'];
+  if (strpos($field, 'field_kalagraphs_') === 0) {
+    $view_mode = $vars['element']['#view_mode'];
+    if ('default' === $view_mode) {
+      $suggestions[] = 'kalagraphs_field';
+    }
   }
 }
 
@@ -329,32 +150,61 @@ function kalagraphs_theme_suggestions_field_alter(array &$suggestions, array $va
  * Returns the allowed values for the "Kalagraphs Type" options list field.
  */
 function _kalagraphs_options(FieldStorageDefinitionInterface $definition, FieldableEntityInterface $entity = NULL, &$cacheable = TRUE) {
-  // Don't let options_allowed_values() cache the values, because we need to
-  // vary them by parent entity.
-  $cacheable = FALSE;
-  $options = [];
-  foreach (KALAGRAPHS_TYPES as $type => $info) {
-    // @todo We _really_ can't get access to the name of the paragraphs field on
-    // the parent entity here? Then we wouldn't have to bother with having a
-    // separate bundle for "sub-components."
-    if (empty($info['bundles']) || in_array($entity->bundle(), $info['bundles'])) {
-      $options[$type] = $info['title'];
-    }
-  }
-  // @todo Manually add "hidden" option here (and remove from main list).
+  $keys = array_keys(KALAGRAPHS_TYPES);
+  $values = array_column(KALAGRAPHS_TYPES, 'title');
+  $options = array_combine($keys, $values);
   asort($options);
+  $options['hidden'] = 'Hidden';
   return $options;
 }
 
 /**
+ * Implements hook_field_widget_WIDGET_TYPE_form_alter() for entity_reference_paragraphs().
+ *
+ * Modifies the "Default" Paragraphs field widget.
+ */
+function kalagraphs_field_widget_entity_reference_paragraphs_form_alter(&$element, FormStateInterface $form_state, $context) {
+  _kalagraphs_process_form($element, $form_state, $context);
+}
+
+/**
  * Implements hook_field_widget_WIDGET_TYPE_form_alter() for paragraphs().
+ *
+ * Modfies the "Experimental" (as of now) Paragraphs field widget.
  */
 function kalagraphs_field_widget_paragraphs_form_alter(&$element, FormStateInterface $form_state, $context) {
+  _kalagraphs_process_form($element, $form_state, $context);
+}
+
+/**
+ * Adds conditional display and other sauce to the Paragaphs edit form.
+ *
+ * For paramter info, see hook_field_widget_WIDGET_TYPE_form_alter().
+ */
+function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $context) {
+
+  // Only run for Kalagraphs paragraphs.
+  if (!_kalagraphs_element_is_kalagraph($element, $form_state, $context)) {
+    return;
+  }
 
   // Only run once a Paragraph form has been loaded.
   $subform = &$element['subform'];
-  if (!count($fields = Element::children($subform))) {
+  $fields = Element::children($subform);
+  if (!count($fields)) {
     return;
+  }
+
+  // Filter options list to the appropriate layer (top-level or sub-component).
+  $field = $context['items']->getName();
+  $is_subcomponent = 'field_kalagraphs_subcomponents' === $field;
+  $options = &$subform['field_kalagraphs_type']['widget']['#options'];
+  foreach (KALAGRAPHS_TYPES as $type => $info) {
+    // If the component does not specify "is_subcomponent", just always show it.
+    if (isset($info['is_subcomponent']) &&
+        $info['is_subcomponent'] !== $is_subcomponent) {
+      unset($options[$type]);
+    }
   }
 
   // Use the form's #parents to determine the States API selector.
@@ -377,7 +227,7 @@ function kalagraphs_field_widget_paragraphs_form_alter(&$element, FormStateInter
     }
   }
 
-  // Add helptext and conditional states for each component type.
+  // Add helptext and conditional states for each field type.
   foreach (KALAGRAPHS_TYPES as $type => $info) {
     $condition = ['value' => $type];
 
@@ -392,8 +242,55 @@ function kalagraphs_field_widget_paragraphs_form_alter(&$element, FormStateInter
     // Only show the fields appropriate for the component type.
     foreach ($info['fields'] as $field) {
       if (isset($subform["field_kalagraphs_$field"])) {
-        $subform["field_kalagraphs_$field"]['#states']['visible'][$selector][] = $condition;
+        $subform["field_kalagraphs_$field"]['#states']['visible'][$selector][]
+          = $condition;
       }
     }
+  }
+}
+
+/**
+ * Determines whether to proceed with processing of the Paragraphs field widget.
+ *
+ * For parameter info, see hook_field_widget_WIDGET_TYPE_form_alter().
+ */
+function _kalagraphs_element_is_kalagraph(&$element, FormStateInterface $form_state, $context) {
+
+  // For previously-saved items, the entity (and therefore bundle) is available.
+  $delta = $element['#delta'];
+
+  if (isset($context['items'][$delta]->target_id)) {
+    $id = $context['items'][$delta]->target_id;
+    $bundle = Paragraph::load($id)->bundle();
+    return strpos($bundle, 'kalagraphs_') === 0;
+  }
+
+  // For newly-added paragraphs, there is no entity yet, so we use the form's
+  // "triggering element" to identify which "Add Paragraph" button was pushed
+  // (i.e., the bundle of the new item). However, this only tells us about the
+  // item being added right now and nothing about the items previously-added in
+  // this session. To get around this, we use a flag to indicate whether each
+  // unsaved item has already been verified as being a Kalagraphs bundle.
+  //
+  // Initialise a container to hold flag data for the lifetime of the form.
+  $kalagraphs_bundle_check = $form_state->has(__FUNCTION__)
+    ? $form_state->get(__FUNCTION__) : [];
+
+  // Get a reference to the result (whether the item is a Kalagraphs bundle).
+  $is_kalagraph = &$kalagraphs_bundle_check[$delta];
+
+  // Has this item already been processed?
+  if (isset($is_kalagraph)) {
+    return $is_kalagraph;
+  }
+
+  // This item has not been processed, so it was just created or deleted.
+  // If just created, the button should have an associated bundle.
+  $button = $form_state->getTriggeringElement();
+  if (isset($button['#bundle_machine_name'])) {
+    $bundle = $button['#bundle_machine_name'];
+    $is_kalagraph = strpos($bundle, 'kalagraphs_') === 0;
+    $form_state->set(__FUNCTION__, $kalagraphs_bundle_check);
+    return $is_kalagraph;
   }
 }
