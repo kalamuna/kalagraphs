@@ -34,7 +34,7 @@ class KalagraphsLinkFormatter extends KalagraphsFieldFormatter {
 
     // Fill in some default values for sub-classes.
     $value = [
-      '#url'  => $url,
+      '#url'   => $url,
       '#text'  => $item->title,
       '#class' => [],
     ];
