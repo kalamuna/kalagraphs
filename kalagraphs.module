@@ -41,10 +41,7 @@ function kalagraphs_theme() {
       'function' => '_kalagraphs_render_hidden',
     ],
 
-    // Add fallback templates that cure divitus.
-    'kalagraphs_default' => [
-      'base hook' => 'paragraph',
-    ],
+    // Add a field template to relieve some divitus.
     'kalagraphs_field' => [
       'base hook' => 'field',
     ],
@@ -71,8 +68,10 @@ function template_preprocess_paragraph__kalagraphs_component__default(&$vars) {
   $type = $paragraph->field_kalagraphs_type->value;
   $info = KALAGRAPHS_TYPES[$type];
   $path = $info['path'];
-  $template = isset($info['template']) ? $info['template'] : $type;
-  $vars['component'] = "$path/$template/$template.html.twig";
+  if (isset($path)) {
+    $template = isset($info['template']) ? $info['template'] : $type;
+    $vars['component'] = "$path/$template/$template.html.twig";
+  }
 
   // Add a flag to indicate it is rendering in a Drupal context.
   // @todo This doesn't cover non-Paragraph theme hooks, e.g., atom components
@@ -108,13 +107,13 @@ function template_preprocess_paragraph__kalagraphs_component__default(&$vars) {
   }
 
   // Provide a unique id attribute for the element that may or may not get used.
-  $vars['id'] = Html::getUniqueId("kalagraphs-component-{$paragraph->field_kalagraphs_type->value}");
+  $vars['id'] = Html::getUniqueId("kalagraphs-component-$type");
 }
 
 /**
  * Implements hook_theme_suggestions_HOOK_alter() for paragraph().
  *
- * Allows users to define specific, per-component theme-hooks.
+ * Adds support for per-component-type theme hooks.
  */
 function kalagraphs_theme_suggestions_paragraph_alter(array &$suggestions, array $vars) {
   $paragraph = $vars['elements']['#paragraph'];
@@ -122,9 +121,8 @@ function kalagraphs_theme_suggestions_paragraph_alter(array &$suggestions, array
   if (substr($bundle, 0, 11) === 'kalagraphs_') {
     $view_mode = $vars['elements']['#view_mode'];
     if ('default' === $view_mode) {
-      $component = $paragraph->field_kalagraphs_type->value;
-      $suggestions[] = 'kalagraphs_default';
-      $suggestions[] = "kalagraphs_$component";
+      $type = $paragraph->field_kalagraphs_type->value;
+      $suggestions[] = "kalagraphs_$type";
     }
   }
 }
@@ -156,6 +154,7 @@ function _kalagraphs_options(FieldStorageDefinitionInterface $definition, Fielda
   $values = array_column(KALAGRAPHS_TYPES, 'title');
   $options = array_combine($keys, $values);
   asort($options);
+  $options['hidden'] = 'Hidden';
   return $options;
 }
 
