@@ -3,7 +3,6 @@
 namespace Drupal\kalagraphs\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldItemInterface;
-use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Routing\StackedRouteMatchInterface;
 use Drupal\Core\Url;
 
@@ -33,39 +32,30 @@ class KalagraphsLinkFormatter extends KalagraphsFieldFormatter {
   protected function viewValue(FieldItemInterface $item) {
     $url = $item->getUrl();
 
-    // Render links with a twig template.
-    $value = array(
-      '#theme' => "kalastatic__link",
-      '#url' => $url,
-      '#text' => $item->title,
+    // Fill in some default values for sub-classes.
+    $value = [
+      '#url'  => $url,
+      '#text'  => $item->title,
       '#class' => [],
-    );
+    ];
 
-    switch ($this->kalagraphsType) {
-      case 'vertical_tabs':
-        $value['#class'][] = 'tab';
-        break;
-
-      default:
-        $value['#class'][] = 'button';
-    }
-
-    // Figure out if link is active
+    // Determine if link is active.
     if (!$url->isExternal()) {
-      $link_path = $url->getInternalPath();
+      $link_path   = $url->getInternalPath();
       $route_match = \Drupal::routeMatch();
       if ($route_match instanceof StackedRouteMatchInterface) {
         $route_match = $route_match->getMasterRouteMatch();
       }
-      $current_path = $route_match->getRouteName() ? Url::fromRouteMatch($route_match)->getInternalPath() : '';
+      $current_path = $route_match->getRouteName()
+        ? Url::fromRouteMatch($route_match)->getInternalPath() : '';
       $is_active = ($current_path == $link_path);
-      
+
       if ($is_active) {
         $value['#class'][] = 'active';
         $value['#active'] = TRUE;
       }
     }
-    
+
     return $value;
   }
 

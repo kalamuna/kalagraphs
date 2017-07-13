@@ -28,26 +28,16 @@ class KalagraphsImageFormatter extends KalagraphsFieldFormatter {
    * {@inheritdoc}
    */
   protected function viewValue(FieldItemInterface $item) {
-    switch ($this->kalagraphsType) {
 
-      // Some components just need the image URL for use as a background.
-      case 'basic_hero':
-      case 'section_header':
-      case 'triangle_flow':
-        return $item->view(['type' => 'image_url']);
-
-      // Other components render images with a twig template.
-      default:
-        return [
-          '#theme' => "kalastatic__image",
-          '#uri' => file_create_url($item->entity->getFileUri()),
-          '#alt' => $item->alt,
-          '#title' => $item->title,
-          '#class' => '',
-          '#width' => $item->width,
-          '#height' => $item->height,
-        ];
-    }
+    // Fill in some default values for sub-classes.
+    return [
+      '#uri'    => file_create_url($item->entity->getFileUri()),
+      '#alt'    => $item->alt,
+      '#title'  => $item->title,
+      '#width'  => $item->width,
+      '#height' => $item->height,
+      '#class'  => [],
+    ];
   }
 
 }

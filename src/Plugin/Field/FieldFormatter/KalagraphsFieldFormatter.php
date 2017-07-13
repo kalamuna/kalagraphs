@@ -37,23 +37,31 @@ abstract class KalagraphsFieldFormatter extends FormatterBase {
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $elements = [];
-    $this->kalagraphsType = $items->getEntity()->field_kalagraphs_type->value;
+    $entity = $items->getEntity();
+    $bundle = $entity->bundle();
 
+    // Allow non-Kalagraphs fields to leverage these formatters.
+    $this->kalagraphsType = strpos($bundle, 'kalagraphs_') === 0
+      ? $entity()->field_kalagraphs_type->value
+      : $entity->getEntityTypeId() . '__' . $bundle;
+
+    // Allow each subclass define how it renders each item.
     foreach ($items as $delta => $item) {
       $elements[$delta] = $this->viewValue($item);
     }
 
+    // Return an array of render arrays for printing by Twig.
     return $elements;
   }
 
   /**
-   * Generate the output appropriate for one field item.
+   * Generates the output appropriate for one field item.
    *
    * @param \Drupal\Core\Field\FieldItemInterface $item
    *   One field item.
    *
-   * @return string
-   *   The textual output generated.
+   * @return array
+   *   A render array for printing in the parent component's twig template.
    */
   abstract protected function viewValue(FieldItemInterface $item);
 
