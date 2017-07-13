@@ -41,16 +41,17 @@ class KalagraphsLinkFormatter extends KalagraphsFieldFormatter {
 
     // Determine if link is active.
     if (!$url->isExternal()) {
-      $link_path   = $url->getInternalPath();
+
+      // @todo Indicate from where this code was copied (core system.module?)
       $route_match = \Drupal::routeMatch();
       if ($route_match instanceof StackedRouteMatchInterface) {
         $route_match = $route_match->getMasterRouteMatch();
       }
       $current_path = $route_match->getRouteName()
         ? Url::fromRouteMatch($route_match)->getInternalPath() : '';
-      $is_active = ($current_path == $link_path);
 
-      if ($is_active) {
+      // @todo Fix this logic to accommodate the "<front>" route.
+      if ($current_path === $url->getInternalPath()) {
         $value['#class'][] = 'active';
         $value['#active'] = TRUE;
       }
