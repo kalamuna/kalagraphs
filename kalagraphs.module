@@ -70,7 +70,9 @@ function template_preprocess_paragraph__kalagraphs_component__default(&$vars) {
   $paragraph = $vars['paragraph'];
   $type = $paragraph->field_kalagraphs_type->value;
   $info = KALAGRAPHS_TYPES[$type];
-  $vars['component'] = "{$info['path']}/$type/$type.html.twig";
+  $path = $info['path'];
+  $template = isset($info['template']) ? $info['template'] : $type;
+  $vars['component'] = "$path/$template/$template.html.twig";
 
   // Add a flag to indicate it is rendering in a Drupal context.
   // @todo This doesn't cover non-Paragraph theme hooks, e.g., atom components
