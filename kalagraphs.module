@@ -97,11 +97,16 @@ function template_preprocess_paragraph__kalagraphs_component__default(&$vars) {
     foreach (Element::children($element) as $item) {
 
       // Send the field item's render array to Twig.
-      $vars[$name][] = $element[$item];
+      switch ($name) {
 
-      // Extract the longtext field's "summary" subfield.
-      if ('text' === $name) {
-        $vars['subtitle'] = $element['#items'][$item]->summary;
+        // Extract the longtext field's "summary" subfield.
+        case 'text':
+          if (!empty($element['#items'][$item]->summary)) {
+            $vars['subtitle'] = $element['#items'][$item]->summary;
+          }
+
+        default:
+          $vars[$name][] = $element[$item];
       }
     }
   }
