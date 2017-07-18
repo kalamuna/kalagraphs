@@ -166,11 +166,18 @@ function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $co
     return;
   }
 
+  // Add a wrapper class to indicate the currently-selected component type.
+  $type = reset($subform['field_kalagraphs_type']['widget']['#default_value']);
+  $element['#attributes']['class'][] = $type
+    ? "kalagraphs-form-widget--$type"
+    : 'kalagraphs-form-widget-new';
+
   // Filter options list to the appropriate layer (top-level or sub-component).
   $field = $context['items']->getName();
   $is_subcomponent = 'field_kalagraphs_subcomponents' === $field;
   $options = &$subform['field_kalagraphs_type']['widget']['#options'];
   foreach (KALAGRAPHS_TYPES as $type => $info) {
+
     // If the component does not specify "is_subcomponent", just always show it.
     if (isset($info['is_subcomponent']) &&
         $info['is_subcomponent'] !== $is_subcomponent) {
@@ -184,11 +191,27 @@ function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $co
   $parents = $first_parent . '[' . implode('][', $parents_array) . ']';
   $selector = ":input[name='{$parents}[field_kalagraphs_type]']";
 
+  // Prep the help text container.
+  $subform['help'] = [
+    '#type' => 'container',
+    '#attributes' => [
+      'class' => ['kalagraphs-form-help'],
+    ],
+  ];
+
+  // Create a temporary helper function to generate the help text element.
+  $create_help_text_element = function ($text, $condition) use ($selector) {
+    return [
+      '#type' => 'item',
+      '#markup' => "<strong>$text</strong>",
+      '#states' => ['visible' => [$selector => [$condition]]],
+    ];
+  };
+
   // Add helptext for when no component type is yet selected.
-  $help = &$subform['help']['_none'];
-  $help['#type'] = 'item';
-  $help['#title'] = t('Choose a component type to create.');
-  $help['#states']['visible'][$selector][] = ['value' => '_none'];
+  $help = t('Choose a component type to create.');
+  $condition = ['value' => '_none'];
+  $subform['help']['_none'] = $create_help_text_element($help, $condition);
 
   // Add helptext and conditional states for each field type.
   foreach (KALAGRAPHS_TYPES as $type => $info) {
@@ -196,10 +219,8 @@ function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $co
 
     // Add helptext for each component type.
     if (!empty($info['help'])) {
-      $help = &$subform['help'][$type];
-      $help['#type'] = 'item';
-      $help['#title'] = $info['help'];
-      $help['#states']['visible'][$selector][] = $condition;
+      $subform['help'][$type]
+        = $create_help_text_element($info['help'], $condition);
     }
 
     // Only show the fields appropriate for the component type.
