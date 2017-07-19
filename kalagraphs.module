@@ -199,11 +199,25 @@ function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $co
     ],
   ];
 
-  // Create a temporary helper function to generate the help text element.
-  $create_help_text_element = function ($text, $condition) use ($selector) {
+  // Create a temporary helper function to generate the help text form element.
+  /*
+   * @param string $text
+   *   The help text, already translated.
+   * @param array $condition
+   *   The State API conditions under which this help text will display.
+   * @param string $type
+   *   The Kalagraphs component type, or none if one is not selected.
+   *
+   * @return array
+   *   A form element array to display the help text.
+   */
+  $get_helptext = function ($text, $condition, $type) use ($selector) {
+    $class = "kalagraphs-form-help--$type";
     return [
       '#type' => 'item',
-      '#markup' => "<strong>$text</strong>",
+      '#prefix' => "<div class='$class--wrapper'>",
+      '#markup' => "<strong class='$class'>$text</strong>",
+      '#suffix' => "</div>",
       '#states' => ['visible' => [$selector => [$condition]]],
     ];
   };
@@ -211,7 +225,7 @@ function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $co
   // Add helptext for when no component type is yet selected.
   $help = t('Choose a component type to create.');
   $condition = ['value' => '_none'];
-  $subform['help']['_none'] = $create_help_text_element($help, $condition);
+  $subform['help']['_none'] = $get_helptext($help, $condition, 'none');
 
   // Add helptext and conditional states for each field type.
   foreach (KALAGRAPHS_TYPES as $type => $info) {
@@ -219,8 +233,7 @@ function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $co
 
     // Add helptext for each component type.
     if (!empty($info['help'])) {
-      $subform['help'][$type]
-        = $create_help_text_element($info['help'], $condition);
+      $subform['help'][$type] = $get_helptext($info['help'], $condition, $type);
     }
 
     // Only show the fields appropriate for the component type.
