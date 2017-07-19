@@ -166,6 +166,17 @@ function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $co
     return;
   }
 
+  // Prefix an appropriate number of "Sub-"s to the "Add Component" button.
+  $button = &$subform['field_kalagraphs_subcomponents']['widget']['add_more']['add_more_button_kalagraphs_component']['#value'];
+  $arguments = $button->getArguments();
+  $label = &$arguments['@type'];
+  $parents = $subform['#parents'];
+  $level = count(array_keys($parents, 'subform', TRUE));
+  for ($i = 0; $i < $level; $i++) {
+    $label = t('Sub-') . strtolower($label);
+  }
+  $button = t($button->getUntranslatedString(), $arguments);
+
   // Add a wrapper class to indicate the currently-selected component type.
   $type = reset($subform['field_kalagraphs_type']['widget']['#default_value']);
   $class = 'kalagraphs-form-widget--';
@@ -186,10 +197,9 @@ function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $co
   }
 
   // Use the form's #parents to determine the States API selector.
-  $parents_array = $subform['#parents'];
-  $first_parent = array_shift($parents_array);
-  $parents = $first_parent . '[' . implode('][', $parents_array) . ']';
-  $selector = ":input[name='{$parents}[field_kalagraphs_type]']";
+  $first_parent = array_shift($parents);
+  $parents_string = $first_parent . '[' . implode('][', $parents) . ']';
+  $selector = ":input[name='{$parents_string}[field_kalagraphs_type]']";
 
   // Prep the help text container.
   $subform['help'] = [
@@ -211,7 +221,7 @@ function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $co
    * @return array
    *   A form element array to display the help text.
    */
-  $get_helptext = function ($text, $condition, $type) use ($selector) {
+  $get_helptext = function ($text, array $condition, $type) use ($selector) {
     $class = "kalagraphs-form-help--$type";
     return [
       '#type' => 'item',
