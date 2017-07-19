@@ -168,9 +168,9 @@ function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $co
 
   // Add a wrapper class to indicate the currently-selected component type.
   $type = reset($subform['field_kalagraphs_type']['widget']['#default_value']);
-  $element['#attributes']['class'][] = $type
-    ? "kalagraphs-form-widget--$type"
-    : 'kalagraphs-form-widget-new';
+  $class = 'kalagraphs-form-widget--';
+  $class .= $type ? $type : 'none';
+  $element['#attributes']['class'][] = $class;
 
   // Filter options list to the appropriate layer (top-level or sub-component).
   $field = $context['items']->getName();
