@@ -40,6 +40,11 @@ function kalagraphs_theme() {
     'kalagraphs_hidden' => [
       'function' => '_kalagraphs_render_hidden',
     ],
+
+    // Add a field template to relieve some divitus.
+    'kalagraphs_field' => [
+      'base hook' => 'field',
+    ],
   ];
 }
 
@@ -62,7 +67,11 @@ function template_preprocess_paragraph__kalagraphs_component__default(&$vars) {
   $paragraph = $vars['paragraph'];
   $type = $paragraph->field_kalagraphs_type->value;
   $info = KALAGRAPHS_TYPES[$type];
-  $vars['component'] = "{$info['path']}/$type/$type.html.twig";
+  if (isset($info['path'])) {
+    $path = $info['path'];
+    $template = isset($info['template']) ? $info['template'] : $type;
+    $vars['component'] = "$path/$template/$template.html.twig";
+  }
 
   // Add a flag to indicate it is rendering in a Drupal context.
   // @todo This doesn't cover non-Paragraph theme hooks, e.g., atom components
@@ -88,31 +97,56 @@ function template_preprocess_paragraph__kalagraphs_component__default(&$vars) {
     foreach (Element::children($element) as $item) {
 
       // Send the field item's render array to Twig.
-      $vars[$name][] = $element[$item];
+      switch ($name) {
 
-      // Extract the longtext field's "summary" subfield.
-      if ('text' === $name) {
-        $vars['subtitle'] = $element['#items'][$item]->summary;
+        // Extract the longtext field's "summary" subfield.
+        case 'text':
+          if (!empty($element['#items'][$item]->summary)) {
+            $vars['subtitle'] = $element['#items'][$item]->summary;
+          }
+
+        default:
+          $vars[$name][] = $element[$item];
       }
     }
   }
 
   // Provide a unique id attribute for the element that may or may not get used.
-  $vars['id'] = Html::getUniqueId("kalagraphs-component-{$paragraph->field_kalagraphs_type->value}");
+  $vars['id'] = Html::getUniqueId("kalagraphs-component-$type");
 }
 
 /**
  * Implements hook_theme_suggestions_HOOK_alter() for paragraph().
  *
- * Allow users to define specific, per-component theme-hooks.
+ * Adds support for per-component-type theme hooks.
  */
 function kalagraphs_theme_suggestions_paragraph_alter(array &$suggestions, array $vars) {
   $paragraph = $vars['elements']['#paragraph'];
-  if (substr($paragraph->bundle(), 0, 11) === 'kalagraphs_') {
+  $bundle = $paragraph->bundle();
+  if (substr($bundle, 0, 11) === 'kalagraphs_') {
     $view_mode = $vars['elements']['#view_mode'];
     if ('default' === $view_mode) {
-      $component = $paragraph->field_kalagraphs_type->value;
-      $suggestions[] = "kalagraphs_$component";
+      $type = $paragraph->field_kalagraphs_type->value;
+      $suggestions[] = "kalagraphs_$type";
+    }
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter() for field().
+ *
+ * Renders Kalagraphs fields with a minimal template. Note that this only gets
+ * invoked when a Kalagraphs type doesn't map to a custom template or render
+ * function and therefore gets displayed through the regular field pipeline.
+ *
+ * @TODO Also use this for all Paragraph (Entity Reference Revision) fields.
+ */
+function kalagraphs_theme_suggestions_field_alter(array &$suggestions, array $vars) {
+  $field = $vars['element']['#field_name'];
+  if (strpos($field, 'field_kalagraphs_') === 0) {
+    $view_mode = $vars['element']['#view_mode'];
+    if ('default' === $view_mode) {
+      $suggestions[] = 'kalagraphs_field';
     }
   }
 }
@@ -127,13 +161,14 @@ function _kalagraphs_options(FieldStorageDefinitionInterface $definition, Fielda
   $values = array_column(KALAGRAPHS_TYPES, 'title');
   $options = array_combine($keys, $values);
   asort($options);
+  $options['hidden'] = 'Hidden';
   return $options;
 }
 
 /**
  * Implements hook_field_widget_WIDGET_TYPE_form_alter() for entity_reference_paragraphs().
  *
- * This hook trigged by the default Paragraphs field widget.
+ * Modifies the "Default" Paragraphs field widget.
  */
 function kalagraphs_field_widget_entity_reference_paragraphs_form_alter(&$element, FormStateInterface $form_state, $context) {
   _kalagraphs_process_form($element, $form_state, $context);
@@ -142,7 +177,7 @@ function kalagraphs_field_widget_entity_reference_paragraphs_form_alter(&$elemen
 /**
  * Implements hook_field_widget_WIDGET_TYPE_form_alter() for paragraphs().
  *
- * This hook trigged by the "Experimental" (as of now) Paragraphs field widget.
+ * Modfies the "Experimental" (as of now) Paragraphs field widget.
  */
 function kalagraphs_field_widget_paragraphs_form_alter(&$element, FormStateInterface $form_state, $context) {
   _kalagraphs_process_form($element, $form_state, $context);
@@ -162,7 +197,8 @@ function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $co
 
   // Only run once a Paragraph form has been loaded.
   $subform = &$element['subform'];
-  if (!count(Element::children($subform))) {
+  $fields = Element::children($subform);
+  if (!count($fields)) {
     return;
   }
 
@@ -237,6 +273,14 @@ function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $co
   $condition = ['value' => '_none'];
   $subform['help']['_none'] = $get_helptext($help, $condition, 'none');
 
+  // Add a null state so fields not used on any component type are still hidden.
+  foreach ($fields as $field) {
+    // Don't hide the "Display as" selector.
+    if ('field_kalagraphs_type' !== $field) {
+      $subform[$field]['#states']['visible'][$selector][] = ['value' => -1];
+    }
+  }
+
   // Add helptext and conditional states for each field type.
   foreach (KALAGRAPHS_TYPES as $type => $info) {
     $condition = ['value' => $type];
@@ -291,11 +335,20 @@ function _kalagraphs_element_is_kalagraph(&$element, FormStateInterface $form_st
     return $is_kalagraph;
   }
 
-  // This item has not been processed, so it was just created or deleted.
-  // If just created, the button should have an associated bundle.
+  // This item has not been processed, so it was just created or deleted. If
+  // just created, the button should have an associated bundle. Also handle the
+  // case where a "default" component is created on new nodes.
   $button = $form_state->getTriggeringElement();
   if (isset($button['#bundle_machine_name'])) {
-    $bundle = $button['#bundle_machine_name'];
+    $bundle = &$button['#bundle_machine_name'];
+  }
+  elseif (0 == $delta) {
+    $bundle = &$context['widget']->getSettings()['default_paragraph_type'];
+  }
+  else {
+    unset($bundle);
+  }
+  if (isset($bundle)) {
     $is_kalagraph = strpos($bundle, 'kalagraphs_') === 0;
     $form_state->set(__FUNCTION__, $kalagraphs_bundle_check);
     return $is_kalagraph;
