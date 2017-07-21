@@ -42,10 +42,10 @@ abstract class KalagraphsFieldFormatter extends FormatterBase {
 
     // Allow non-Kalagraphs fields to leverage these formatters.
     $this->kalagraphsType = strpos($bundle, 'kalagraphs_') === 0
-      ? $items->getEntity()->field_kalagraphs_type->value
+      ? $entity->field_kalagraphs_type->value
       : $entity->getEntityTypeId() . '__' . $bundle;
 
-    // Allow each subclass define how it renderss each item.
+    // Allow each subclass define how it renders each item.
     foreach ($items as $delta => $item) {
       $elements[$delta] = $this->viewValue($item);
     }
