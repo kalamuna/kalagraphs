@@ -29,9 +29,9 @@ abstract class KalagraphsLinkFormatter extends KalagraphsFieldFormatter {
    * {@inheritdoc}
    */
   protected function viewValue(FieldItemInterface $item) {
-    $url = $item->getUrl();
 
     // Fill in some default values for sub-classes.
+    $url = $item->getUrl();
     $value = [
       '#url'   => $url,
       '#text'  => $item->title,
