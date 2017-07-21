@@ -15,7 +15,7 @@ use Drupal\Core\Field\FieldItemInterface;
  *   }
  * )
  */
-class KalagraphsImageFormatter extends KalagraphsFieldFormatter {
+abstract class KalagraphsImageFormatter extends KalagraphsFieldFormatter {
 
   /**
    * {@inheritdoc}
@@ -31,12 +31,12 @@ class KalagraphsImageFormatter extends KalagraphsFieldFormatter {
 
     // Fill in some default values for sub-classes.
     return [
-      '#uri'     => file_create_url($item->entity->getFileUri()),
-      '#alt'     => $item->alt,
-      '#title'   => $item->title,
-      '#width'   => $item->width,
-      '#height'  => $item->height,
-      '#classes' => [],
+      '#uri'    => file_create_url($item->entity->getFileUri()),
+      '#alt'    => $item->alt,
+      '#title'  => $item->title,
+      '#width'  => $item->width,
+      '#height' => $item->height,
+      '#class'  => [],
     ];
   }
 
