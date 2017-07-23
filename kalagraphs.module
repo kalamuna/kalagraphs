@@ -202,15 +202,29 @@ function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $co
     return;
   }
 
-  // Prefix an appropriate number of "Sub-"s to the "Add Component" button.
+  // Add an appropriate number of "Sub-"s to the front of the "Add Component"
+  // button, form widget title, and field title labels.
   $button = &$subform['field_kalagraphs_subcomponents']['widget']['add_more']['add_more_button_kalagraphs_component']['#value'];
   $arguments = $button->getArguments();
-  $label = &$arguments['@type'];
+  $button_label = &$arguments['@type'];
+  $widget_title = &$element['top']['paragraph_type_title']['info']['#markup'];
+  $field_title = &$subform['field_kalagraphs_subcomponents']['widget']['title']['#value'];
+  $prefix = t('Sub-');
   $parents = $subform['#parents'];
-  $level = count(array_keys($parents, 'subform', TRUE));
-  for ($i = 0; $i < $level; $i++) {
-    $label = t('Sub-') . strtolower($label);
+  $nesting_level = count(array_keys($parents, 'subform', TRUE));
+  for ($i = 0; $i < $nesting_level; $i++) {
+
+    // Only capitalize the first "Sub-"; make everything else lowercase.
+    $button_label = $prefix . strtolower($button_label);
+
+    // The form widget title has one fewer "Sub-"s than the "Add Comp." button.
+    // The field title already has one "Sub-" in front.
+    if ($i > 0) {
+      $widget_title = $prefix . strtolower($widget_title);
+      $field_title = $prefix . strtolower($field_title);
+    }
   }
+  // Update the button text now that its label has been prefixed with "Sub-"s.
   $button = t($button->getUntranslatedString(), $arguments);
 
   // Add a wrapper class to indicate the currently-selected component type.
