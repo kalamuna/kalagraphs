@@ -232,6 +232,9 @@ function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $co
     }
   }
 
+  // Allow modules to alter the options using hook_kalagraphs_options_alter().
+  \Drupal::moduleHandler()->alter('kalagraphs_options', $options, $element);
+
   // Use the form's #parents to determine the States API selector.
   $first_parent = array_shift($parents);
   $parents_string = $first_parent . '[' . implode('][', $parents) . ']';
