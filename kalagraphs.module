@@ -12,6 +12,7 @@ use Drupal\Core\Render\Element;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\Component\Utility\Html;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * Implements hook_help().
@@ -195,37 +196,79 @@ function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $co
     return;
   }
 
-  // Only run once a Paragraph form has been loaded.
+  // Ensure the component form is not completely empty before proceeding.
   $subform = &$element['subform'];
+  if (empty($subform)) {
+    return;
+  }
+
+  // Prepare to prefix an appropriate number of "Sub-"s on various UI labels.
+  $sub = t('Sub-');
+  $prefix = '';
+  $parents = $context['form']['#parents'];
+  $nesting_level = count(array_keys($parents, 'subform', TRUE));
+  for ($i = 0; $i < $nesting_level; $i++) {
+    $prefix = $sub . strtolower($prefix);
+  }
+
+  // Create a helper function to prefix labels with an appropriate # of "Sub-"s.
+  /*
+   * @param string|TranslatableMarkup $prefix
+   *   The string to be prefixed ('', 'Sub-', 'Sub-sub-', etcetera).
+   * @param string|TranslatableMarkup $text
+   *   The text to which the prefix is added.
+   *
+   * @return string|TranslatableMarkup
+   *   The text with prefix added.
+   */
+  $add_prefix = function ($prefix, &$text) {
+    if (empty($prefix)) {
+      return;
+    }
+    if ($text instanceof TranslatableMarkup) {
+      $arguments = $text->getArguments();
+      $label = &$arguments[key($arguments)];
+      $label = $prefix . strtolower($label);
+      $text = t($text->getUntranslatedString(), $arguments);
+    }
+    else {
+      $text = $prefix . strtolower($text);
+    }
+  };
+
+  // Add an appropriate number of "Sub-"s to the "paragraph type title", which
+  // displays at the top of each individual ¶s item, below the drag handle.
+  $bundle_title = &$element['top']['paragraph_type_title']['info']['#markup'];
+  $add_prefix($prefix, $bundle_title);
+
+  // The rest of this function depends on a fully loaded Paragraphs widget form.
   $fields = Element::children($subform);
   if (!count($fields)) {
     return;
   }
 
-  // Add an appropriate number of "Sub-"s to the front of the "Add Component"
-  // button, form widget title, and field title labels.
-  $button = &$subform['field_kalagraphs_subcomponents']['widget']['add_more']['add_more_button_kalagraphs_component']['#value'];
-  $arguments = $button->getArguments();
-  $button_label = &$arguments['@type'];
-  $widget_title = &$element['top']['paragraph_type_title']['info']['#markup'];
-  $field_title = &$subform['field_kalagraphs_subcomponents']['widget']['title']['#value'];
-  $prefix = t('Sub-');
-  $parents = $subform['#parents'];
-  $nesting_level = count(array_keys($parents, 'subform', TRUE));
-  for ($i = 0; $i < $nesting_level; $i++) {
+  // Add an appropriate number of "Sub-"s to the "Add Component" button label.
+  $widget = &$subform['field_kalagraphs_subcomponents']['widget'];
+  $button_label = &$widget['add_more']['add_more_button_kalagraphs_component']['#value'];
+  $add_prefix($sub . strtolower($prefix), $button_label);
 
-    // Only capitalize the first "Sub-"; make everything else lowercase.
-    $button_label = $prefix . strtolower($button_label);
-
-    // The form widget title has one fewer "Sub-"s than the "Add Comp." button.
-    // The field title already has one "Sub-" in front.
-    if ($i > 0) {
-      $widget_title = $prefix . strtolower($widget_title);
-      $field_title = $prefix . strtolower($field_title);
-    }
+  // Add an appropriate number of "Sub"s to the Subcomponents field label, which
+  // displays above the "Add Component" button before any items have been added.
+  if (isset($widget['title']['#value'])) {
+    $add_prefix($prefix, $widget['title']['#value']);
   }
-  // Update the button text now that its label has been prefixed with "Sub-"s.
-  $button = t($button->getUntranslatedString(), $arguments);
+
+  // Add an appropriate number of "Sub-"s to the Subcomponents form widget
+  // title, which displays at the top of the full listing of Subcomponent items.
+  if (isset($widget['#title'])) {
+    $add_prefix($prefix, $widget['#title']);
+  }
+
+  // Add an appropriate number of "Sub-"s to the "No sub-component added yet"
+  // help text.
+  if (isset($widget['text']['value']['#markup'])) {
+    $add_prefix($prefix, $widget['text']['value']['#markup']);
+  }
 
   // Add a wrapper class to indicate the currently-selected component type.
   $type = reset($subform['field_kalagraphs_type']['widget']['#default_value']);
@@ -246,9 +289,11 @@ function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $co
     }
   }
 
-  // Use the form's #parents to determine the States API selector.
-  $first_parent = array_shift($parents);
-  $parents_string = $first_parent . '[' . implode('][', $parents) . ']';
+  // Use the form's #parents to determine the States API selector. First, make a
+  // copy of the array, as we don't want to go modifying the actual form.
+  $first_parent = reset($subform['#parents']);
+  $other_parents = array_slice($subform['#parents'], 1);
+  $parents_string = $first_parent . '[' . implode('][', $other_parents) . ']';
   $selector = ":input[name='{$parents_string}[field_kalagraphs_type]']";
 
   // Prep the help text container.
@@ -259,7 +304,7 @@ function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $co
     ],
   ];
 
-  // Create a temporary helper function to generate the help text form element.
+  // Create a temporary helper function to generate the help-text form element.
   /*
    * @param string $text
    *   The help text, already translated.
