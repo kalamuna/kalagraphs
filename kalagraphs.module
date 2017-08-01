@@ -257,6 +257,8 @@ function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $co
   }
 
   // Add an appropriate number of "Sub-"s to the "Add Component" button label.
+  // It requires one more "Sub-" than the other Sub-component labels because it
+  // does not use the field name but rather the bundle machine name.
   $widget = &$subform['field_kalagraphs_subcomponents']['widget'];
   $button_label = &$widget['add_more']['add_more_button_kalagraphs_component']['#value'];
   $add_prefix($sub . strtolower($prefix), $button_label);
