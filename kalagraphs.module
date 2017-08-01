@@ -10,7 +10,6 @@ use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Render\Element;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 
@@ -370,10 +369,9 @@ function _kalagraphs_element_is_kalagraph(&$element, FormStateInterface $form_st
 
   // For previously-saved items, the entity (and therefore bundle) is available.
   $delta = $element['#delta'];
-
   if (isset($context['items'][$delta]->target_id)) {
-    $id = $context['items'][$delta]->target_id;
-    $bundle = Paragraph::load($id)->bundle();
+    $item = $context['items'][$delta];
+    $bundle = $item->entity->bundle();
     return strpos($bundle, 'kalagraphs_') === 0;
   }
 
