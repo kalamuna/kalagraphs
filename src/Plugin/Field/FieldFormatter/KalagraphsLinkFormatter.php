@@ -6,15 +6,9 @@ use Drupal\Core\Field\FieldItemInterface;
 use Drupal\Core\Url;
 
 /**
- * Plugin implementation of the 'kalagraphs_link' formatter.
+ * Base class for Kalagraphs link field formatter plugin implementations.
  *
- * @FieldFormatter(
- *   id = "kalagraphs_link",
- *   label = @Translation("Kalagraphs Link"),
- *   field_types = {
- *     "link"
- *   }
- * )
+ * @ingroup field_formatter
  */
 abstract class KalagraphsLinkFormatter extends KalagraphsFieldFormatter {
 

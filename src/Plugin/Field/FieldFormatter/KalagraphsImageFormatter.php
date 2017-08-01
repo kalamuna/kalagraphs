@@ -5,15 +5,9 @@ namespace Drupal\kalagraphs\Plugin\Field\FieldFormatter;
 use Drupal\Core\Field\FieldItemInterface;
 
 /**
- * Plugin implementation of the 'kalagraphs_image' formatter.
+ * Base class for Kalagraphs image field formatter plugin implementations.
  *
- * @FieldFormatter(
- *   id = "kalagraphs_image",
- *   label = @Translation("Kalagraphs Image"),
- *   field_types = {
- *     "image"
- *   }
- * )
+ * @ingroup field_formatter
  */
 abstract class KalagraphsImageFormatter extends KalagraphsFieldFormatter {
 

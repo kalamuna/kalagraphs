@@ -5,15 +5,9 @@ namespace Drupal\kalagraphs\Plugin\Field\FieldFormatter;
 use Drupal\Core\Field\FieldItemInterface;
 
 /**
- * Plugin implementation of the 'kalagraphs_title' formatter.
+ * Base class for Kalagraphs title field formatter plugin implementations.
  *
- * @FieldFormatter(
- *   id = "kalagraphs_title",
- *   label = @Translation("Kalagraphs Title"),
- *   field_types = {
- *     "string",
- *   }
- * )
+ * @ingroup field_formatter
  */
 abstract class KalagraphsTitleFormatter extends KalagraphsFieldFormatter {
 
