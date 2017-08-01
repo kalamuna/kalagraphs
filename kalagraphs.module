@@ -10,7 +10,6 @@ use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Render\Element;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 
@@ -241,13 +240,28 @@ function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $co
   $bundle_title = &$element['top']['paragraph_type_title']['info']['#markup'];
   $add_prefix($prefix, $bundle_title);
 
+  // Prefix the bundle title with the Kalagraphs type.
+  $delta = $element['#delta'];
+  if (isset($context['items'][$delta]->entity->field_kalagraphs_type->value)) {
+    $type = $context['items'][$delta]->entity->field_kalagraphs_type->value;
+    if (isset(KALAGRAPHS_TYPES[$type]['title'])) {
+      $type_name = t(KALAGRAPHS_TYPES[$type]['title']);
+      $add_prefix("<strong>$type_name</strong> ", $bundle_title);
+    }
+  }
+
   // The rest of this function depends on a fully loaded Paragraphs widget form.
   $fields = Element::children($subform);
   if (!count($fields)) {
     return;
   }
 
+  // Attach autogrow behavior to the "Text" field's textarea element.
+  $element['#attached']['library'][] = 'kalagraphs/ux-tweaks';
+
   // Add an appropriate number of "Sub-"s to the "Add Component" button label.
+  // It requires one more "Sub-" than the other Sub-component labels because it
+  // does not use the field name but rather the bundle machine name.
   $widget = &$subform['field_kalagraphs_subcomponents']['widget'];
   $button_label = &$widget['add_more']['add_more_button_kalagraphs_component']['#value'];
   $add_prefix($sub . strtolower($prefix), $button_label);
@@ -370,10 +384,9 @@ function _kalagraphs_element_is_kalagraph(&$element, FormStateInterface $form_st
 
   // For previously-saved items, the entity (and therefore bundle) is available.
   $delta = $element['#delta'];
-
   if (isset($context['items'][$delta]->target_id)) {
-    $id = $context['items'][$delta]->target_id;
-    $bundle = Paragraph::load($id)->bundle();
+    $item = $context['items'][$delta];
+    $bundle = $item->entity->bundle();
     return strpos($bundle, 'kalagraphs_') === 0;
   }
 

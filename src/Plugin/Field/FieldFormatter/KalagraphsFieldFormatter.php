@@ -7,14 +7,9 @@ use Drupal\Core\Field\FormatterBase;
 use Drupal\Core\Field\FieldItemInterface;
 
 /**
- * Plugin implementation of the 'kalagraphs' formatter.
+ * Base class for Kalagraphs field formatter plugin implementations.
  *
- * @FieldFormatter(
- *   id = "kalagraphs",
- *   label = @Translation("Kalagraphs"),
- *   field_types = {
- *   }
- * )
+ * @ingroup field_formatter
  */
 abstract class KalagraphsFieldFormatter extends FormatterBase {
 
