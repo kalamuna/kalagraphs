@@ -256,6 +256,9 @@ function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $co
     return;
   }
 
+  // Attach autogrow behavior to the "Text" field's textarea element.
+  $element['#attached']['library'][] = 'kalagraphs/ux-tweaks';
+
   // Add an appropriate number of "Sub-"s to the "Add Component" button label.
   // It requires one more "Sub-" than the other Sub-component labels because it
   // does not use the field name but rather the bundle machine name.
