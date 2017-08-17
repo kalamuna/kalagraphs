@@ -33,7 +33,7 @@ abstract class KalagraphsLinkFormatter extends KalagraphsFieldFormatter {
     ];
 
     // Determine if link is active.
-    if (!$url->isExternal()) {
+    if ($url->isRouted()) {
 
       // Empty string as internal path indicates user entered "/" or "<front>".
       $link_path = $url->getInternalPath();
