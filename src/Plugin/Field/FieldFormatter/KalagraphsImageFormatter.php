@@ -24,14 +24,23 @@ abstract class KalagraphsImageFormatter extends KalagraphsFieldFormatter {
   protected function viewValue(FieldItemInterface $item) {
 
     // Fill in some default values for sub-classes.
-    return [
-      '#uri'    => file_create_url($item->entity->getFileUri()),
-      '#alt'    => $item->alt,
-      '#title'  => $item->title,
-      '#width'  => $item->width,
-      '#height' => $item->height,
-      '#class'  => [],
+    $value = [
+      '#uri'     => file_create_url($item->entity->getFileUri()),
+      '#attributes' => [
+        'alt'    => $item->alt,
+        'title'  => $item->title,
+        'class'  => [],
+        'width'  => $item->width,
+        'height' => $item->height,
+      ],
     ];
+
+    // Pass by reference to retain compatibility with older versions.
+    $value['#alt'] = &$value['#attributes']['alt'];
+    $value['#title'] = &$value['#attributes']['title'];
+    $value['#class'] = &$value['#attributes']['class'];
+
+    return $value;
   }
 
 }
