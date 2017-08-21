@@ -39,6 +39,8 @@ abstract class KalagraphsImageFormatter extends KalagraphsFieldFormatter {
     $value['#alt'] = &$value['#attributes']['alt'];
     $value['#title'] = &$value['#attributes']['title'];
     $value['#class'] = &$value['#attributes']['class'];
+    $value['#width'] = &$value['#attributes']['width'];
+    $value['#height'] = &$value['#attributes']['height'];
 
     return $value;
   }
