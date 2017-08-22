@@ -428,3 +428,12 @@ function _kalagraphs_element_is_kalagraph(&$element, FormStateInterface $form_st
     return $is_kalagraph;
   }
 }
+
+/**
+ * Implements hook_entity_type_alter().
+ *
+ * Swaps out the Paragraph class for our own, so we can alter the entity labels.
+ */
+function kalagraphs_entity_type_alter(array &$entity_types) {
+  $entity_types['paragraph']->setClass('Drupal\kalagraphs\Entity\Kalagraph');
+}
