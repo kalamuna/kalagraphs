@@ -14,16 +14,18 @@ third_party_settings:
     basic_html: '0'
     full_html: '0'
     plain_text: '0'
+_core:
+  default_config_hash: b2qup5cXRMcixiTaG_RMD4xVj5vrL-dpFAgPyL0ZuA8
 id: paragraph.kalagraphs_component.field_kalagraphs_text
 field_name: field_kalagraphs_text
 entity_type: paragraph
 bundle: kalagraphs_component
 label: Text
-description: ''
+description: 'You may style text with <a target="_blank" href="http://daringfireball.net/projects/markdown/syntax">markdown</a> (also see: <a target="_blank" href="http://michelf.com/projects/php-markdown/extra">advanced usage</a>).'
 required: false
 translatable: true
 default_value: {  }
 default_value_callback: ''
 settings:
-  display_summary: true
+  display_summary: false
 field_type: text_with_summary

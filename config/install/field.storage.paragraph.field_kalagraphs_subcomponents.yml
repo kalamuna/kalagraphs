@@ -5,6 +5,8 @@ dependencies:
   module:
     - entity_reference_revisions
     - paragraphs
+_core:
+  default_config_hash: PdhfZoOORuyjjOwzosGK2dmPHaLBksGLPsXHYAmLmW0
 id: paragraph.field_kalagraphs_subcomponents
 field_name: field_kalagraphs_subcomponents
 entity_type: paragraph

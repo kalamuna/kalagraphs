@@ -6,6 +6,7 @@ dependencies:
     - field.field.paragraph.kalagraphs_component.field_kalagraphs_image
     - field.field.paragraph.kalagraphs_component.field_kalagraphs_links
     - field.field.paragraph.kalagraphs_component.field_kalagraphs_subcomponents
+    - field.field.paragraph.kalagraphs_component.field_kalagraphs_subtitle
     - field.field.paragraph.kalagraphs_component.field_kalagraphs_text
     - field.field.paragraph.kalagraphs_component.field_kalagraphs_title
     - field.field.paragraph.kalagraphs_component.field_kalagraphs_type
@@ -17,13 +18,15 @@ dependencies:
     - link
     - paragraphs
     - text
+_core:
+  default_config_hash: us2387P1wVRE9KV-60v1cYsVnOaTUCMWRplPkgLMnIw
 id: paragraph.kalagraphs_component.default
 targetEntityType: paragraph
 bundle: kalagraphs_component
 mode: default
 content:
   field_kalagraphs_image:
-    weight: 3
+    weight: 5
     settings:
       preview_image_style: thumbnail
       progress_indicator: throbber
@@ -31,7 +34,7 @@ content:
     type: image_image
     region: content
   field_kalagraphs_links:
-    weight: 5
+    weight: 4
     settings:
       placeholder_url: ''
       placeholder_title: ''
@@ -50,8 +53,16 @@ content:
       default_paragraph_type: _none
     third_party_settings: {  }
     region: content
-  field_kalagraphs_text:
+  field_kalagraphs_subtitle:
     weight: 2
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_kalagraphs_text:
+    weight: 3
     settings:
       rows: 3
       placeholder: ''

@@ -7,6 +7,8 @@ dependencies:
     - paragraphs.paragraphs_type.kalagraphs_component
   module:
     - options
+_core:
+  default_config_hash: c27X2LlpSpPKxecoQ6hMrG674t45AvdM4qO1y2VDKwE
 id: paragraph.kalagraphs_component.field_kalagraphs_type
 field_name: field_kalagraphs_type
 entity_type: paragraph

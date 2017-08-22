@@ -6,14 +6,16 @@ dependencies:
     - field.field.paragraph.kalagraphs_component.field_kalagraphs_image
     - field.field.paragraph.kalagraphs_component.field_kalagraphs_links
     - field.field.paragraph.kalagraphs_component.field_kalagraphs_subcomponents
+    - field.field.paragraph.kalagraphs_component.field_kalagraphs_subtitle
     - field.field.paragraph.kalagraphs_component.field_kalagraphs_text
     - field.field.paragraph.kalagraphs_component.field_kalagraphs_title
     - field.field.paragraph.kalagraphs_component.field_kalagraphs_type
     - paragraphs.paragraphs_type.kalagraphs_component
   module:
     - entity_reference_revisions
-    - kalagraphs
     - text
+_core:
+  default_config_hash: _fgC5l2uQp4Ral4hFwyN4iXQ8U_8Kuy7D-ea3EUrM6g
 id: paragraph.kalagraphs_component.default
 targetEntityType: paragraph
 bundle: kalagraphs_component
@@ -24,23 +26,31 @@ content:
     label: hidden
     settings: {  }
     third_party_settings: {  }
-    type: kalagraphs_image
+    type: image
     region: content
   field_kalagraphs_links:
     weight: 3
     label: hidden
     settings: {  }
     third_party_settings: {  }
-    type: kalagraphs_link
+    type: link
     region: content
   field_kalagraphs_subcomponents:
     type: entity_reference_revisions_entity_view
-    weight: 5
+    weight: 4
     label: hidden
     settings:
       view_mode: default
       link: ''
     third_party_settings: {  }
+    region: content
+  field_kalagraphs_subtitle:
+    weight: 5
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
     region: content
   field_kalagraphs_text:
     weight: 1

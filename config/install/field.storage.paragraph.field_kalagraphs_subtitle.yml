@@ -1,13 +1,11 @@
-uuid: e204c88b-861f-4043-b6ba-5d4ca9baf201
+uuid: cdf9b20c-4e1a-4cd1-bc9d-5759eac2337a
 langcode: en
 status: true
 dependencies:
   module:
     - paragraphs
-_core:
-  default_config_hash: PqdzdisUANYUmy5LeOYYid0UFwJHwtklqMl4-3mfyII
-id: paragraph.field_kalagraphs_title
-field_name: field_kalagraphs_title
+id: paragraph.field_kalagraphs_subtitle
+field_name: field_kalagraphs_subtitle
 entity_type: paragraph
 type: string
 settings:

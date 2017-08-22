@@ -7,64 +7,30 @@ dependencies:
     - field.field.paragraph.kalagraphs_component.field_kalagraphs_image
     - field.field.paragraph.kalagraphs_component.field_kalagraphs_links
     - field.field.paragraph.kalagraphs_component.field_kalagraphs_subcomponents
+    - field.field.paragraph.kalagraphs_component.field_kalagraphs_subtitle
     - field.field.paragraph.kalagraphs_component.field_kalagraphs_text
     - field.field.paragraph.kalagraphs_component.field_kalagraphs_title
     - field.field.paragraph.kalagraphs_component.field_kalagraphs_type
-    - image.style.thumbnail
     - paragraphs.paragraphs_type.kalagraphs_component
-  module:
-    - image
-    - link
-    - options
-    - text
+_core:
+  default_config_hash: BaSmTBPxN4CGTEOHhs88UeNJ97sOTEKiE2kFZaiLuCI
 id: paragraph.kalagraphs_component.preview
 targetEntityType: paragraph
 bundle: kalagraphs_component
 mode: preview
 content:
-  field_kalagraphs_image:
-    type: image
-    weight: 3
-    region: content
-    label: inline
-    settings:
-      image_style: thumbnail
-      image_link: file
-    third_party_settings: {  }
-  field_kalagraphs_links:
-    type: link
-    weight: 4
-    region: content
-    label: inline
-    settings:
-      trim_length: 80
-      rel: ''
-      target: ''
-      url_only: false
-      url_plain: false
-    third_party_settings: {  }
-  field_kalagraphs_text:
-    type: text_summary_or_trimmed
-    weight: 2
-    label: inline
-    settings:
-      trim_length: 200
-    third_party_settings: {  }
-    region: content
   field_kalagraphs_title:
-    weight: 1
-    label: inline
+    weight: 0
+    label: hidden
     settings:
       link_to_entity: false
     third_party_settings: {  }
     type: string
     region: content
-  field_kalagraphs_type:
-    type: list_default
-    weight: 0
-    label: inline
-    settings: {  }
-    third_party_settings: {  }
-    region: content
 hidden:
+  field_kalagraphs_image: true
+  field_kalagraphs_links: true
   field_kalagraphs_subcomponents: true
+  field_kalagraphs_subtitle: true
+  field_kalagraphs_text: true
+  field_kalagraphs_type: true

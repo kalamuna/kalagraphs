@@ -5,6 +5,8 @@ dependencies:
   module:
     - paragraphs
     - text
+_core:
+  default_config_hash: _vBVpPaI4b_GzbosIoGG8GSSx5KVnXA8Acn6x03anBg
 id: paragraph.field_kalagraphs_text
 field_name: field_kalagraphs_text
 entity_type: paragraph

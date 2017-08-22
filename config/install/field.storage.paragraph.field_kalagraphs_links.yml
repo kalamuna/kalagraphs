@@ -5,6 +5,8 @@ dependencies:
   module:
     - link
     - paragraphs
+_core:
+  default_config_hash: qqzzQRMi-71y5rQ7xt9zS5nD0n9NhaZ14_7T9eD5fNs
 id: paragraph.field_kalagraphs_links
 field_name: field_kalagraphs_links
 entity_type: paragraph

@@ -1,0 +1,20 @@
+uuid: 667871dd-85d1-4422-8df7-0975f84c8c63
+langcode: en
+status: true
+dependencies:
+  module:
+    - block_content
+    - paragraphs
+id: paragraph.field_reusable_content
+field_name: field_reusable_content
+entity_type: paragraph
+type: entity_reference
+settings:
+  target_type: block_content
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

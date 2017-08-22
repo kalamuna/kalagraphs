@@ -5,9 +5,10 @@ dependencies:
   config:
     - field.storage.paragraph.field_kalagraphs_subcomponents
     - paragraphs.paragraphs_type.kalagraphs_component
-    - paragraphs.paragraphs_type.kalagraphs_subcomponent
   module:
     - entity_reference_revisions
+_core:
+  default_config_hash: xK0EJKCuCCUPJ_lv_p67SkuvrvDcgmBPkvGXwVPauGc
 id: paragraph.kalagraphs_component.field_kalagraphs_subcomponents
 field_name: field_kalagraphs_subcomponents
 entity_type: paragraph
@@ -21,13 +22,15 @@ default_value_callback: ''
 settings:
   handler: 'default:paragraph'
   handler_settings:
-    target_bundles:
-      kalagraphs_subcomponent: kalagraphs_subcomponent
+    target_bundles: null
     target_bundles_drag_drop:
       kalagraphs_component:
         weight: 2
         enabled: false
       kalagraphs_subcomponent:
-        enabled: true
         weight: 3
+        enabled: false
+      reusable_content:
+        weight: 6
+        enabled: false
 field_type: entity_reference_revisions

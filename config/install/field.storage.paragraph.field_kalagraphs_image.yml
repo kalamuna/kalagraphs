@@ -6,6 +6,8 @@ dependencies:
     - file
     - image
     - paragraphs
+_core:
+  default_config_hash: vy4C3XidQjg0wMBXGCHEJAJ6CLSHxbsV3xa-iEK8jX8
 id: paragraph.field_kalagraphs_image
 field_name: field_kalagraphs_image
 entity_type: paragraph
@@ -23,7 +25,7 @@ settings:
   display_default: false
 module: image
 locked: false
-cardinality: -1
+cardinality: 1
 translatable: true
 indexes: {  }
 persist_with_no_fields: false

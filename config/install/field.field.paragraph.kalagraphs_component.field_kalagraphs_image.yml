@@ -6,14 +6,9 @@ dependencies:
     - field.storage.paragraph.field_kalagraphs_image
     - paragraphs.paragraphs_type.kalagraphs_component
   module:
-    - content_translation
     - image
-third_party_settings:
-  content_translation:
-    translation_sync:
-      file: file
-      alt: '0'
-      title: '0'
+_core:
+  default_config_hash: SbvFhbdrp8cZGinC31CxvhIN0CqJArSFTGX-IcUuMSE
 id: paragraph.kalagraphs_component.field_kalagraphs_image
 field_name: field_kalagraphs_image
 entity_type: paragraph

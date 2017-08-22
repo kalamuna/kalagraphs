@@ -5,6 +5,8 @@ dependencies:
   config:
     - field.storage.paragraph.field_kalagraphs_title
     - paragraphs.paragraphs_type.kalagraphs_component
+_core:
+  default_config_hash: U3Af1P9gzmgO4cHs5kqzdV02eE6enCxzqz9oS58kK3w
 id: paragraph.kalagraphs_component.field_kalagraphs_title
 field_name: field_kalagraphs_title
 entity_type: paragraph
