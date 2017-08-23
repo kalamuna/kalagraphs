@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * @file
+ * Contains kalagraphs install hook.
+ */
+
+/**
+ * Implements hook_install().
+ *
+ * Addresses https://www.drupal.org/node/2599228
+ */
+function kalagraphs_install() {
+  // Ensure the translation fields are created in the database.
+  \Drupal::service('entity.definition_update_manager')->applyUpdates();
+}
