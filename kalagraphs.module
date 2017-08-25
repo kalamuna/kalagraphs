@@ -171,6 +171,11 @@ function _kalagraphs_options(FieldStorageDefinitionInterface $definition, Fielda
  * Allows for customization of the Kalagraphs Component paragraph entity form.
  */
 function kalagraphs_field_widget_bricks_tree_inline_form_alter(&$element, FormStateInterface $form_state, $context) {
+
+  // Attach autogrow behavior to the "Text" field's textarea element.
+  $element['#attached']['library'][] = 'kalagraphs/ux-tweaks';
+
+  // Create some DRY code for adding a custom process callback to form elements.
   $add_process_callback = function (&$element) {
     if (isset($element['form']['inline_entity_form'])) {
       $ief = &$element['form']['inline_entity_form'];
@@ -180,10 +185,10 @@ function kalagraphs_field_widget_bricks_tree_inline_form_alter(&$element, FormSt
     }
   };
 
-  // Add conditional display (States API) logic to new items.
+  // Add conditional display logic and other sauce to new items.
   $add_process_callback($element);
 
-  // Add conditional display (States API) logic to existing items.
+  // Add conditional display logic and other sauce to existing items.
   $items = &$element['entities'];
   foreach (Element::children($items) as $delta) {
     $add_process_callback($items[$delta]);
@@ -196,9 +201,6 @@ function kalagraphs_field_widget_bricks_tree_inline_form_alter(&$element, FormSt
  * Adds conditional display and other sauce to the Paragaphs edit form.
  */
 function _kalagraphs_process_form($subform, FormStateInterface &$form_state, &$complete_form) {
-
-  // Attach autogrow behavior to the "Text" field's textarea element.
-  $subform['#attached']['library'][] = 'kalagraphs/ux-tweaks';
 
   // Allow modules to alter the options using hook_kalagraphs_options_alter().
   $options = &$subform['field_kalagraphs_type']['widget']['#options'];
