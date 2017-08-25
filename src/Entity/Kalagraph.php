@@ -47,7 +47,7 @@ class Kalagraph extends Paragraph {
 
         // Janky way to get the brick associated with this paragraph. Account
         // for the fact that sometimes it loops over all the bricks twice.
-        if (count($bricks) >= $delta) {
+        if ($delta >= count($bricks)) {
           $delta -= count($bricks);
         }
         $brick = $bricks[$delta];
