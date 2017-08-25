@@ -11,7 +11,6 @@ use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Render\Element;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Component\Utility\Html;
-use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * Implements hook_help().
@@ -74,9 +73,9 @@ function template_preprocess_paragraph__kalagraphs_component__default(&$vars) {
   }
 
   // Add a flag to indicate it is rendering in a Drupal context.
-  // @todo This doesn't cover non-Paragraph theme hooks, e.g., atom components
-  // used for some fields.
-  $vars['drupal'] = TRUE;
+  $vars['kalagraphs']
+    = $vars['drupal']
+      = TRUE;
 
   // Insert the author's name and "created" (aka "Authored on") date from the
   // entity to which this paragraph belongs.
@@ -94,20 +93,12 @@ function template_preprocess_paragraph__kalagraphs_component__default(&$vars) {
     // from the front.
     $name = substr($field, 17);
     $element = &$elements[$field];
-    foreach (Element::children($element) as $item) {
 
-      // Send the field item's render array to Twig.
-      switch ($name) {
-
-        // Extract the longtext field's "summary" subfield.
-        case 'text':
-          if (!empty($element['#items'][$item]->summary)) {
-            $vars['subtitle'] = $element['#items'][$item]->summary;
-          }
-
-        default:
-          $vars[$name][] = $element[$item];
-      }
+    // @TODO This approach disables Quickedit on the fields, by stripping the
+    // "items" (plural) render array and leaving only the individual "item"
+    // (singular) render arrays.
+    foreach (Element::children($element) as $delta) {
+      $vars[$name][] = $element[$delta];
     }
   }
 
@@ -122,12 +113,11 @@ function template_preprocess_paragraph__kalagraphs_component__default(&$vars) {
  */
 function kalagraphs_theme_suggestions_paragraph_alter(array &$suggestions, array $vars) {
   $paragraph = $vars['elements']['#paragraph'];
-  $bundle = $paragraph->bundle();
-  if (substr($bundle, 0, 11) === 'kalagraphs_') {
+  if ($paragraph->bundle() === 'kalagraphs_component') {
     $view_mode = $vars['elements']['#view_mode'];
     if ('default' === $view_mode) {
       $type = $paragraph->field_kalagraphs_type->value;
-      $suggestions[] = "kalagraphs_$type";
+      $suggestions[] = empty($type) ? 'kalagraphs_hidden' : "kalagraphs_$type";
     }
   }
 }
@@ -135,11 +125,7 @@ function kalagraphs_theme_suggestions_paragraph_alter(array &$suggestions, array
 /**
  * Implements hook_theme_suggestions_HOOK_alter() for field().
  *
- * Renders Kalagraphs fields with a minimal template. Note that this only gets
- * invoked when a Kalagraphs type doesn't map to a custom template or render
- * function and therefore gets displayed through the regular field pipeline.
- *
- * @TODO Also use this for all Paragraph (Entity Reference Revision) fields.
+ * Renders Kalagraphs fields with a minimal template.
  */
 function kalagraphs_theme_suggestions_field_alter(array &$suggestions, array $vars) {
   $field = $vars['element']['#field_name'];
@@ -148,6 +134,20 @@ function kalagraphs_theme_suggestions_field_alter(array &$suggestions, array $va
     if ('default' === $view_mode) {
       $suggestions[] = 'kalagraphs_field';
     }
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for field().
+ *
+ * Adds helper flags to indicate context in templates.
+ */
+function kalagraphs_preprocess_field(array &$vars) {
+  $field = $vars['element']['#field_name'];
+  if (strpos($field, 'field_kalagraphs_') === 0) {
+    $vars['kalagraphs']
+      = $vars['drupal']
+        = TRUE;
   }
 }
 
@@ -161,150 +161,49 @@ function _kalagraphs_options(FieldStorageDefinitionInterface $definition, Fielda
   $values = array_column(KALAGRAPHS_TYPES, 'title');
   $options = array_combine($keys, $values);
   asort($options);
-  $options['hidden'] = 'Hidden';
+  $options['hidden'] = t('Hidden');
   return $options;
 }
 
 /**
- * Implements hook_field_widget_WIDGET_TYPE_form_alter() for entity_reference_paragraphs().
+ * Implements hook_field_widget_WIDGET_TYPE_form_alter() for bricks_tree_inline().
  *
- * Modifies the "Default" Paragraphs field widget.
+ * Allows for customization of the Kalagraphs Component paragraph entity form.
  */
-function kalagraphs_field_widget_entity_reference_paragraphs_form_alter(&$element, FormStateInterface $form_state, $context) {
-  _kalagraphs_process_form($element, $form_state, $context);
-}
-
-/**
- * Implements hook_field_widget_WIDGET_TYPE_form_alter() for paragraphs().
- *
- * Modfies the "Experimental" (as of now) Paragraphs field widget.
- */
-function kalagraphs_field_widget_paragraphs_form_alter(&$element, FormStateInterface $form_state, $context) {
-  _kalagraphs_process_form($element, $form_state, $context);
-}
-
-/**
- * Adds conditional display and other sauce to the Paragaphs edit form.
- *
- * For paramter info, see hook_field_widget_WIDGET_TYPE_form_alter().
- */
-function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $context) {
-
-  // Is this a Kalagraphs paragraph?
-  if (!_kalagraphs_element_is_kalagraph($element, $form_state, $context)) {
-
-    // Wrap the bundle title in a strong tag to match Kalagraphs display.
-    $bundle_title = &$element['top']['paragraph_type_title']['info']['#markup'];
-    $bundle_title = "<strong>$bundle_title</strong>";
-    return;
-  }
-
-  // Ensure the component form is not completely empty before proceeding.
-  $subform = &$element['subform'];
-  if (empty($subform)) {
-    return;
-  }
-
-  // Change the bundle title to just display the Kalagraphs type.
-  $delta = $element['#delta'];
-  if (isset($context['items'][$delta]->entity->field_kalagraphs_type->value)) {
-    $type = $context['items'][$delta]->entity->field_kalagraphs_type->value;
-    if (isset(KALAGRAPHS_TYPES[$type]['title'])) {
-      $type_name = t(KALAGRAPHS_TYPES[$type]['title']);
-      $element['top']['paragraph_type_title']['info']['#markup']
-        = "<strong>$type_name</strong>";
-    }
-  }
-
-  // Prepare to prefix an appropriate number of "Sub-"s on various UI labels.
-  $sub = t('Sub-');
-  $prefix = '';
-  $parents = $context['form']['#parents'];
-  $nesting_level = count(array_keys($parents, 'subform', TRUE));
-  for ($i = 0; $i < $nesting_level; $i++) {
-    $prefix = $sub . strtolower($prefix);
-  }
-
-  // Create a helper function to prefix labels with an appropriate # of "Sub-"s.
-  /*
-   * @param string|TranslatableMarkup $prefix
-   *   The string to be prefixed ('', 'Sub-', 'Sub-sub-', etcetera).
-   * @param string|TranslatableMarkup $text
-   *   The text to which the prefix is added.
-   *
-   * @return string|TranslatableMarkup
-   *   The text with prefix added.
-   */
-  $add_prefix = function ($prefix, &$text) {
-    if (empty($prefix)) {
-      return;
-    }
-    if ($text instanceof TranslatableMarkup) {
-      $arguments = $text->getArguments();
-      $label = &$arguments[key($arguments)];
-      $label = $prefix . strtolower($label);
-      $text = t($text->getUntranslatedString(), $arguments);
-    }
-    else {
-      $text = $prefix . strtolower($text);
+function kalagraphs_field_widget_bricks_tree_inline_form_alter(&$element, FormStateInterface $form_state, $context) {
+  $add_process_callback = function (&$element) {
+    if (isset($element['form']['inline_entity_form'])) {
+      $ief = &$element['form']['inline_entity_form'];
+      if ('kalagraphs_component' === $ief['#bundle']) {
+        $ief['#process'][] = '_kalagraphs_process_form';
+      }
     }
   };
 
-  // The rest of this function depends on a fully loaded Paragraphs widget form.
-  $fields = Element::children($subform);
-  if (!count($fields)) {
-    return;
-  }
+  // Add conditional display (States API) logic to new items.
+  $add_process_callback($element);
 
-  // Add an appropriate number of "Sub-"s to the "Add Component" button label.
-  // It requires one more "Sub-" than the other Sub-component labels because it
-  // does not use the field name but rather the bundle machine name.
-  $widget = &$subform['field_kalagraphs_subcomponents']['widget'];
-  $button_label = &$widget['add_more']['add_more_button_kalagraphs_component']['#value'];
-  $add_prefix($sub . strtolower($prefix), $button_label);
-
-  // Add an appropriate number of "Sub"s to the Subcomponents field label, which
-  // displays above the "Add Component" button before any items have been added.
-  if (isset($widget['title']['#value'])) {
-    $add_prefix($prefix, $widget['title']['#value']);
+  // Add conditional display (States API) logic to existing items.
+  $items = &$element['entities'];
+  foreach (Element::children($items) as $delta) {
+    $add_process_callback($items[$delta]);
   }
+}
 
-  // Add an appropriate number of "Sub-"s to the Subcomponents form widget
-  // title, which displays at the top of the full listing of Subcomponent items.
-  if (isset($widget['#title'])) {
-    $add_prefix($prefix, $widget['#title']);
-  }
-
-  // Add an appropriate number of "Sub-"s to the "No sub-component added yet"
-  // help text.
-  if (isset($widget['text']['value']['#markup'])) {
-    $add_prefix($prefix, $widget['text']['value']['#markup']);
-  }
+/**
+ * Implements callback_form_element_process() for Kalagraphs Component bricks.
+ *
+ * Adds conditional display and other sauce to the Paragaphs edit form.
+ */
+function _kalagraphs_process_form($subform, FormStateInterface &$form_state, &$complete_form) {
 
   // Attach autogrow behavior to the "Text" field's textarea element.
-  $element['#attached']['library'][] = 'kalagraphs/ux-tweaks';
-
-  // Add a wrapper class to indicate the currently-selected component type.
-  $type = reset($subform['field_kalagraphs_type']['widget']['#default_value']);
-  $class = 'kalagraphs-form-widget--';
-  $class .= $type ? $type : 'none';
-  $element['#attributes']['class'][] = $class;
-
-  // Filter options list to the appropriate layer (top-level or sub-component).
-  $field = $context['items']->getName();
-  $is_subcomponent = 'field_kalagraphs_subcomponents' === $field;
-  $options = &$subform['field_kalagraphs_type']['widget']['#options'];
-  foreach (KALAGRAPHS_TYPES as $type => $info) {
-
-    // If the component does not specify "is_subcomponent", just always show it.
-    if (isset($info['is_subcomponent']) &&
-        $info['is_subcomponent'] !== $is_subcomponent) {
-      unset($options[$type]);
-    }
-  }
+  $subform['#attached']['library'][] = 'kalagraphs/ux-tweaks';
 
   // Allow modules to alter the options using hook_kalagraphs_options_alter().
-  \Drupal::moduleHandler()->alter('kalagraphs_options', $options, $element);
+  $options = &$subform['field_kalagraphs_type']['widget']['#options'];
+  $widget = &$complete_form['field_bricks']['widget'];
+  \Drupal::moduleHandler()->alter('kalagraphs_options', $options, $widget);
 
   // Use the form's #parents to determine the States API selector.
   $first_parent = reset($subform['#parents']);
@@ -349,9 +248,9 @@ function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $co
   $subform['help']['_none'] = $get_helptext($help, $condition, 'none');
 
   // Add a null state so fields not used on any component type are still hidden.
-  foreach ($fields as $field) {
-    // Don't hide the "Display as" selector.
-    if ('field_kalagraphs_type' !== $field) {
+  foreach (Element::children($subform) as $field) {
+    // Don't hide the "Display as" selector or the item submit buttons.
+    if ('field_kalagraphs_type' !== $field && 'actions' !== $field) {
       $subform[$field]['#states']['visible'][$selector][] = ['value' => -1];
     }
   }
@@ -373,60 +272,8 @@ function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $co
       }
     }
   }
-}
 
-/**
- * Determines whether to proceed with processing of the Paragraphs field widget.
- *
- * For parameter info, see hook_field_widget_WIDGET_TYPE_form_alter().
- */
-function _kalagraphs_element_is_kalagraph(&$element, FormStateInterface $form_state, $context) {
-
-  // For previously-saved items, the entity (and therefore bundle) is available.
-  $delta = $element['#delta'];
-  if (isset($context['items'][$delta]->target_id)) {
-    $item = $context['items'][$delta];
-    $bundle = $item->entity->bundle();
-    return strpos($bundle, 'kalagraphs_') === 0;
-  }
-
-  // For newly-added paragraphs, there is no entity yet, so we use the form's
-  // "triggering element" to identify which "Add Paragraph" button was pushed
-  // (i.e., the bundle of the new item). However, this only tells us about the
-  // item being added right now and nothing about the items previously-added in
-  // this session. To get around this, we use a flag to indicate whether each
-  // unsaved item has already been verified as being a Kalagraphs bundle.
-  //
-  // Initialise a container to hold flag data for the lifetime of the form.
-  $kalagraphs_bundle_check = $form_state->has(__FUNCTION__)
-    ? $form_state->get(__FUNCTION__) : [];
-
-  // Get a reference to the result (whether the item is a Kalagraphs bundle).
-  $is_kalagraph = &$kalagraphs_bundle_check[$delta];
-
-  // Has this item already been processed?
-  if (isset($is_kalagraph)) {
-    return $is_kalagraph;
-  }
-
-  // This item has not been processed, so it was just created or deleted. If
-  // just created, the button should have an associated bundle. Also handle the
-  // case where a "default" component is created on new nodes.
-  $button = $form_state->getTriggeringElement();
-  if (isset($button['#bundle_machine_name'])) {
-    $bundle = &$button['#bundle_machine_name'];
-  }
-  elseif (0 == $delta) {
-    $bundle = &$context['widget']->getSettings()['default_paragraph_type'];
-  }
-  else {
-    unset($bundle);
-  }
-  if (isset($bundle)) {
-    $is_kalagraph = strpos($bundle, 'kalagraphs_') === 0;
-    $form_state->set(__FUNCTION__, $kalagraphs_bundle_check);
-    return $is_kalagraph;
-  }
+  return $subform;
 }
 
 /**

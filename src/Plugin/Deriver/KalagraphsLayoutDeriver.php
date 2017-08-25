@@ -15,16 +15,18 @@ class KalagraphsLayoutDeriver extends DeriverBase {
    */
   public function getDerivativeDefinitions($base_plugin_definition) {
 
-    // Pretend we parsed this data from JohnO's fancy JSON reader.
-    $layouts = [
-      [
-        'label' => 'Program',
-        'regions' => [
-          'hero',
-          'sidebar',
-          'main',
-          'bottom',
-        ],
+    // Pretend we parsed this data from JohnO's fancy JSON discoverer.
+    $layouts['twocol'] = [
+      'class' => 'Drupal\kalagraphs\Plugin\Layout\KalagraphsLayout',
+      'label' => 'My Two column',
+      'path' => drupal_get_path('module', 'kalagraphs'),
+      'template' => 'layouts/kalagraphs--twocol',
+      'library' => 'layout_discovery/twocol',
+      'regions' => [
+        'top' => ['label' => 'Top'],
+        'first' => ['label' => 'Left'],
+        'second' => ['label' => 'Right'],
+        'bottom' => ['label' => 'Bottom'],
       ],
     ];
 
