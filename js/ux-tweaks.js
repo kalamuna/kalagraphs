@@ -8,10 +8,17 @@
 
   Drupal.behaviors.kalagraphsTweaks = {
     attach: function (context, settings) {
-      $(context)
-        .find('textarea')
-        .once('kalagraphsAutogrow')
-        .autogrow({horizontal: false, flickering: false});
+      var waitForLoad = function () {
+        if (typeof jQuery.fn.autogrow != 'undefined') {
+          $('textarea', context)
+            .once('kalagraphsAutogrow')
+            .autogrow({horizontal: false, flickering: false});
+        }
+        else {
+          window.setTimeout(waitForLoad, 500);
+        }
+      };
+      window.setTimeout(waitForLoad, 500);
     }
   };
 })(jQuery, Drupal);
