@@ -6,3 +6,5 @@ package: Kalamuna
 dependencies:
   - options
   - paragraphs
+  - bricks_inline
+  - bricks_revisions
