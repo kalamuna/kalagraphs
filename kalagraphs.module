@@ -281,9 +281,6 @@ function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $co
     $add_prefix($prefix, $widget['text']['value']['#markup']);
   }
 
-  // Attach autogrow behavior to the "Text" field's textarea element.
-  $element['#attached']['library'][] = 'kalagraphs/ux-tweaks';
-
   // Add a wrapper class to indicate the currently-selected component type.
   $type = reset($subform['field_kalagraphs_type']['widget']['#default_value']);
   $class = 'kalagraphs-form-widget--';
