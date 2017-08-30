@@ -1,10 +1,10 @@
-uuid: 5e68de31-070b-4af1-b2c5-a27970a26272
 langcode: en
 status: true
 dependencies:
   module:
     - paragraphs
     - text
+_core: {  }
 id: paragraph.field_kalagraphs_text
 field_name: field_kalagraphs_text
 entity_type: paragraph

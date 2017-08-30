@@ -2,20 +2,17 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.paragraph.field_kalagraphs_type
+    - field.storage.paragraph.field_kalagraphs_subtitle
     - paragraphs.paragraphs_type.kalagraphs_component
-  module:
-    - options
-_core: {  }
-id: paragraph.kalagraphs_component.field_kalagraphs_type
-field_name: field_kalagraphs_type
+id: paragraph.kalagraphs_component.field_kalagraphs_subtitle
+field_name: field_kalagraphs_subtitle
 entity_type: paragraph
 bundle: kalagraphs_component
-label: 'Display as'
+label: Subtitle
 description: ''
 required: false
-translatable: true
+translatable: false
 default_value: {  }
 default_value_callback: ''
 settings: {  }
-field_type: list_string
+field_type: string

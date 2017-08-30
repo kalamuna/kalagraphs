@@ -1,7 +1,6 @@
 langcode: en
 status: true
 dependencies: {  }
-_core: {  }
-id: kalagraphs_component
-label: Component
+id: kalagraphs_region
+label: Region
 behavior_plugins: {  }

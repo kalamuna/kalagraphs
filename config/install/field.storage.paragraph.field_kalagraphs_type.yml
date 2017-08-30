@@ -1,10 +1,10 @@
-uuid: f7bb409c-8e4b-4d05-84cf-3da65b9e2bf0
 langcode: en
 status: true
 dependencies:
   module:
     - options
     - paragraphs
+_core: {  }
 id: paragraph.field_kalagraphs_type
 field_name: field_kalagraphs_type
 entity_type: paragraph

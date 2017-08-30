@@ -3,9 +3,8 @@ status: true
 dependencies:
   module:
     - paragraphs
-_core: {  }
-id: paragraph.field_kalagraphs_title
-field_name: field_kalagraphs_title
+id: paragraph.field_kalagraphs_subtitle
+field_name: field_kalagraphs_subtitle
 entity_type: paragraph
 type: string
 settings:
