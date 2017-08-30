@@ -1,4 +1,3 @@
-uuid: bd05329f-3cad-491f-8600-c750058b2cbb
 langcode: en
 status: true
 dependencies:
@@ -6,24 +5,18 @@ dependencies:
     - field.storage.paragraph.field_kalagraphs_text
     - paragraphs.paragraphs_type.kalagraphs_component
   module:
-    - allowed_formats
     - text
-third_party_settings:
-  allowed_formats:
-    restricted_html: restricted_html
-    basic_html: '0'
-    full_html: '0'
-    plain_text: '0'
+_core: {  }
 id: paragraph.kalagraphs_component.field_kalagraphs_text
 field_name: field_kalagraphs_text
 entity_type: paragraph
 bundle: kalagraphs_component
 label: Text
-description: ''
+description: 'You may style text with <a target="_blank" href="http://daringfireball.net/projects/markdown/syntax">markdown</a> (also see: <a target="_blank" href="http://michelf.com/projects/php-markdown/extra">advanced usage</a>).'
 required: false
 translatable: true
 default_value: {  }
 default_value_callback: ''
 settings:
-  display_summary: true
+  display_summary: false
 field_type: text_with_summary

@@ -1,10 +1,10 @@
-uuid: 4af70dd6-41b3-4327-a3f1-ee07d416a8b9
 langcode: en
 status: true
 dependencies:
   module:
     - entity_reference_revisions
     - paragraphs
+_core: {  }
 id: paragraph.field_kalagraphs_subcomponents
 field_name: field_kalagraphs_subcomponents
 entity_type: paragraph
