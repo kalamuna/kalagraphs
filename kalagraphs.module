@@ -387,6 +387,9 @@ function _kalagraphs_element_is_kalagraph(&$element, FormStateInterface $form_st
   $delta = $element['#delta'];
   if (isset($context['items'][$delta]->target_id)) {
     $item = $context['items'][$delta];
+    if (empty($item->entity)) {
+      return FALSE;
+    }
     $bundle = $item->entity->bundle();
     return strpos($bundle, 'kalagraphs_') === 0;
   }
