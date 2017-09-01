@@ -383,6 +383,10 @@ function _kalagraphs_element_is_kalagraph(&$element, FormStateInterface $form_st
   $delta = $element['#delta'];
   if (isset($context['items'][$delta]->target_id)) {
     $item = $context['items'][$delta];
+
+    // @todo This should never happen, so figure out why/how Paragraphs are
+    // getting deleted from the system without also purging references to them.
+    // Node Clone smells like a likely target.
     if (empty($item->entity)) {
       return FALSE;
     }
