@@ -190,10 +190,6 @@ function kalagraphs_field_widget_paragraphs_form_alter(&$element, FormStateInter
  */
 function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $context) {
 
-  // 8.4.x does not automatically load the dropdown button javascript, so we do
-  // it here until the Paragraphs module publishes a new release.
-  $element['#attached']['library'][] = 'core/drupal.dropbutton';
-
   // Is this a Kalagraphs paragraph?
   if (!_kalagraphs_element_is_kalagraph($element, $form_state, $context)) {
 
