@@ -4,6 +4,7 @@ namespace Drupal\kalagraphs\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldItemInterface;
 use Drupal\Core\Url;
+use Drupal\media\Entity\Media;
 
 /**
  * Base class for Kalagraphs link field formatter plugin implementations.
@@ -52,6 +53,18 @@ abstract class KalagraphsLinkFormatter extends KalagraphsFieldFormatter {
         $current_path = Url::fromRoute('<current>')->getInternalPath();
         if ($current_path === $link_path) {
           self::setActive($value);
+        }
+
+        // Make Media entities point directly to their file's URL.
+        if ($url->getRouteName() === 'entity.media.canonical') {
+          $params = $url->getRouteParameters();
+          if (!empty($params['media'])) {
+            $media = Media::load($params['media']);
+            if (!empty($media->field_media_file[0]->entity)) {
+              $file = $media->field_media_file[0]->entity;
+              $value['#url'] = $file->url();
+            }
+          }
         }
       }
     }
