@@ -25,7 +25,7 @@ abstract class KalagraphsImageFormatter extends KalagraphsFieldFormatter {
 
     // Fill in some default values for sub-classes.
     $value = [
-      '#uri'     => file_create_url($item->entity->getFileUri()),
+      '#uri'     => $item->entity->getFileUri(),
       '#attributes' => [
         'alt'    => $item->alt,
         'title'  => $item->title,

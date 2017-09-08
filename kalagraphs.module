@@ -210,7 +210,7 @@ function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $co
   if (isset($context['items'][$delta]->entity->field_kalagraphs_type->value)) {
     $type = $context['items'][$delta]->entity->field_kalagraphs_type->value;
     if (isset(KALAGRAPHS_TYPES[$type]['title'])) {
-      $type_name = t(KALAGRAPHS_TYPES[$type]['title']);
+      $type_name = KALAGRAPHS_TYPES[$type]['title'];
       $element['top']['paragraph_type_title']['info']['#markup']
         = "<strong>$type_name</strong>";
     }
