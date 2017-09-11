@@ -6,7 +6,7 @@
       {% for bp, multipliers in css_srcset %}
         {% for multiplier, url in multipliers %}
           {% set xer = multiplier == '2x' ? xer_string %}
-          @media only screen and {{ bp }}{{ xer }} {
+          @media {{ bp }}{{ xer }} {
             {{ css.backgroundImage(selector, url) }}
           }
         {% endfor %}
