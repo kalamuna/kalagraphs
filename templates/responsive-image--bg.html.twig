@@ -1,0 +1,19 @@
+<div>
+  {% import '@kalastatic/styles/macros/css.twig' as css %}
+  <style type="text/css" media="screen">
+    {% if css_srcset %}
+      {% set xer_string = ' and (-webkit-min-device-pixel-ratio: 2)' %}
+      {% for bp, multipliers in css_srcset %}
+        {% for multiplier, url in multipliers %}
+          {% set xer = multiplier == '2x' ? xer_string %}
+          @media only screen and {{ bp }}{{ xer }} {
+            {{ css.backgroundImage(selector, url) }}
+          }
+        {% endfor %}
+      {% endfor %}
+    {% elseif uri %}
+      {{ css.backgroundImage(selector, uri) }}
+    {% endif %}
+  </style>
+  <div class="image description sr-only">{{ alt }}</div>
+</div>

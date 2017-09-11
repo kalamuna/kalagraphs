@@ -45,6 +45,21 @@ function kalagraphs_theme() {
     'kalagraphs_field' => [
       'base hook' => 'field',
     ],
+
+    // @todo Move this to a separate contrib module.
+    'responsive_image__bg' => [
+      'base hook' => 'responsive_image',
+      'variables' => [
+        'alt' => NULL,
+        'uri' => NULL,
+        'attributes' => [],
+        'responsive_image_style_id' => [],
+        'height' => NULL,
+        'width' => NULL,
+        'selector' => NULL,
+        'css_srcset' => [],
+      ],
+    ],
   ];
 }
 
@@ -112,6 +127,9 @@ function template_preprocess_paragraph__kalagraphs_component__default(&$vars) {
   }
 
   // Provide a unique id attribute for the element that may or may not get used.
+  // @todo In the next major version, change this to something more useful,
+  // e.g., using the Paragraphs entity ID, which can be easily calculated at
+  // other theme layers that don't have access to this variable.
   $vars['id'] = Html::getUniqueId("kalagraphs-component-$type");
 }
 
@@ -430,5 +448,23 @@ function _kalagraphs_element_is_kalagraph(&$element, FormStateInterface $form_st
     $is_kalagraph = strpos($bundle, 'kalagraphs_') === 0;
     $form_state->set(__FUNCTION__, $kalagraphs_bundle_check);
     return $is_kalagraph;
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for responsive_image__bg().
+ */
+function kalagraphs_preprocess_responsive_image__bg(&$vars) {
+  if (empty($vars['sources'])) {
+    $vars['uri'] = file_create_url($vars['uri']);
+    return;
+  }
+  foreach ($vars['sources'] as $source) {
+    $media = $source['media']->value();
+    $srcset = $source['srcset']->value();
+    foreach (explode(', ', $srcset) as $src) {
+      list($url, $multiplier) = explode(' ', $src);
+      $vars['css_srcset'][$media][$multiplier] = $url;
+    }
   }
 }

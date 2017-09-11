@@ -25,7 +25,10 @@ abstract class KalagraphsImageFormatter extends KalagraphsFieldFormatter {
 
     // Fill in some default values for sub-classes.
     $value = [
-      '#uri'     => $item->entity->getFileUri(),
+      // @todo Making this a URL was a mistake; it should remain a URI until the
+      // last possible moment and only changed for the specific items that need
+      // a URL. Fix this in the next major version change.
+      '#uri' => file_create_url($item->entity->getFileUri()),
       '#attributes' => [
         'alt'    => $item->alt,
         'title'  => $item->title,
