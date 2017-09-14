@@ -9,6 +9,7 @@ use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Render\Element;
+use Drupal\Core\Render\Markup;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Component\Utility\Html;
 
@@ -306,15 +307,46 @@ function kalagraphs_entity_type_alter(array &$entity_types) {
  * customize the tabledrag table.
  */
 function kalagraphs_preprocess_inline_entity_form_entity_table(&$variables) {
-  // Get the bundle name of each ¶.
   $bundles = [];
+  $kalaponent_types = [];
   foreach (Element::children($variables['form']) as $i) {
+    // Get the bundle name of each ¶.
     $entity = $variables['form'][$i]['#entity'];
-    $bundles[$i] = $entity->bundle();
+    $bundle = $entity->bundle();
+    $bundles[$i] = $bundle;
+
+    if ($bundle == 'kalagraphs_component') {
+      // This is a kalagraph component so we want to store the type.
+      $kalaponent_types[$i] = $entity->get('field_kalagraphs_type')->getString();
+
+    }
   }
 
   // Add the bundle name as a class on it's row for exceptional styling radness.
-  foreach ($variables['table']['#rows'] as $i => $row) {
-    $variables['table']['#rows'][$i]['class'][] = Html::getClass($bundles[$i]);
+  foreach ($variables['table']['#rows'] as $i => &$row) {
+    $row['class'][] = Html::getClass($bundles[$i]);
+
+    if ($bundles[$i] == 'kalagraphs_region') {
+      $variables['table']['#rows'][$i - 1]['class'][] = 'kalagraphs-region-end';
+    }
+
+    // Remove redundant type labels and set the component labels to their
+    // kalagraph type.
+    $component_label = &$row['data'][3]['data'][0]['#plain_text'];
+    if (isset($kalaponent_types[$i])) {
+      $info = KALAGRAPHS_TYPES[$kalaponent_types[$i]];
+      $new_label = $info['title'];
+      $component_label = $new_label;
+    }
+    else {
+      $component_label = '';
+    }
+
+    // Add a title to the layout type.
+    if ($bundles[$i] == 'layout') {
+      $layout_dropdown = $row['data'][2]['data'];
+      $markup = '<h3>Layout:</h3>' . $layout_dropdown;
+      $row['data'][2]['data'] = Drupal\Core\Render\Markup::create($markup);
+    }
   }
- }
+}
