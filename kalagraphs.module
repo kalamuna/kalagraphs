@@ -318,35 +318,37 @@ function kalagraphs_preprocess_inline_entity_form_entity_table(&$variables) {
     if ($bundle == 'kalagraphs_component') {
       // This is a kalagraph component so we want to store the type.
       $kalaponent_types[$i] = $entity->get('field_kalagraphs_type')->getString();
-
     }
   }
 
   // Add the bundle name as a class on it's row for exceptional styling radness.
   foreach ($variables['table']['#rows'] as $i => &$row) {
-    $row['class'][] = Html::getClass($bundles[$i]);
+    // When coming in from ajax there is an extra row for the entity form.
+    if (isset($bundles[$i])) {
+      $row['class'][] = Html::getClass($bundles[$i]);
 
-    if ($bundles[$i] == 'kalagraphs_region') {
-      $variables['table']['#rows'][$i - 1]['class'][] = 'kalagraphs-region-end';
-    }
+      if ($bundles[$i] == 'kalagraphs_region') {
+        $variables['table']['#rows'][$i - 1]['class'][] = 'kalagraphs-region-end';
+      }
 
-    // Remove redundant type labels and set the component labels to their
-    // kalagraph type.
-    $component_label = &$row['data'][3]['data'][0]['#plain_text'];
-    if (isset($kalaponent_types[$i])) {
-      $info = KALAGRAPHS_TYPES[$kalaponent_types[$i]];
-      $new_label = $info['title'];
-      $component_label = $new_label;
-    }
-    else {
-      $component_label = '';
-    }
+      // Remove redundant type labels and set the component labels to their
+      // kalagraph type.
+      $component_label = &$row['data'][3]['data'][0]['#plain_text'];
+      if (isset($kalaponent_types[$i])) {
+        $info = KALAGRAPHS_TYPES[$kalaponent_types[$i]];
+        $new_label = $info['title'];
+        $component_label = $new_label;
+      }
+      else {
+        $component_label = '';
+      }
 
-    // Add a title to the layout type.
-    if ($bundles[$i] == 'layout') {
-      $layout_dropdown = $row['data'][2]['data'];
-      $markup = '<h3>Layout:</h3>' . $layout_dropdown;
-      $row['data'][2]['data'] = Drupal\Core\Render\Markup::create($markup);
+      // Add a title to the layout type.
+      if ($bundles[$i] == 'layout' && is_array($row['data'][2])) {
+        $layout_dropdown = $row['data'][2]['data'];
+        $markup = '<h3>Layout:</h3>' . $layout_dropdown;
+        $row['data'][2]['data'] = Drupal\Core\Render\Markup::create($markup);
+      }
     }
   }
 }
