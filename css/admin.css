@@ -11,14 +11,18 @@
   float: none;
   position: absolute;
   top: 0;
-  right: 0;
+  right: 25px;
   text-align: right;
 }
 
 .layout-region-node-secondary::before {
   content: 'Metadata';
-  padding: 10px;
-  background-color: #eee;
+  padding: 1em 1em 1em 3em;
+  background-image: url('../images/cog.svg');
+  background-size: 20%;
+  background-repeat: no-repeat;
+  background-position: 10px 10px;
+  background-color: #f7f7f7;
 }
 
 .layout-region-node-secondary .entity-meta {
@@ -31,6 +35,7 @@
 .layout-region-node-secondary:focus .entity-meta,
 .layout-region-node-secondary:active .entity-meta {
   display: block;
+  margin-top: 11px;
 }
 
 .ief-entity-table {
@@ -68,6 +73,16 @@
   display: none;
 }
 
+.kalagraphs-component .inline-entity-form-paragraph-label {
+  display: none;
+}
+
+@media(min-width: 768px) {
+  .kalagraphs-component .inline-entity-form-paragraph-label {
+    display: block;
+  }
+}
+
 .ief-entity-table tbody .layout .inline-entity-form-paragraph-label div,
 .ief-entity-table tbody .layout .inline-entity-form-paragraph-label h3 {
   display: inline-block;
@@ -99,9 +114,29 @@
   display: inline-block;
 }
 
-.ief-entity-operations .button {
+/* Just the operations column -- TODO add a class for this. */
+.ief-entity-table .ief-row-entity td:not([class]) {
+  width: 10em;
+}
+
+.ief-entity-operations .button,
+.ief-entity-operations .button:hover {
   width: 100%;
   margin: 0 0 10px;
+  background-size: 14px;
+  background-repeat: no-repeat;
+  background-position: 10px 6px;
+}
+
+.ief-entity-operations .button:nth-child(1),
+.ief-entity-operations .button:nth-child(1):hover {
+  background-image: url('../images/cog.svg');
+}
+
+.ief-entity-operations .button:nth-child(2),
+.ief-entity-operations .button:nth-child(2):hover {
+  background-image: url('../images/trash.svg');
+  background-position: 10px 5px;
 }
 
 .inline-entity-form-paragraph-type {
