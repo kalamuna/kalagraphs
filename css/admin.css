@@ -1,0 +1,70 @@
+.layout-node-form {
+  position: relative;
+}
+
+.layout-region-node-main {
+  width: 100%;
+}
+
+.layout-region-node-secondary {
+  width: auto;
+  float: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  text-align: right;
+}
+
+.layout-region-node-secondary::before {
+  content: 'Metadata';
+  padding: 10px;
+  background-color: #eee;
+}
+
+.layout-region-node-secondary .entity-meta {
+  display: none;
+  text-align: left;
+  box-shadow: 0 3px 15px 1px rgba(0, 0, 0, 0.2);
+}
+
+.layout-region-node-secondary:hover .entity-meta,
+.layout-region-node-secondary:focus .entity-meta,
+.layout-region-node-secondary:active .entity-meta {
+  display: block;
+}
+
+/* Just the operations column -- TODO add a class for this. */
+.ief-entity-table .ief-row-entity td:not([class]) {
+  min-width: 16em;
+}
+
+.ief-entity-table tbody .ief-row-entity:first-child .ief-tabledrag-handle > a,
+.ief-entity-table tbody .ief-row-entity:first-child .form-item-field-bricks-entities-0-options-css-class,
+.ief-entity-table tbody .ief-row-entity:first-child .ief-entity-operations,
+.js-indentation:first-child {
+  display: none;
+}
+
+.ief-entity-table tbody .ief-row-entity:nth-child(1) td,
+.ief-entity-table tbody .ief-row-entity:nth-child(3) td,
+.ief-entity-table tbody .ief-row-entity:nth-child(5) td,
+.ief-entity-table tbody .ief-row-entity:nth-child(7) td {
+  padding-bottom: 50px;
+}
+
+.ief-entity-table tbody .ief-row-entity:nth-child(2) td,
+.ief-entity-table tbody .ief-row-entity:nth-child(4) td,
+.ief-entity-table tbody .ief-row-entity:nth-child(6) td,
+.ief-entity-table tbody .ief-row-entity:nth-child(8) td {
+  background-color: #ddd;
+}
+
+.inline-entity-form-paragraph-label strong {
+  font-size: 20px;
+  margin-right: 20px;
+  display: inline-block;
+}
+
+.inline-entity-form-paragraph-label strong + div {
+  display: inline-block;
+}

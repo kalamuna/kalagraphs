@@ -196,6 +196,18 @@ function kalagraphs_field_widget_bricks_tree_inline_form_alter(&$element, FormSt
 }
 
 /**
+ * Implements hook_something_something_form_alter() for something().
+ *
+ * Add our custom admin css to node forms.
+ */
+function kalagraphs_form_node_form_alter(&$form, FormStateInterface $form_state, $context) {
+  // Check if our ¶ field is on this node and add our css if it is.
+  if (isset($form['field_bricks'])) {
+    $form['#attached']['library'][] = 'kalagraphs/admin-styles';
+  }
+}
+
+/**
  * Implements callback_form_element_process() for Kalagraphs Component bricks.
  *
  * Adds conditional display and other sauce to the Paragaphs edit form.

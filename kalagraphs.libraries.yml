@@ -16,3 +16,9 @@ ux-tweaks:
   dependencies:
     - kalagraphs/jquery.ns-autogrow
     - core/jquery.once
+
+admin-styles:
+   version: 1.x
+   css:
+     theme:
+       css/admin.css: {}
