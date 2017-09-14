@@ -298,3 +298,23 @@ function _kalagraphs_process_form($subform, FormStateInterface &$form_state, &$c
 function kalagraphs_entity_type_alter(array &$entity_types) {
   $entity_types['paragraph']->setClass('Drupal\kalagraphs\Entity\Kalagraph');
 }
+
+/**
+ * Prepares variables for theme_inline_entity_form_entity_table().
+ *
+ * Override bricks_inline_preprocess_inline_entity_form_entity_table() so we can
+ * customize the tabledrag table.
+ */
+function kalagraphs_preprocess_inline_entity_form_entity_table(&$variables) {
+  // Get the bundle name of each ¶.
+  $bundles = [];
+  foreach (Element::children($variables['form']) as $i) {
+    $entity = $variables['form'][$i]['#entity'];
+    $bundles[$i] = $entity->bundle();
+  }
+
+  // Add the bundle name as a class on it's row.
+  foreach ($variables['table']['#rows'] as $i => $row) {
+    $variables['table']['#rows'][$i]['class'][] = Html::getClass($bundles[$i]);
+  }
+ }
