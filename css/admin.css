@@ -33,6 +33,14 @@
   display: block;
 }
 
+.ief-entity-table {
+  margin-bottom: 50px;
+}
+
+.field--widget-bricks-tree-inline > div > fieldset {
+  padding-bottom: 50px;
+}
+
 /* Just the operations column -- TODO add a class for this. */
 .ief-entity-table .ief-row-entity td:not([class]) {
   min-width: 16em;
