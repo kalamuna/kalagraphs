@@ -313,7 +313,7 @@ function kalagraphs_preprocess_inline_entity_form_entity_table(&$variables) {
     $bundles[$i] = $entity->bundle();
   }
 
-  // Add the bundle name as a class on it's row.
+  // Add the bundle name as a class on it's row for exceptional styling radness.
   foreach ($variables['table']['#rows'] as $i => $row) {
     $variables['table']['#rows'][$i]['class'][] = Html::getClass($bundles[$i]);
   }
