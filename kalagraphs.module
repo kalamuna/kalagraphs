@@ -321,10 +321,11 @@ function kalagraphs_preprocess_inline_entity_form_entity_table(&$variables) {
     }
   }
 
-  // Add the bundle name as a class on it's row for exceptional styling radness.
   foreach ($variables['table']['#rows'] as $i => &$row) {
     // When coming in from ajax there is an extra row for the entity form.
     if (isset($bundles[$i])) {
+      // Add the bundle name as a class on it's row for exceptional styling
+      // radness.
       $row['class'][] = Html::getClass($bundles[$i]);
 
       if ($bundles[$i] == 'kalagraphs_region') {

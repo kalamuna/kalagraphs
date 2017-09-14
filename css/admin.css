@@ -41,11 +41,6 @@
   padding-bottom: 50px;
 }
 
-/* Just the operations column -- TODO add a class for this. */
-.ief-entity-table .ief-row-entity td:not([class]) {
-  min-width: 16em;
-}
-
 .ief-entity-table thead tr {
   display: none;
 }
@@ -102,4 +97,13 @@
 
 .inline-entity-form-paragraph-label strong + div {
   display: inline-block;
+}
+
+.ief-entity-operations .button {
+  width: 100%;
+  margin: 0 0 10px;
+}
+
+.inline-entity-form-paragraph-type {
+  min-width: 8em;
 }
