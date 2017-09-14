@@ -90,6 +90,10 @@
   background-color: #f5f5f2;
 }
 
+.ief-entity-table tbody .kalagraphs-region .ief-entity-operations {
+  display: none;
+}
+
 .inline-entity-form-paragraph-label strong {
   font-size: 20px;
   margin-right: 20px;
