@@ -44,7 +44,7 @@ abstract class KalagraphsLinkFormatter extends KalagraphsFieldFormatter {
         // "current path" as calculated below; it always returns the node ID.
         $path_matcher = \Drupal::service('path.matcher');
         if ($path_matcher->isFrontPage()) {
-          self::setActive($value);
+          self::setActive($url, $value);
         }
       }
 
@@ -52,7 +52,7 @@ abstract class KalagraphsLinkFormatter extends KalagraphsFieldFormatter {
       else {
         $current_path = Url::fromRoute('<current>')->getInternalPath();
         if ($current_path === $link_path) {
-          self::setActive($value);
+          self::setActive($url, $value);
         }
 
         // Make Media entities point directly to their file's URL.
@@ -75,12 +75,17 @@ abstract class KalagraphsLinkFormatter extends KalagraphsFieldFormatter {
   /**
    * Helper function to set the active class and variable on a link item.
    *
+   * @param \Drupal\Core\Url $url
+   *   The Url object from the field item.
    * @param array $value
    *   The field item's render array.
    */
-  private static function setActive(array &$value) {
-    $value['#class'][] = 'active';
-    $value['#active'] = TRUE;
+  private static function setActive(Url $url, array &$value) {
+    // Don't show links to named anchors within the page as active.
+    if (empty($url->getOptions()['fragment'])) {
+      $value['#class'][] = 'active';
+      $value['#active'] = TRUE;
+    }
   }
 
 }
