@@ -24,6 +24,7 @@
     "drupal/core": "~8.4",
     "drupal/options": "~8.0",
     "drupal/paragraphs": "~1.0",
-    "drupal/allowed_formats": "^1.0"
+    "drupal/allowed_formats": "^1.0",
+    "kalamuna/autogrow_textarea": "^1.0@beta"
   }
 }
