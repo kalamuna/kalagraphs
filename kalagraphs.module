@@ -133,8 +133,7 @@ function template_preprocess_paragraph__kalagraphs_component__default(&$vars) {
  */
 function kalagraphs_theme_suggestions_paragraph_alter(array &$suggestions, array $vars) {
   $paragraph = $vars['elements']['#paragraph'];
-  $bundle = $paragraph->bundle();
-  if (substr($bundle, 0, 11) === 'kalagraphs_') {
+  if ($paragraph->bundle() === 'kalagraphs_component') {
     $view_mode = $vars['elements']['#view_mode'];
     if ('default' === $view_mode) {
       $type = $paragraph->field_kalagraphs_type->value;
@@ -416,7 +415,7 @@ function _kalagraphs_element_is_kalagraph(&$element, FormStateInterface $form_st
       return FALSE;
     }
     $bundle = $item->entity->bundle();
-    return strpos($bundle, 'kalagraphs_') === 0;
+    return 'kalagraphs_component' === $bundle;
   }
 
   // For newly-added paragraphs, there is no entity yet, so we use the form's
@@ -449,10 +448,14 @@ function _kalagraphs_element_is_kalagraph(&$element, FormStateInterface $form_st
     $bundle = &$context['widget']->getSettings()['default_paragraph_type'];
   }
   else {
+    // This line is unnecessary but useful (1) just to make it obvious that we
+    // don't want to update $kalagraphs_bundle_check when the two previous
+    // conditions fail and (2) in case someone uses the variable "$bundle"
+    // earlier in the function some time in the future.
     unset($bundle);
   }
   if (isset($bundle)) {
-    $is_kalagraph = strpos($bundle, 'kalagraphs_') === 0;
+    $is_kalagraph = 'kalagraphs_component' === $bundle;
     $form_state->set(__FUNCTION__, $kalagraphs_bundle_check);
     return $is_kalagraph;
   }
