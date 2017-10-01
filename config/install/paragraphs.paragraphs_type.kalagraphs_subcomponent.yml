@@ -1,6 +1,0 @@
-langcode: en
-status: true
-dependencies: {  }
-id: kalagraphs_subcomponent
-label: Sub-component
-behavior_plugins: {  }

@@ -1,6 +1,0 @@
-langcode: en
-status: true
-dependencies: {  }
-id: layout
-label: Layout
-behavior_plugins: {  }
