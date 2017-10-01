@@ -137,7 +137,7 @@ function kalagraphs_theme_suggestions_paragraph_alter(array &$suggestions, array
     $view_mode = $vars['elements']['#view_mode'];
     if ('default' === $view_mode) {
       $type = $paragraph->field_kalagraphs_type->value;
-      $suggestions[] = "kalagraphs_$type";
+      $suggestions[] = empty($type) ? 'kalagraphs_hidden' : "kalagraphs_$type";
     }
   }
 }
