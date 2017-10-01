@@ -88,10 +88,12 @@ function template_preprocess_paragraph__kalagraphs_component__default(&$vars) {
     $vars['component'] = "$path/$template/$template.html.twig";
   }
 
-  // Add a flag to indicate it is rendering in a Drupal context.
-  // @todo This doesn't cover non-Paragraph theme hooks, e.g., atom components
-  // used for some fields.
-  $vars['drupal'] = TRUE;
+  // Add a flag to indicate rendering in a Drupal context and not the
+  // styleguide/prototype generator. n.b. Don't forget to do this for other
+  // theme hooks that may use Kalagraphs components, e.g., Views templates.
+  $vars['kalagraphs']
+    = $vars['drupal']
+      = TRUE;
 
   // Insert the author's name and "created" (aka "Authored on") date from the
   // entity to which this paragraph belongs.
@@ -157,7 +159,7 @@ function kalagraphs_theme_suggestions_paragraph_alter(array &$suggestions, array
  * invoked when a Kalagraphs type doesn't map to a custom template or render
  * function and therefore gets displayed through the regular field pipeline.
  *
- * @TODO Also use this for all Paragraph (Entity Reference Revision) fields.
+ * @TODO Also use this for the Paragraph (Entity Reference Revision) fields?
  */
 function kalagraphs_theme_suggestions_field_alter(array &$suggestions, array $vars) {
   $field = $vars['element']['#field_name'];
@@ -166,6 +168,20 @@ function kalagraphs_theme_suggestions_field_alter(array &$suggestions, array $va
     if ('default' === $view_mode) {
       $suggestions[] = 'kalagraphs_field';
     }
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for field().
+ *
+ * Adds helper flags to indicate context in templates.
+ */
+function kalagraphs_preprocess_field(array &$vars) {
+  $field = $vars['element']['#field_name'];
+  if (strpos($field, 'field_kalagraphs_') === 0) {
+    $vars['kalagraphs']
+      = $vars['drupal']
+        = TRUE;
   }
 }
 
