@@ -110,21 +110,12 @@ function template_preprocess_paragraph__kalagraphs_component__default(&$vars) {
     // Make a template-friendly variable name by stripping "field_kalagraphs_"
     // from the front.
     $name = substr($field, 17);
-    $element = &$elements[$field];
-    foreach (Element::children($element) as $item) {
 
-      // Send the field item's render array to Twig.
-      switch ($name) {
-
-        // Extract the longtext field's "summary" subfield.
-        case 'text':
-          if (!empty($element['#items'][$item]->summary)) {
-            $vars['subtitle'] = $element['#items'][$item]->summary;
-          }
-
-        default:
-          $vars[$name][] = $element[$item];
-      }
+    // @TODO This approach disables Quickedit on the fields by stripping the
+    // "items" (plural) render array and leaving only the individual "item"
+    // (singular) render arrays.
+    foreach (Element::children($elements[$field]) as $delta) {
+      $vars[$name][] = $element[$delta];
     }
   }
 
