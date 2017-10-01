@@ -214,6 +214,9 @@ function kalagraphs_field_widget_paragraphs_form_alter(&$element, FormStateInter
  */
 function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $context) {
 
+  // TESTING!
+  _kalagraphs_apply_layout_groups($element['subform']);
+
   // Is this a Kalagraphs Component paragraph?
   if (!_is_kalagraphs_component($element, $form_state, $context)) {
 
@@ -394,6 +397,72 @@ function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $co
       }
     }
   }
+}
+
+/**
+ * Applies the layout to an entity form.
+ *
+ * @param array $build
+ *   A renderable array representing the entity content or form.
+ */
+function _kalagraphs_apply_layout_groups(array &$build) {
+
+  // Make sure the Layout Discovery module is enabled.
+  if (!\Drupal::service('module_handler')->moduleExists('layout_discovery')) {
+    return;
+  }
+
+  // Make sure we have items to work with.
+  if (empty($build) || empty($elements = Element::children($build, TRUE))) {
+    return;
+  }
+
+  // @todo Check paragraph bundle? Or, if using behaviors, just check to see if
+  // the "layout" behaviour if enabled.
+
+  // @todo Change hard-coded layout ID to that selected in Paragraph behavior.
+  $layout_id = 'layout_threecol_33_34_33';
+
+  // Make sure we have a valid layout.
+  $layout_plugin_manager = \Drupal::getContainer()->get('plugin.manager.core.layout');
+  $layout_definition = $layout_plugin_manager->getDefinition($layout_id, FALSE);
+  if (!$layout_definition) {
+    return;
+  }
+
+  // Calculate the form element's "parents" string, as it is used in #group.
+  $identifier = uniqid();
+  $parents = implode('][', $build['#parents']) . "][$identifier][";
+
+  // Add the regions to the $build in the correct order.
+  $regions = array_map(function ($value) {
+    return $value['label'];
+  }, $layout_definition->getRegions());
+
+  foreach ($elements as $element) {
+
+    // As this is a form, #group can be used to relocate the fields. This
+    // avoids breaking hook_form_alter() implementations by not actually
+    // moving the field in the form structure. If a #group is already set,
+    // do not overwrite it.
+    $field = &$build[$element];
+    if (!isset($field['#group'])) {
+      xdebug_break();
+      $field['#group'] = $parents . key($regions);
+      $field['widget']['title']['#value'] = current($regions) . ' region';
+    }
+    if (FALSE === next($regions)) {
+      break;
+    }
+  }
+
+  // Add the layout groups render array to the element.
+  $fill = [];
+  $fill['#process'][] = '\Drupal\Core\Render\Element\RenderElement::processGroup';
+  $fill['#pre_render'][] = '\Drupal\Core\Render\Element\RenderElement::preRenderGroup';
+  $region_groups = array_fill_keys(array_keys($regions), $fill);
+  $layout = $layout_plugin_manager->createInstance($layout_id, []);
+  $build[$identifier] = $layout->build($region_groups);
 }
 
 /**
