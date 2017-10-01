@@ -185,7 +185,7 @@ function _kalagraphs_options(FieldStorageDefinitionInterface $definition, Fielda
   $values = array_column(KALAGRAPHS_TYPES, 'title');
   $options = array_combine($keys, $values);
   asort($options);
-  $options['hidden'] = 'Hidden';
+  $options['hidden'] = t('Hidden');
   return $options;
 }
 
