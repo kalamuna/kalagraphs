@@ -468,3 +468,12 @@ function kalagraphs_preprocess_responsive_image__bg(&$vars) {
     }
   }
 }
+
+/**
+ * Implements hook_entity_type_alter().
+ *
+ * Swaps out the Paragraph class for our own, so we can alter the entity labels.
+ */
+function kalagraphs_entity_type_alter(array &$entity_types) {
+  $entity_types['paragraph']->setClass('Drupal\kalagraphs\Entity\Kalagraph');
+}
