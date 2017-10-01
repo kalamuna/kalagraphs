@@ -214,8 +214,8 @@ function kalagraphs_field_widget_paragraphs_form_alter(&$element, FormStateInter
  */
 function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $context) {
 
-  // Is this a Kalagraphs paragraph?
-  if (!_kalagraphs_element_is_kalagraph($element, $form_state, $context)) {
+  // Is this a Kalagraphs Component paragraph?
+  if (!_is_kalagraphs_component($element, $form_state, $context)) {
 
     // Wrap the bundle title in a strong tag to match Kalagraphs display.
     $bundle_title = &$element['top']['paragraph_type_title']['info']['#markup'];
@@ -401,7 +401,7 @@ function _kalagraphs_process_form(&$element, FormStateInterface $form_state, $co
  *
  * For parameter info, see hook_field_widget_WIDGET_TYPE_form_alter().
  */
-function _kalagraphs_element_is_kalagraph(&$element, FormStateInterface $form_state, $context) {
+function _is_kalagraphs_component(&$element, FormStateInterface $form_state, $context) {
 
   // For previously-saved items, the entity (and therefore bundle) is available.
   $delta = $element['#delta'];
