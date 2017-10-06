@@ -1,27 +1,27 @@
 {
-  "name": "derekderaps/kalagraphs",
-  "type": "drupal-module",
-  "description": "Kalagraphs provides a flexible Paragraph type that allows editors to choose with which Twig template to render it.",
-  "keywords": ["Drupal"],
-  "license": "GPL-2.0+",
-  "authors": [{
-    "name": "Derek \"Hawkeye Tenderwolf\" DeRaps",
-    "homepage": "https://www.drupal.org/user/1571646",
-    "role": "Maintainer"
-  }],
-  "repositories": [{
-    "type": "composer",
-    "url": "https://packages.drupal.org/8"
-  }],
-  "homepage": "https://github.com/kalamuna/kalagraphs",
-  "support": {
-    "issues": "https://github.com/kalamuna/kalagraphs/issues",
-    "source": "https://github.com/kalamuna/kalagraphs.git"
-  },
-  "require": {
-    "drupal/core": "~8.4",
-    "drupal/options": "~8.0",
-    "drupal/paragraphs": "~1.0",
-    "drupal/allowed_formats": "^1.0"
-  }
+    "name": "derekderaps/kalagraphs",
+    "type": "drupal-module",
+    "description": "Kalagraphs provides a flexible Paragraph type that allows editors to choose with which Twig template to render it.",
+    "keywords": ["Drupal"],
+    "license": "GPL-2.0+",
+    "authors": [{
+        "name": "Derek \"Hawkeye Tenderwolf\" DeRaps",
+        "homepage": "https://www.drupal.org/user/1571646",
+        "role": "Maintainer"
+    }],
+    "repositories": [{
+        "type": "composer",
+        "url": "https://packages.drupal.org/8"
+    }],
+    "homepage": "https://github.com/kalamuna/kalagraphs",
+    "support": {
+        "issues": "https://github.com/kalamuna/kalagraphs/issues",
+        "source": "https://github.com/kalamuna/kalagraphs.git"
+    },
+    "require": {
+        "drupal/core": "~8.4",
+        "drupal/options": "~8.0",
+        "drupal/paragraphs": "~1.0",
+        "drupal/allowed_formats": "^1.0"
+    }
 }
