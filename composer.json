@@ -15,7 +15,6 @@
     "url": "https://packages.drupal.org/8"
   }],
   "homepage": "https://github.com/kalamuna/kalagraphs",
-  "minimum-stability": "dev",
   "support": {
     "issues": "https://github.com/kalamuna/kalagraphs/issues",
     "source": "https://github.com/kalamuna/kalagraphs.git"
