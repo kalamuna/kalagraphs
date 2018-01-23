@@ -3,21 +3,21 @@
     "description": "Facilitates rapid development of components from kalastatic (styleguide/prototype) to CMS (Drupal) implementation.",
     "type": "drupal-module",
     "require": {
-        "derekderaps/twigshim": "*",
+        "drupal/twigshim": "*@beta",
         "drupal/entityreference": "*",
-        "drupal/entityreference_view_widget": "*",
+        "drupal/entityreference_view_widget": "*@rc",
         "drupal/fences": "*",
         "drupal/link": "*",
         "drupal/paragraphs": "*@rc",
         "drupal/variable": "*",
         "drupal/viewfield": "*"
     },
-    "repositories": {
-        "drupal": {
+    "repositories": [
+        {
             "type": "composer",
             "url": "https://packages.drupal.org/7"
         }
-    },
+    ],
     "license": "MIT",
     "authors": [
         {
